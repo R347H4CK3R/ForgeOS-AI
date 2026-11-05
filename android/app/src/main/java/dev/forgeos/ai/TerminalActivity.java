@@ -10,12 +10,12 @@ public final class TerminalActivity extends Activity implements android.content.
  private EditText command;
  @Override public void onCreate(Bundle state){
   super.onCreate(state);ScrollView scroll=new ScrollView(this);LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(24,36,24,24);box.setFitsSystemWindows(true);scroll.addView(box);
-  TextView title=new TextView(this);title.setText("ForgeOS · Terminal");title.setTextSize(24);box.addView(title);
+  TextView title=new TextView(this);title.setText("ForgeOS Â· Terminal");title.setTextSize(24);box.addView(title);
   TextView note=new TextView(this);note.setText("Commands execute in Termux's home as the Termux user. They can modify its accessible files. Grant Run commands permission and enable allow-external-apps=true in Termux properties first. Python, Git and SSH must be installed in Termux. SAF folders are not automatically shell paths.");box.addView(note);
   command=new EditText(this);command.setHint("Command to review and execute");command.setMinLines(3);command.setText("python --version; git --version; ssh -V");box.addView(command);
   Button run=new Button(this);run.setText("Review command");run.setOnClickListener(v->review());box.addView(run);
   Button open=new Button(this);open.setText("Open interactive Termux");open.setOnClickListener(v->{Intent i=getPackageManager().getLaunchIntentForPackage("com.termux");if(i!=null)startActivity(i);else result.setText("Termux is not installed.");});box.addView(open);
-  result=new TextView(this);result.setTextIsSelectable(true);box.addView(result);setContentView(scroll);refresh();
+  result=new TextView(this);result.setTextIsSelectable(true);box.addView(result);ForgeStyle.install(this,scroll);refresh();
  }
  private void review(){
   if(checkSelfPermission("com.termux.permission.RUN_COMMAND")!=PackageManager.PERMISSION_GRANTED){requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"},30);result.setText("Grant Termux command permission, then review again.");return;}

@@ -45,32 +45,38 @@ public final class MainActivity extends Activity {
   android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();d.setColor(color);d.setCornerRadius(dp(radius));return d;
  }
  private void button(LinearLayout target,String title,Runnable action){
-  Button b=new Button(this);b.setText(title);b.setAllCaps(false);b.setTextColor(ink);b.setMinHeight(dp(48));b.setPadding(dp(14),dp(8),dp(14),dp(8));b.setBackground(surface(dark?0xff233b4d:0xffe1eaf1,10));
+  Button b=new Button(this);b.setText(title);b.setAllCaps(false);b.setTextColor(ink);b.setMinHeight(dp(48));b.setPadding(dp(14),dp(8),dp(14),dp(8));b.setBackground(ForgeStyle.glass(this,dark,18));
   b.setOnClickListener(v->action.run());LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(target.getOrientation()==LinearLayout.VERTICAL?-1:-2,-2);p.setMargins(dp(3),dp(4),dp(3),dp(4));target.addView(b,p);
  }
+ private String glyph(String title){
+  switch(title){case "Home":return "F";case "Projects":case "Files":return "[]";case "Code Studio":return "{}";case "Local AI":return "AI";case "Terminal":return ">_";case "Remote AI & agent":return "NET";case "Devices":return "LINK";case "Models":return "M";case "Settings":return "*";default:return "+";}
+ }
+ private int iconColor(String title){int[] colors={0xff447ff2,0xff9b62e4,0xff279cbb,0xffe99b39,0xff4d9e6b,0xffc65782};return colors[(title.hashCode()&0x7fffffff)%colors.length];}
  private void tile(LinearLayout row,String title,String subtitle,int icon,Runnable action){
-  Button b=new Button(this);String value=title+"\n"+subtitle;android.text.SpannableString label=new android.text.SpannableString(value);
-  label.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),0,title.length(),0);label.setSpan(new android.text.style.RelativeSizeSpan(1.25f),0,title.length(),0);
-  b.setText(label);b.setTextSize(14);b.setAllCaps(false);b.setTextColor(ink);b.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);b.setPadding(dp(20),dp(14),dp(20),dp(14));b.setBackground(surface(dark?0xff20394b:0xffe5edf4,16));
-  android.graphics.drawable.Drawable image=getDrawable(icon);if(image!=null){image.setTint(dark?0xff79ddcb:0xff087f8c);image.setBounds(0,0,dp(28),dp(28));b.setCompoundDrawables(image,null,null,null);b.setCompoundDrawablePadding(dp(14));}
-  b.setOnClickListener(v->action.run());LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(118),1);p.setMargins(dp(5),dp(5),dp(5),dp(5));row.addView(b,p);
+  Button b=new Button(this);b.setText(title);b.setTextSize(12);b.setAllCaps(false);b.setTextColor(ink);b.setGravity(Gravity.CENTER);b.setPadding(dp(2),dp(6),dp(2),dp(6));b.setMinWidth(0);b.setMinimumWidth(0);b.setMaxLines(2);b.setBackgroundColor(Color.TRANSPARENT);
+  android.graphics.drawable.Drawable image=ForgeStyle.glyph(glyph(title),iconColor(title));image.setBounds(0,0,dp(58),dp(58));b.setCompoundDrawables(null,image,null,null);b.setCompoundDrawablePadding(dp(9));b.setContentDescription(title+": "+subtitle);
+  b.setOnClickListener(v->action.run());LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(0,dp(116),1);params.setMargins(dp(2),dp(4),dp(2),dp(4));row.addView(b,params);
  }
  private void note(String s){body.addView(text(s,16));}
  private void render(String name) {
   if(busy)return;capture();editor=null;screen=name;
-  ink=dark?Color.rgb(231,239,247):Color.rgb(20,36,50);
+  ink=ForgeStyle.ink(dark);
   bg=dark?Color.rgb(13,22,32):Color.rgb(241,245,249);
-  getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(bg));
+  getWindow().setBackgroundDrawable(ForgeStyle.wallpaper(dark));
   if(android.os.Build.VERSION.SDK_INT<35)getWindow().setStatusBarColor(bg);
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
-  page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackgroundColor(bg);
+  page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackground(ForgeStyle.wallpaper(dark));
   page.setPadding(dp(14),dp(12),dp(14),dp(8));page.setFitsSystemWindows(true);
-  page.addView(text("ForgeOS AI  /  "+name,25));
+  TextView heading=text(name.equals("Home")?"ForgeOS":name,28);heading.setTypeface(android.graphics.Typeface.create("sans-serif-medium",0));page.addView(heading);
   ScrollView scroll=new ScrollView(this);
-  body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackgroundColor(panel);
+  body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackground(name.equals("Home")?new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT):ForgeStyle.glass(this,dark,26));
   scroll.addView(body);page.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
   HorizontalScrollView dock=new HorizontalScrollView(this);dock.setFillViewport(true);LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);
-  for(String s:new String[]{"Home","Files","Code Studio","Devices","Diagnostics","Settings"})button(nav,s,()->render(s));
+  nav.setPadding(dp(7),dp(4),dp(7),dp(4));nav.setBackground(ForgeStyle.glass(this,dark,28));dock.setHorizontalScrollBarEnabled(false);
+  for(String destination:new String[]{"Home","Files","Code Studio","Devices","Diagnostics","Settings"}){
+   Button item=new Button(this);item.setText(destination);item.setAllCaps(false);item.setTextSize(10);item.setTextColor(ink);item.setMinWidth(0);item.setMinimumWidth(0);item.setPadding(dp(3),dp(7),dp(3),dp(6));
+   android.graphics.drawable.Drawable image=ForgeStyle.glyph(glyph(destination),destination.equals(name)?0xff557eec:0xff465777);image.setBounds(0,0,dp(25),dp(25));item.setCompoundDrawables(null,image,null,null);item.setCompoundDrawablePadding(dp(5));item.setBackground(destination.equals(name)?ForgeStyle.glass(this,dark,20):new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));item.setSelected(destination.equals(name));item.setOnClickListener(v->render(destination));nav.addView(item,new LinearLayout.LayoutParams(dp(62),dp(68)));
+  }
   dock.addView(nav);page.addView(dock);setContentView(page);
   if(android.os.Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController bars=getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);}
   else {View decor=getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);}
@@ -84,23 +90,27 @@ public final class MainActivity extends Activity {
   }
  }
  private void home() {
-  TextView hero=text("Your AI workspace",30);hero.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);body.addView(hero);
-  note("Create projects, work with code, and choose local or remote AI.");
-  TextView badge=text((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM)!=0?"FORGEOS OS PREVIEW · HARDWARE UNVERIFIED":"REVIEW BUILD · STOCK ANDROID",12);badge.setTextColor(dark?0xff79ddcb:0xff087f8c);body.addView(badge);
-  button(body,"Choose workspace folder",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
-  note(tree==null?"Choose a folder to begin. SD-card access still needs device verification.":"Workspace folder selected. Open Projects to browse it.");
-  int columns=getResources().getConfiguration().screenWidthDp>=600?2:1;
-  String[] titles={"Projects","Code Studio","Local AI","Terminal","Remote AI & agent","Devices"};
-  String[] descriptions={"Files and project folders","Edit and save source","Offline models and downloads","Python, Git and SSH","Diagnose and review repairs","Tailscale and connections"};
-  int[] icons={android.R.drawable.ic_menu_agenda,android.R.drawable.ic_menu_edit,android.R.drawable.ic_menu_compass,android.R.drawable.ic_menu_manage,android.R.drawable.ic_menu_search,android.R.drawable.ic_menu_share};
-  Runnable[] actions={()->render("Files"),()->render("Code Studio"),()->startActivity(new Intent(this,LocalActivity.class)),()->startActivity(new Intent(this,TerminalActivity.class)),()->startActivity(new Intent(this,RemoteActivity.class)),()->render("Devices")};
+  LinearLayout widgets=new LinearLayout(this);widgets.setBaselineAligned(false);
+  LinearLayout clock=new LinearLayout(this);clock.setOrientation(LinearLayout.VERTICAL);clock.setPadding(dp(16),dp(12),dp(16),dp(12));clock.setBackground(ForgeStyle.glass(this,dark,26));
+  TextClock time=new TextClock(this);time.setFormat12Hour("h:mm");time.setFormat24Hour("HH:mm");time.setTextSize(38);time.setTextColor(ink);time.setTypeface(android.graphics.Typeface.create("sans-serif-light",0));clock.addView(time);
+  TextClock date=new TextClock(this);date.setFormat12Hour("EEEE, MMM d");date.setFormat24Hour("EEEE, MMM d");date.setTextSize(12);date.setTextColor(ink);clock.addView(date);
+  LinearLayout.LayoutParams left=new LinearLayout.LayoutParams(0,dp(122),1);left.setMargins(0,0,dp(6),0);widgets.addView(clock,left);
+  LinearLayout workspace=new LinearLayout(this);workspace.setOrientation(LinearLayout.VERTICAL);workspace.setPadding(dp(10),dp(6),dp(10),dp(6));workspace.setBackground(ForgeStyle.glass(this,dark,26));
+  TextView workspaceTitle=text("WORKSPACE",11);workspaceTitle.setLetterSpacing(.14f);workspace.addView(workspaceTitle);
+  button(workspace,"Choose workspace folder",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
+  LinearLayout.LayoutParams right=new LinearLayout.LayoutParams(0,-2,1);right.setMargins(dp(6),0,0,0);widgets.addView(workspace,right);body.addView(widgets);
+  TextView section=text("Your workstation",20);section.setTypeface(android.graphics.Typeface.create("sans-serif-medium",0));body.addView(section);
+  int columns=getResources().getConfiguration().screenWidthDp>=600?6:4;
+  String[] titles={"Projects","Code Studio","Local AI","Terminal","Remote AI & agent","Devices","Models","Diagnostics","Settings"};
+  String[] descriptions={"Files and project folders","Edit and save source","Offline model inference","Python, Git and SSH","Diagnose and review repairs","Tailscale and connections","Downloads and verification","Device and memory details","Appearance and OS updates"};
+  Runnable[] actions={()->render("Files"),()->render("Code Studio"),()->startActivity(new Intent(this,LocalActivity.class)),()->startActivity(new Intent(this,TerminalActivity.class)),()->startActivity(new Intent(this,RemoteActivity.class)),()->render("Devices"),()->startActivity(new Intent(this,ModelManagerActivity.class)),()->render("Diagnostics"),()->render("Settings")};
   LinearLayout row=null;
-  for(int i=0;i<titles.length;i++){if(i%columns==0){row=new LinearLayout(this);body.addView(row);}tile(row,titles[i],descriptions[i],icons[i],actions[i]);}
-  note("Local AI stays on this device. Remote tasks use your configured host.");
-  note("Use Android task controls for split screen. Tablet window behavior is not yet verified.");
+  for(int i=0;i<titles.length;i++){if(i%columns==0){row=new LinearLayout(this);body.addView(row);}tile(row,titles[i],descriptions[i],0,actions[i]);if(i==titles.length-1){for(int j=(i%columns)+1;j<columns;j++)row.addView(new View(this),new LinearLayout.LayoutParams(0,dp(116),1));}}
+  TextView badge=text((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM)!=0?"OS preview / hardware unverified":"Native preview / stock Android",11);badge.setAlpha(.8f);body.addView(badge);
+  TextView hint=text(tree==null?"Choose a workspace above to connect your files.":"Workspace connected. Open Projects to browse files.",13);hint.setAlpha(.8f);body.addView(hint);
  }
  private void settings() {
-  button(body,"OS updates · stage and export",()->startActivity(new Intent(this,OsUpdateActivity.class)));
+  button(body,"OS updates Â· stage and export",()->startActivity(new Intent(this,OsUpdateActivity.class)));
   button(body,dark?"Use light theme":"Use dark theme",()->{dark=!dark;getPreferences(0).edit().putBoolean("dark",dark).apply();render(screen);});
   button(body,"Wi-Fi",()->openSettings(Settings.ACTION_WIFI_SETTINGS));
   button(body,"Bluetooth",()->openSettings(Settings.ACTION_BLUETOOTH_SETTINGS));
@@ -132,7 +142,7 @@ public final class MainActivity extends Activity {
   button(controls,"Save as",this::saveAs);body.addView(controls);
   editor=new EditText(this);editor.setTextColor(ink);editor.setGravity(Gravity.TOP);editor.setTypeface(android.graphics.Typeface.MONOSPACE);editor.setTextSize(14);editor.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE|android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
   editor.setMinLines(15);editor.setText(draft);body.addView(editor,new LinearLayout.LayoutParams(-1,-2));
-  note("UTF-8 text editor · 256 KiB limit · use Termux for execution");
+  note("UTF-8 text editor Â· 256 KiB limit Â· use Termux for execution");
  }
  private void guardDraft(Runnable next){capture();if(!dirty){next.run();return;}new AlertDialog.Builder(this).setTitle("Discard unsaved changes?").setMessage("Save the current document before opening another to keep your edits.").setNegativeButton("Cancel",null).setPositiveButton("Discard", (d,w)->next.run()).show();}
  private void saveAs(){capture();safe(()->startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("text/plain").addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE,"untitled.txt"),12));}
@@ -183,7 +193,7 @@ public final class MainActivity extends Activity {
    note(dir.toString());
    button(body,"Workspace root",()->render("Files"));
    button(body,"New project folder here",()->newFolder(dir));
-   for(Entry item:entries)button(body,(item.folder?"Folder · ":"File · ")+item.name,()->{if(item.folder)list(item.uri);else guardDraft(()->load(item.uri));});
+   for(Entry item:entries)button(body,(item.folder?"Folder Â· ":"File Â· ")+item.name,()->{if(item.folder)list(item.uri);else guardDraft(()->load(item.uri));});
    if(entries.size()==500)note("Up to 500 entries shown.");
   });
  }

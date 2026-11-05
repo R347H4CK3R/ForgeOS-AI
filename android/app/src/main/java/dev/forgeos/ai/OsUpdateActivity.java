@@ -18,7 +18,7 @@ public final class OsUpdateActivity extends Activity {
  @Override public void onCreate(Bundle state){
   super.onCreate(state);coordinator=OsUpdateCoordinator.get(this);pickerOpen=state!=null&&state.getBoolean("picker");
   LinearLayout page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setPadding(24,24,24,24);page.setFitsSystemWindows(true);page.setBackgroundColor(0xff101d29);
-  ScrollView scroll=new ScrollView(this);scroll.addView(page);setContentView(scroll);
+  ScrollView scroll=new ScrollView(this);scroll.addView(page);ForgeStyle.install(this,scroll);
   TextView title=new TextView(this);title.setText("ForgeOS / OS updates");title.setTextSize(25);title.setTextColor(-1);page.addView(title);
   TextView warning=new TextView(this);warning.setText("EXPERIMENTAL - STAGING ONLY\nImages have no boot acceptance. Downloading does not install an OS. No flash, unlock or wipe is available here.");warning.setTextColor(0xffffc879);warning.setTextSize(17);page.addView(warning);
   token=new EditText(this);token.setHint("GitHub token (private repo; session only)");token.setTextColor(-1);token.setHintTextColor(0xffbbbbbb);token.setSingleLine();token.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);token.setSaveEnabled(false);token.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);page.addView(token);
