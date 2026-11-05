@@ -67,7 +67,7 @@ public final class MainActivity extends Activity {
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
   page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackground(ForgeStyle.wallpaper(dark));
   page.setPadding(dp(14),dp(12),dp(14),dp(8));page.setFitsSystemWindows(true);
-  TextView heading=text(name.equals("Home")?"ForgeOS":name,28);heading.setTypeface(android.graphics.Typeface.create("sans-serif-medium",0));page.addView(heading);
+  TextView heading=text(name.equals("Home")?"ForgeOS":name,28);heading.setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL));page.addView(heading);
   ScrollView scroll=new ScrollView(this);
   body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackground(name.equals("Home")?new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT):ForgeStyle.glass(this,dark,26));
   scroll.addView(body);page.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
@@ -92,14 +92,14 @@ public final class MainActivity extends Activity {
  private void home() {
   LinearLayout widgets=new LinearLayout(this);widgets.setBaselineAligned(false);
   LinearLayout clock=new LinearLayout(this);clock.setOrientation(LinearLayout.VERTICAL);clock.setPadding(dp(16),dp(12),dp(16),dp(12));clock.setBackground(ForgeStyle.glass(this,dark,26));
-  TextClock time=new TextClock(this);time.setFormat12Hour("h:mm");time.setFormat24Hour("HH:mm");time.setTextSize(38);time.setTextColor(ink);time.setTypeface(android.graphics.Typeface.create("sans-serif-light",0));clock.addView(time);
+  TextClock time=new TextClock(this);time.setFormat12Hour("h:mm");time.setFormat24Hour("HH:mm");time.setTextSize(38);time.setTextColor(ink);time.setTypeface(android.graphics.Typeface.create("sans-serif-light",android.graphics.Typeface.NORMAL));clock.addView(time);
   TextClock date=new TextClock(this);date.setFormat12Hour("EEEE, MMM d");date.setFormat24Hour("EEEE, MMM d");date.setTextSize(12);date.setTextColor(ink);clock.addView(date);
   LinearLayout.LayoutParams left=new LinearLayout.LayoutParams(0,dp(122),1);left.setMargins(0,0,dp(6),0);widgets.addView(clock,left);
   LinearLayout workspace=new LinearLayout(this);workspace.setOrientation(LinearLayout.VERTICAL);workspace.setPadding(dp(10),dp(6),dp(10),dp(6));workspace.setBackground(ForgeStyle.glass(this,dark,26));
   TextView workspaceTitle=text("WORKSPACE",11);workspaceTitle.setLetterSpacing(.14f);workspace.addView(workspaceTitle);
   button(workspace,"Choose workspace folder",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
   LinearLayout.LayoutParams right=new LinearLayout.LayoutParams(0,-2,1);right.setMargins(dp(6),0,0,0);widgets.addView(workspace,right);body.addView(widgets);
-  TextView section=text("Your workstation",20);section.setTypeface(android.graphics.Typeface.create("sans-serif-medium",0));body.addView(section);
+  TextView section=text("Your workstation",20);section.setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL));body.addView(section);
   int columns=getResources().getConfiguration().screenWidthDp>=600?6:4;
   String[] titles={"Projects","Code Studio","Local AI","Terminal","Remote AI & agent","Devices","Models","Diagnostics","Settings"};
   String[] descriptions={"Files and project folders","Edit and save source","Offline model inference","Python, Git and SSH","Diagnose and review repairs","Tailscale and connections","Downloads and verification","Device and memory details","Appearance and OS updates"};
