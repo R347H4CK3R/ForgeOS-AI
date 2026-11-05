@@ -20,3 +20,8 @@ The initial candidate is TrebleDroid ci-20250415, Android15_r26. Its publisher l
 Source: https://github.com/TrebleDroid/treble_experimentations/releases/tag/ci-20250415
 Official Google GSI downloads have separate usage/distribution terms; do not assume those downloads are freely modifiable redistributable OS releases.
 No upstream vbmeta, bootloader, vendor, super or userdata image is distributed with the modified filesystem. The modified image's trusted AVB chain, recovery and target compatibility remain unresolved.
+
+## Read-only stock updater/trust inspection
+The stock update activity resolves to com.google.android.gms/.update.SystemUpdateActivity. The installed factory GmsCore APK is approximately 173 MB and was not pulled under the bounded audit limit. Protected update-engine and metadata directories were denied; no update was triggered.
+Only the 1,167-byte public otacerts.zip was copied. ZIP SHA256: 0bae8e2e4c899c2720d8e7c3b314553c8aea2a20cc86e30f846eb6582be23a0c. Its TINNO/Shenzhen certificate has SHA256 7ccc5ec23654dad9058865ff376bf4402f8055b98a3cd87db684d50d257025d4, valid 2022-09-27 through 2050-02-12. This public OTA certificate is not an AVB trust determination and does not establish possession of an exact recovery package.
+No private device key, protected partition dump, update, reboot or write operation was performed.

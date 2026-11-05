@@ -1,5 +1,12 @@
 # ForgeOS AI: native workstation review
-**Review build on stock Android. The custom OS image and genuine dual boot are not ready.**
+**Native UI approved by the owner. An experimental system filesystem is now built offline; hardware boot acceptance and genuine dual boot remain blocked.**
+
+## Current repository updater review
+[Native workflow42043033635](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635) passed all jobs: 26 Android unit tests, 10 emulator integration tests, lint 0 errors / 64 warnings, ARM64 verification and real remote-model integration.
+Native source: 5d52b065ecf56a63be494617ba8036ff35c7a22d. Debug APK: 6,756,328 bytes; SHA256 6953d2e1303de689d6258809c5f1401b70940b05ee03cb0b183ca003102a9985. This debug artifact is not the stable-signed OS payload.
+![Actual native OS updater](ui-preview/os-updater.png)
+The signed repository updater checks the latest successful build, validates exact RSA-signed catalog bytes and bounded image/archive hashes, downloads on validated unmetered Wi-Fi, and exports a verified candidate. Token lifetime is session-only. It does not install or apply firmware. Rotation, cancellation, publication rollback and service-generation races have tests; a full real 775 MB native transfer and physical tablet session remain unverified.
+
 No new APK or image has been installed on the target tablet.
 
 ## Source and artifacts
@@ -11,7 +18,7 @@ No new APK or image has been installed on the target tablet.
 APK: 6,722,453 bytes, package dev.forgeos.ai.review, label ForgeOS AI Review.
 SHA256: `c6ac7a200f9fc45f2f18d5e141c01b71345026a4588d6130909db015e5b36dea`.
 Download was independently rehashed; CI APK signature verification passed. Native library is ARM64.
-This is a debug-signed review artifact. A stable private release-signing setup is still needed for production updates; different CI debug keys can prevent in-place updates. Do not uninstall existing apps to work around signature mismatches.
+This is a debug-signed review artifact. A separate stable private signing identity is now provisioned for OS-pipeline APKs; different debug keys can prevent in-place updates. Do not uninstall existing apps to work around signature mismatches.
 
 ## Actual UI
 Captured from the running Android 15 emulator at 800x1280, not design mockups.
@@ -54,11 +61,11 @@ No heavy compilation, WSL startup or continuously running model was started on G
 ## Hardware and firmware risks
 The adopted card is mounted, but its emulated shared view is unmounted and primary shared storage remains internal. App access is not established. No migration or reformat was performed.
 Physical multi-window behavior, Bluetooth/USB peripherals, audio, rotation/input and HDMI remain unaccepted. Wi-Fi and a tablet-to-laptop Tailscale ping were verified, not a complete app HTTPS session.
-Exact authenticated stock recovery firmware, tested restoration and an adequate AOSP build worker have not been established. There is no verified system image or safe executable firmware installation procedure. Unlocking may wipe userdata and jeopardize adopted-storage encryption keys. Virtual A/B is not genuine dual boot.
+Exact authenticated stock recovery firmware and tested restoration have not been established. A full-source AOSP build needs a larger worker; offline GSI adaptation now runs on GitHub. There is no verified system image or safe executable firmware installation procedure. Unlocking may wipe userdata and jeopardize adopted-storage encryption keys. Virtual A/B is not genuine dual boot.
 See [hardware audit](hardware-audit.md), [verification matrix](verification-matrix.md), [recovery gates](recovery-and-installation-gates.md) and [deliverables](deliverables.md).
 
 ## Proposed installation and rollback
-After explicit UI/test approval, the next stage is **APK-only target testing**:
+The owner's UI approval is recorded. A possible separately scoped next stage is **APK-only target testing**:
 1. Verify the exact APK SHA256/signature and recheck tablet identity, available space and existing packages.
 2. Install only the separate dev.forgeos.ai.review package. Preserve dev.forgeos.ai, stock firmware, existing data and the original home.
 3. Launch without changing the default home. Use a new test workspace folder; verify storage permissions before opening existing projects.

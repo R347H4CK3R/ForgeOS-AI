@@ -28,8 +28,15 @@ The 1.5B live fixture is a small edit, not proof of general repair. Repeated-cal
 Experimental AOSP files are not a verified OS image. The laptop's observed disk/RAM conditions were inadequate for AOSP; no heavy host build or WSL session started.
 Exact firmware/recovery and DSU trust remain unverified; Virtual A/B is not dual boot.
 Termux overlapping results share a last-result slot; output-truncation usability remains limited.
-Production update signing is not configured; do not erase existing app data to replace mismatched debug keys.
+Stable app signing and catalog signing are now provisioned separately for the OS pipeline; do not erase existing app data to replace mismatched debug keys.
 
 ## Review
 Independent reviews identified and helped resolve provider races, stale callbacks, UI-thread work, cancellation reset, Windows aliases/junctions and mutable pending plans. Final source review found no important correctness/security blockers in the schema, loop guard and window-controller fixes. UI captures were additionally inspected manually.
 No new APK install, image boot, unlock, wipe, partition change, SD format/migration or flash was performed on the tablet.
+
+## OS phase:2026-11-05
+Pinned TrebleDroid Android15 vanilla ARM64 base after actual isolated inspection. Built a real ext4 system image, retaining source bytes and metadata, omitting invalid upstream AVB data, and integrating the ordinary native app plus validated freeform feature. It remains an old-patch userdebug experiment, not accepted target firmware.
+Signed native updater adds exact catalog verification, bounded unmetered download/export and process/lifecycle ownership. Independent review drove fixes for stale workers, failed publication, service generations and older-artifact fallback.
+Workflow42040373607 passed10instrumentedtests but failed lint on a numeric orientation constant. b4edfcf used the named constant; workflow42041556381 passed. Visual review found a separate Quickstep ANR obscuring an earlier screenshot despite test assertions. 5d52b06 raised emulator RAM to3GB and made preview capture reject visible system error dialogs; workflow42043033635 passed26unit/10integrationtests with clean inspected updater preview.
+353560b extends APK same-source validation to build scripts/workflow/attributes; actual Git fixtures and25Linuxpipeline tests pass in42045844737. OS-only changes skip unnecessary app/model rebuilds. Stable app/certificate and separate catalog keys are owner controlled outside source/app and provisioned as encrypted Actions secrets. No target writes, installs or bootloader operations occurred.
+See OS_REVIEW.md for the final integrated image run and immutable hashes.

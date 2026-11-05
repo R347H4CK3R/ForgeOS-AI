@@ -18,9 +18,9 @@ Bootloader unlocking generally wipes userdata. That would also jeopardize access
 4. Establish and test a recovery route on equivalent hardware or otherwise obtain evidence sufficient for the owner to assess risk.
 5. Build the exact candidate image, validate AVB chain/signing, kernel/vendor/VINTF/SELinux compatibility and offline image contents.
 6. Present native UI screenshots, tests, limitations, expected data changes, exact image hashes and a device-specific install/rollback sequence.
-7. Obtain separate explicit permission for UI acceptance, APK installation, image boot, unlocking/wipe, and firmware flashing as applicable.
+7. UI acceptance is already recorded. Obtain separate explicit permission for APK installation, image boot, unlocking/wipe, and firmware flashing as applicable; approval does not replace missing recovery evidence.
 ## Current reversible interim environment
-The review APK is a native HOME-capable launcher on stock Android, not an OS image and not dual boot. No installation authorized or performed.
+The review APK is a native HOME-capable launcher on stock Android, not an OS image and not dual boot. UI approval is recorded; no new installation performed.
 After approval, a limited APK-only test could preserve stock firmware and keep the original launcher available through Android Home settings. Disabling the ForgeOS launcher or switching the default home restores the original home UI; uninstall may delete private histories. This is not firmware recovery.
 ## External display
 DP Alt Mode remains unverified. No software flag can establish missing physical support.

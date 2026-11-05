@@ -1,7 +1,7 @@
 # ForgeOS AI
 Native Android workstation development and experimental AOSP GSI product integration for onn 100135925 / t402aa.
 
-**This repository does not yet provide a verified onn operating-system image or true dual boot.** The native review APK runs on stock Android. No new build has been installed on the tablet; installation requires the owner's UI and test approval.
+**This repository does not yet provide a verified onn operating-system image or true dual boot.** The native review APK runs on stock Android. The owner approved the UI review; no new build has been installed on the tablet. Image boot, unlock, wipe, repartition and flash remain separately gated.
 
 ## Implemented source
 - Native HOME-capable dashboard and persistent navigation dock; no WebView runtime.
@@ -12,7 +12,8 @@ Native Android workstation development and experimental AOSP GSI product integra
 - Opt-in Termux terminal integration: review every command, then execute via the supported RUN_COMMAND service and receive results privately. Python/Git/SSH packages and Termux configuration are separate prerequisites.
 - HTTPS remote AI/development client with memory-only session token; authenticated, loopback-only Python host bridge for workspace reads, project listing, fixed Git status and an already configured Ollama service.
 - Android resizable activity support and adjacent launch requests. Target floating-window behavior, snapping and native window controls remain unverified.
-- Experimental AOSP product files under os/aosp with framework freeform/multi-window integration. No system image has been built.
+- Actual experimental Android15 ARM64 system filesystem adapted offline from a pinned vanilla TrebleDroid GSI; verified native workstation integration, freeform feature declaration and filesystem checks. See [image pipeline](os/image/README.md). The full-source AOSP product remains experimental.
+- Signed repository OS update catalog, native check/download/hash verification and export. Staging only: seamless OTA application is not implemented. Private repository access uses a memory-only session token; signing keys are never embedded.
 
 ## Build
 JDK17, Android SDK35, NDK27.2.12479018, CMake3.22.1 and Gradle8.11.1.
@@ -23,6 +24,7 @@ Host tests: `python -m unittest discover -s bridge -v`.
 Actions produces APK, signature check, SHA256, unit/lint reports, isolated emulator interaction results and UI PNGs. A pinned SHA256-checked 135M GGUF is used for actual emulator generation; it is not bundled in the APK.
 
 ## Verification and installation gates
+- [Experimental OS image, signed updates and exact artifact hashes](os/docs/OS_REVIEW.md)
 - [UI review and proposed tablet test](os/docs/UI_REVIEW.md)
 - [Deliverables and evidence](os/docs/deliverables.md)
 - [Hardware audit](os/docs/hardware-audit.md)
@@ -31,5 +33,6 @@ Actions produces APK, signature check, SHA256, unit/lint reports, isolated emula
 - [Experimental AOSP integration](os/aosp/README.md)
 - [Remote bridge](bridge/README.md)
 The adopted card is mounted, but its shared emulated view is unmounted and Android primary shared storage remains internal. App workspace access to that card is not established; no storage migration or formatting is performed.
-Exact stock recovery firmware, AVB trust, a tested restore procedure and an adequately sized Linux image-build worker remain prerequisites for an OS release.
+Exact stock recovery firmware, AVB trust, a tested restore procedure and target hardware acceptance remain prerequisites for an OS release. Offline GSI adaptation runs successfully on GitHub; a full-source AOSP build still needs a much larger worker. The experimental base has an older 2025-03-05 security patch and userdebug/test keys; it is not a production-safe release.
 The bounded repair agent and model download manager are implemented. Complete window controls, full file operations, target tailnet inference and physical-peripheral acceptance remain incomplete. See [actual UI and software review](os/docs/UI_REVIEW.md).
+

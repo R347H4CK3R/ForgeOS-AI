@@ -1,5 +1,5 @@
 # ForgeOS verification matrix
-Evidence: 2026-11-05 UTC, software candidate cf01a34. This is a development review, not OS acceptance.
+Evidence: 2026-11-05 UTC, native software candidate 5d52b06; OS pipeline d3c177b. This is a development review, not OS acceptance.
 
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
@@ -28,9 +28,16 @@ Evidence: 2026-11-05 UTC, software candidate cf01a34. This is a development revi
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
 | Recovery / rollback | Blocked | App rollback documented; authenticated exact firmware and tested firmware restoration absent |
 | Genuine dual boot | Blocked | Virtual A/B is not dual boot; DSU trust/support unestablished |
-| Full AOSP image | Not implemented | Experimental product source only; recovery, vendor compatibility and adequate build worker unresolved |
+| Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
+| Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |
+| Repository OS updates | Partially working | Pinned RSA-signed metadata, bounded Wi-Fi download, verification/export and lifecycle tests; full native artifact transfer and target session unverified |
+| Seamless OTA application | Not implemented | No trusted device-specific payload, platform signing or tested recovery path |
 
-## Software evidence
+## Current updater software evidence
+[Workflow 42043033635](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635) passed all jobs: 26 Android unit tests (0 failures), 10 instrumented emulator tests, ARM64 APK verification, actual remote-model integration and lint (0 errors / 64 warnings). The emulator uses 3 GB RAM; screenshots reject visible Android crash/ANR dialogs. 25 OS pipeline tests passed on Linux, including real ext4 adaptation, signing/catalog and malformed-artifact checks.
+The OS-only pin commit proved build scoping: workflow42045236220 skipped all three heavy app jobs after its scope check.
+
+## Earlier workstation evidence
 [Workflow 41978243888](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/41978243888) completed successfully on cf01a34: ARM64 build, signature/hash checks, 8 Android unit tests, lint (0 errors / 62 warnings), 8 emulator integration tests in 37.863 seconds and actual remote 1.5B integration in 33.181 seconds.
 Windows suite: 29 discovered / 28 passed / 1 live skip. Linux suite: 29 discovered / 27 passed / 2 platform/live skips; the separate live job passed.
 Actual screenshots, test output and synthetic model evidence are linked in [UI review](UI_REVIEW.md).
