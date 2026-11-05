@@ -49,6 +49,14 @@ public class NativeReviewTest {
   } finally{gate.countDown();a.delete();b.delete();}
  }
  @Test public void cancelledBeforeEntryDoesNotRestart()throws Exception{LocalEngine.prepare();LocalEngine.cancel();try{LocalEngine.generate(-1,new byte[]{65});fail("Cancelled run started");}catch(IOException expected){assertTrue(expected.getMessage().contains("Cancelled"));}finally{LocalEngine.prepare();}}
+ @Test public void realSmallGgufGeneratesText()throws Exception{
+  File file=new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(),"test-model.gguf");assertTrue("Pinned test model missing",file.isFile());
+  LocalEngine.prepare();
+  try(android.os.ParcelFileDescriptor fd=android.os.ParcelFileDescriptor.open(file,android.os.ParcelFileDescriptor.MODE_READ_ONLY)){
+   byte[] output=LocalEngine.generate(fd.getFd(),"Say hello in one short sentence.".getBytes("UTF-8"));assertNotNull(output);assertTrue("Model returned no text",output.length>0);assertTrue(output.length<16384);
+   File report=new File(file.getParentFile(),"inference-result.txt");try(FileOutputStream out=new FileOutputStream(report)){out.write(output);}
+  }
+ }
  @Test public void nativeRuntimeRejectsEmptyPrompt()throws Exception{try{LocalEngine.generate(-1,new byte[0]);fail("Empty prompt accepted");}catch(IOException expected){assertTrue(expected.getMessage().contains("Prompt"));}}
  @Test public void nativeNavigationEditorRecreationAndThemes()throws Exception{
   try(ActivityScenario<MainActivity> s=ActivityScenario.launch(MainActivity.class)){
