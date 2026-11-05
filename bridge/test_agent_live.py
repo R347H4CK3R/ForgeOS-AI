@@ -8,7 +8,7 @@ class LiveAgentTests(unittest.TestCase):
  def test_real_model_reads_proposes_and_applies_only_after_confirmation(self):
   model=os.environ["FORGEOS_LIVE_MODEL"];models=Path(os.environ["OLLAMA_MODELS"])
   manifest=json.loads((models/"manifests/registry.ollama.ai/library/qwen2.5-coder/0.5b").read_text())
-  expected=["20693aeb02c63304e263a72453b6ab89e1c700a87c6948cac523ac1e6f7cade0","66b9ea09bd5b7099cbb4fc820f31b575c0366fa439b08245566692c6784e281e","1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320","832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"]
+  expected=["20693aeb02c63304e263a72453b6ab89e1c700a87c6948cac523ac1e6f7cade0","66b9ea09bd5b7099cbb4fc820f31b575c0366fa439b08245566692c6784e281e","1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320","832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e","4ff64a7f502a08b7616edb8ca0a79eb1853fc363d842b7df4b46915d11a3fb09"]
   self.assertEqual([layer["digest"].removeprefix("sha256:") for layer in manifest["layers"]],expected)
   for digest in expected:
    check=hashlib.sha256()
