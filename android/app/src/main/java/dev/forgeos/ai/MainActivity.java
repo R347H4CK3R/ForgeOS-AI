@@ -72,7 +72,7 @@ public final class MainActivity extends Activity {
   button(body,"Choose workspace on SD card",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
   button(body,"Browse workspace",()->render("Files"));
   button(body,"Edit source file",()->render("Code Studio"));
-  button(body,"Terminal / Python / Git (Termux)",()->launch("com.termux",false));
+  button(body,"Terminal / Python / Git (Termux)",()->startActivity(new Intent(this,TerminalActivity.class)));
   button(body,"Remote AI and development",()->startActivity(new Intent(this,RemoteActivity.class)));
   button(body,"Local AI / GGUF model",()->startActivity(new Intent(this,LocalActivity.class)));
   note("Local inference requires a small GGUF model and sufficient free RAM. No model or terminal is bundled. Autonomous repair is not yet implemented.");
@@ -182,7 +182,7 @@ public final class MainActivity extends Activity {
   },()->{Toast.makeText(this,"Eight workspace folders verified",Toast.LENGTH_LONG).show();render("Files");});
  }
  @Override protected void onActivityResult(int req,int result,Intent data){super.onActivityResult(req,result,data);if(result!=RESULT_OK||data==null||data.getData()==null)return;Uri uri=data.getData();
-  if(req==10)safe(()->{int flags=data.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);if((flags&Intent.FLAG_GRANT_WRITE_URI_PERMISSION)==0)throw new IOException("Workspace needs write permission");getContentResolver().takePersistableUriPermission(uri,flags);tree=uri;getPreferences(0).edit().putString("workspace",uri.toString()).apply();render("Files");});
+  if(req==10)safe(()->{int flags=data.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);if(flags!=(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION))throw new IOException("Workspace needs read and write permission");getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);tree=uri;getPreferences(0).edit().putString("workspace",uri.toString()).apply();render("Files");});
   else if(req==11)load(uri);else if(req==12)write(uri);
  }
  private void launch(String pkg,boolean adjacent){safe(()->{Intent i=getPackageManager().getLaunchIntentForPackage(pkg);if(i==null)throw new IOException("Install "+pkg+" from its official distribution first");i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);if(adjacent)i.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);startActivity(i);});}

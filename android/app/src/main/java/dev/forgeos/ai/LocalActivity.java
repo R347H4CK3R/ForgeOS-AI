@@ -25,7 +25,7 @@ public final class LocalActivity extends Activity {
   status=new TextView(this);status.setTextIsSelectable(true);status.setText(model==null?"Select a model using Android's file picker.":"Selected: "+model);box.addView(status);setContentView(scroll);
  }
  @Override protected void onActivityResult(int req,int result,Intent data){super.onActivityResult(req,result,data);if(req!=20||result!=RESULT_OK||data==null||data.getData()==null)return;
-  try{Uri uri=data.getData();getContentResolver().takePersistableUriPermission(uri,data.getFlags()&Intent.FLAG_GRANT_READ_URI_PERMISSION);model=uri;getPreferences(0).edit().putString("model",uri.toString()).apply();status.setText("Selected: "+uri);}catch(Exception e){status.setText(e.toString());}
+  try{Uri uri=data.getData();if((data.getFlags()&Intent.FLAG_GRANT_READ_URI_PERMISSION)==0)throw new IOException("Model read permission denied");getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION);model=uri;getPreferences(0).edit().putString("model",uri.toString()).apply();status.setText("Selected: "+uri);}catch(Exception e){status.setText(e.toString());}
  }
  private void generate(){
   if(model==null){status.setText("Select a GGUF model first.");return;}

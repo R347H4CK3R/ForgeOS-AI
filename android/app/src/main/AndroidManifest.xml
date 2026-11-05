@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 <uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
 <queries><package android:name="com.tailscale.ipn"/><package android:name="com.termux"/></queries>
 <application android:label="ForgeOS AI" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="false" android:supportsRtl="true">
+<receiver android:name=".TerminalResultReceiver" android:exported="false"/>
+<activity android:name=".TerminalActivity" android:exported="false" android:resizeableActivity="true"/>
 <activity android:name=".LocalActivity" android:exported="false" android:resizeableActivity="true"/>
 <activity android:name=".RemoteActivity" android:exported="false" android:resizeableActivity="true"/>
 <activity android:name=".MainActivity" android:exported="true" android:resizeableActivity="true">
