@@ -35,4 +35,3 @@ Actions produces APK, signature check, SHA256, unit/lint reports, isolated emula
 The adopted card is mounted, but its shared emulated view is unmounted and Android primary shared storage remains internal. App workspace access to that card is not established; no storage migration or formatting is performed.
 Exact stock recovery firmware, AVB trust, a tested restore procedure and target hardware acceptance remain prerequisites for an OS release. Offline GSI adaptation runs successfully on GitHub; a full-source AOSP build still needs a much larger worker. The experimental base has an older 2025-03-05 security patch and userdebug/test keys; it is not a production-safe release.
 The bounded repair agent and model download manager are implemented. Complete window controls, full file operations, target tailnet inference and physical-peripheral acceptance remain incomplete. See [actual UI and software review](os/docs/UI_REVIEW.md).
-
