@@ -1,6 +1,13 @@
 plugins { id 'com.android.application' }
 android { namespace 'dev.forgeos.ai'; compileSdk 35
  defaultConfig { applicationId 'dev.forgeos.ai'; minSdk 26; targetSdk 35; versionCode 2; versionName '0.2.0'; testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner' }
+ // Keep the review build separate from the existing installed ForgeOS app/data.
+ defaultConfig { resValue 'string', 'app_name', 'ForgeOS AI' }
+ buildTypes { debug {
+  applicationIdSuffix '.review'
+  versionNameSuffix '-review'
+  resValue 'string', 'app_name', 'ForgeOS AI Review'
+ } }
  ndkVersion '27.2.12479018'
  defaultConfig { ndk { abiFilters.addAll((project.findProperty('forgeAbi') ?: 'arm64-v8a').split(',')) } }
  externalNativeBuild { cmake { path 'src/main/cpp/CMakeLists.txt'; version '3.22.1' } }
