@@ -28,13 +28,19 @@ def extract_apk_archive(archive,destination,expected_sha,expected_bytes):
    raise
  return destination
 
+def verify_apk_source(commit,cwd=None):
+ paths=["android",".github/workflows/build.yml",".github/scripts",".gitattributes"]
+ result=subprocess.run(["git","diff","--quiet",commit,"HEAD","--",*paths],
+                       cwd=cwd,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=30)
+ if result.returncode:
+  raise ValueError("APK build inputs differ from verified source or Git comparison failed")
+
 def fetch(lock,repository,output):
  apk=lock["apk"];output=Path(output);output.mkdir(parents=True,exist_ok=False)
  run=gh_json("repos/"+repository+"/actions/runs/"+str(apk["run_id"]))
  if run["head_sha"]!=apk["source_commit"] or run["conclusion"]!="success":
   raise ValueError("APK source workflow is not the pinned successful commit")
- if subprocess.run(["git","diff","--quiet",apk["source_commit"],"HEAD","--","android"]).returncode:
-  raise ValueError("Android source differs from verified APK")
+ verify_apk_source(apk["source_commit"])
  artifact=gh_json("repos/"+repository+"/actions/artifacts/"+str(apk["artifact_id"]))
  if artifact["workflow_run"]["id"]!=apk["run_id"] or artifact["expired"] or artifact["size_in_bytes"]>32*1024*1024:
   raise ValueError("APK artifact ownership, expiry or size mismatch")
