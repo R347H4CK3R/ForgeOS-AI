@@ -97,7 +97,8 @@ public class NativeReviewTest {
    click(s,"Settings");click(s,"Use light theme");shot("settings-light");
    InstrumentationRegistry.getInstrumentation().getUiAutomation().setRotation(UiAutomation.ROTATION_FREEZE_90);
    InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-   s.recreate();shot("landscape");
+   s.recreate();android.os.SystemClock.sleep(1500);
+   s.onActivity(a->assertEquals(android.content.res.Configuration.ORIENTATION_LANDSCAPE,a.getResources().getConfiguration().orientation));shot("landscape");
   } finally {InstrumentationRegistry.getInstrumentation().getUiAutomation().setRotation(UiAutomation.ROTATION_UNFREEZE);}
  }
 }

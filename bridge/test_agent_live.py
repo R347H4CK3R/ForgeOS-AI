@@ -1,6 +1,7 @@
 """Opt-in actual Ollama/tool-loop test, executed only on the isolated CI worker."""
 import hashlib,json,os,tempfile,unittest
 from pathlib import Path
+from urllib.error import HTTPError
 from agent import Agent
 from server import ollama_turn
 @unittest.skipUnless(os.environ.get("FORGEOS_LIVE_MODEL"),"live model is not configured")
@@ -17,7 +18,12 @@ class LiveAgentTests(unittest.TestCase):
    self.assertEqual(check.hexdigest(),digest)
   with tempfile.TemporaryDirectory() as root:
    project=Path(root)/"demo";project.mkdir();source=project/"main.py";source.write_text("print(1)\n")
-   agent=Agent(root,ollama_turn)
+   def checked_turn(messages,model,timeout):
+    try:return ollama_turn(messages,model,timeout)
+    except HTTPError as error:
+     # This fixture contains only synthetic print(1) source, never owner data.
+     raise RuntimeError("isolated backend error: "+error.read(2048).decode("utf-8",errors="replace")) from error
+   agent=Agent(root,checked_turn)
    plan=agent.plan("demo","Read main.py, then change its complete contents to print(2) followed by a newline. Use read_file, propose_edit, then finish. Do not change any other file.",model)
    self.assertTrue(plan["approval_required"],json.dumps(plan))
    self.assertEqual(source.read_text(),"print(1)\n")
