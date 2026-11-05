@@ -1,12 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-<uses-permission android:name="android.permission.BLUETOOTH"/>
-<queries>
-<package android:name="com.tailscale.ipn"/>
-<package android:name="com.termux"/>
-<package android:name="com.carriez.flutter_hbb"/>
-</queries>
-<application android:label="ForgeOS AI" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false">
-<activity android:name=".MainActivity" android:exported="true">
+<queries><package android:name="com.tailscale.ipn"/><package android:name="com.termux"/></queries>
+<application android:label="ForgeOS AI" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="false" android:supportsRtl="true">
+<activity android:name=".MainActivity" android:exported="true" android:resizeableActivity="true">
 <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+<intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.HOME"/><category android:name="android.intent.category.DEFAULT"/></intent-filter>
 </activity></application></manifest>
