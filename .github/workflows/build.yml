@@ -1,7 +1,7 @@
 name: Build ForgeOS AI Android APK
 on:
   push:
-    branches: [main, 'forgeos/**']
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
