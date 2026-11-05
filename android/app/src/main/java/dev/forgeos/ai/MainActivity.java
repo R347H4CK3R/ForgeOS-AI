@@ -60,6 +60,8 @@ public final class MainActivity extends Activity {
   if(busy)return;capture();editor=null;screen=name;
   ink=dark?Color.rgb(231,239,247):Color.rgb(20,36,50);
   bg=dark?Color.rgb(13,22,32):Color.rgb(241,245,249);
+  getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(bg));
+  if(android.os.Build.VERSION.SDK_INT<35)getWindow().setStatusBarColor(bg);
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
   page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackgroundColor(bg);
   page.setPadding(dp(14),dp(12),dp(14),dp(8));page.setFitsSystemWindows(true);
