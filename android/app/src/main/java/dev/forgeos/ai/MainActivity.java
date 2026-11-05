@@ -61,6 +61,8 @@ public final class MainActivity extends Activity {
   ink=dark?Color.rgb(231,239,247):Color.rgb(20,36,50);
   bg=dark?Color.rgb(13,22,32):Color.rgb(241,245,249);
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
+  if(android.os.Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController bars=getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);}
+  else {View decor=getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);}
   page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackgroundColor(bg);
   page.setPadding(dp(14),dp(12),dp(14),dp(8));page.setFitsSystemWindows(true);
   page.addView(text("ForgeOS AI  /  "+name,25));
