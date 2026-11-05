@@ -140,27 +140,47 @@ public final class MainActivity extends Activity {
   button(body,"Create / verify workspace folders",this::prepare);
   list(currentDir);
  }
+ private void background(Checked task,Runnable done) {
+  if(busy)return;busy(true);
+  io.execute(()->{try{task.run();complete(done);}catch(Exception e){complete(()->error(e.toString()));}});
+ }
+ private static final class Entry {
+  final Uri uri;final String name;final boolean folder;
+  Entry(Uri u,String n,boolean f){uri=u;name=n;folder=f;}
+ }
  private void list(Uri dir) {
-  currentDir=dir;
-  while(body.getChildCount()>2)body.removeViewAt(2);
-  note(dir.toString());
-  button(body,"Workspace root",()->render("Files"));
-  button(body,"New project folder here",()->{EditText input=new EditText(this);input.setSingleLine(true);new AlertDialog.Builder(this).setTitle("Folder name").setView(input).setNegativeButton("Cancel",null).setPositiveButton("Create",(d,w)->{String n=input.getText().toString();if(!WorkspacePolicy.validName(n)){error("Use a plain name without slash or control characters");return;}safe(()->{DocumentsContract.createDocument(getContentResolver(),dir,DocumentsContract.Document.MIME_TYPE_DIR,n);list(dir);});}).show();});
-  safe(()->{Uri children=DocumentsContract.buildChildDocumentsUriUsingTree(tree,DocumentsContract.getDocumentId(dir));
-   try(Cursor c=getContentResolver().query(children,new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,DocumentsContract.Document.COLUMN_DISPLAY_NAME,DocumentsContract.Document.COLUMN_MIME_TYPE},null,null,null)) {
-    if(c==null)throw new IOException("Folder provider unavailable");int count=0;
-    while(c.moveToNext()){if(++count>500){note("First 500 entries shown.");break;}Uri item=DocumentsContract.buildDocumentUriUsingTree(tree,c.getString(0));String name=c.getString(1);boolean folder=DocumentsContract.Document.MIME_TYPE_DIR.equals(c.getString(2));button(body,(folder?"Folder · ":"File · ")+name,()->{if(folder)list(item);else guardDraft(()->load(item));});}
+  final java.util.List<Entry> entries=new java.util.ArrayList<>();
+  background(()->{
+   Uri children=DocumentsContract.buildChildDocumentsUriUsingTree(tree,DocumentsContract.getDocumentId(dir));
+   try(Cursor c=getContentResolver().query(children,new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,DocumentsContract.Document.COLUMN_DISPLAY_NAME,DocumentsContract.Document.COLUMN_MIME_TYPE},null,null,null)){
+    if(c==null)throw new IOException("Folder provider unavailable");
+    while(c.moveToNext()&&entries.size()<500)entries.add(new Entry(DocumentsContract.buildDocumentUriUsingTree(tree,c.getString(0)),c.getString(1),DocumentsContract.Document.MIME_TYPE_DIR.equals(c.getString(2))));
    }
+  },()->{
+   currentDir=dir;while(body.getChildCount()>2)body.removeViewAt(2);
+   note(dir.toString());
+   button(body,"Workspace root",()->render("Files"));
+   button(body,"New project folder here",()->newFolder(dir));
+   for(Entry item:entries)button(body,(item.folder?"Folder · ":"File · ")+item.name,()->{if(item.folder)list(item.uri);else guardDraft(()->load(item.uri));});
+   if(entries.size()==500)note("Up to 500 entries shown.");
   });
  }
- private void prepare() {safe(()->{
-  Uri root=DocumentsContract.buildDocumentUriUsingTree(tree,DocumentsContract.getTreeDocumentId(tree));
-  java.util.Map<String,String> existing=new java.util.HashMap<>();
-  Uri children=DocumentsContract.buildChildDocumentsUriUsingTree(tree,DocumentsContract.getTreeDocumentId(tree));
-  try(Cursor c=getContentResolver().query(children,new String[]{DocumentsContract.Document.COLUMN_DISPLAY_NAME,DocumentsContract.Document.COLUMN_MIME_TYPE},null,null,null)){if(c==null)throw new IOException("Workspace inaccessible");while(c.moveToNext())existing.put(c.getString(0),c.getString(1));}
-  for(String name:WorkspacePolicy.DIRECTORIES){if(existing.containsKey(name)){if(!DocumentsContract.Document.MIME_TYPE_DIR.equals(existing.get(name)))throw new IOException("A file blocks folder "+name);}else if(DocumentsContract.createDocument(getContentResolver(),root,DocumentsContract.Document.MIME_TYPE_DIR,name)==null)throw new IOException("Cannot create "+name);}
-  Toast.makeText(this,"Eight workspace folders verified",Toast.LENGTH_LONG).show();render("Files");
- });}
+ private void newFolder(Uri dir) {
+  EditText input=new EditText(this);input.setSingleLine(true);
+  new AlertDialog.Builder(this).setTitle("Folder name").setView(input).setNegativeButton("Cancel",null).setPositiveButton("Create",(d,w)->{
+   String name=input.getText().toString();if(!WorkspacePolicy.validName(name)){error("Use a plain name without slash or control characters");return;}
+   background(()->{if(DocumentsContract.createDocument(getContentResolver(),dir,DocumentsContract.Document.MIME_TYPE_DIR,name)==null)throw new IOException("Provider did not create folder");},()->list(dir));
+  }).show();
+ }
+ private void prepare() {
+  background(()->{
+   Uri root=DocumentsContract.buildDocumentUriUsingTree(tree,DocumentsContract.getTreeDocumentId(tree));
+   java.util.Map<String,String> existing=new java.util.HashMap<>();
+   Uri children=DocumentsContract.buildChildDocumentsUriUsingTree(tree,DocumentsContract.getTreeDocumentId(tree));
+   try(Cursor c=getContentResolver().query(children,new String[]{DocumentsContract.Document.COLUMN_DISPLAY_NAME,DocumentsContract.Document.COLUMN_MIME_TYPE},null,null,null)){if(c==null)throw new IOException("Workspace inaccessible");while(c.moveToNext())existing.put(c.getString(0),c.getString(1));}
+   for(String name:WorkspacePolicy.DIRECTORIES){if(existing.containsKey(name)){if(!DocumentsContract.Document.MIME_TYPE_DIR.equals(existing.get(name)))throw new IOException("A file blocks folder "+name);}else if(DocumentsContract.createDocument(getContentResolver(),root,DocumentsContract.Document.MIME_TYPE_DIR,name)==null)throw new IOException("Cannot create "+name);}
+  },()->{Toast.makeText(this,"Eight workspace folders verified",Toast.LENGTH_LONG).show();render("Files");});
+ }
  @Override protected void onActivityResult(int req,int result,Intent data){super.onActivityResult(req,result,data);if(result!=RESULT_OK||data==null||data.getData()==null)return;Uri uri=data.getData();
   if(req==10)safe(()->{int flags=data.getFlags()&(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);if((flags&Intent.FLAG_GRANT_WRITE_URI_PERMISSION)==0)throw new IOException("Workspace needs write permission");getContentResolver().takePersistableUriPermission(uri,flags);tree=uri;getPreferences(0).edit().putString("workspace",uri.toString()).apply();render("Files");});
   else if(req==11)load(uri);else if(req==12)write(uri);
@@ -170,5 +190,6 @@ public final class MainActivity extends Activity {
  private interface Checked {void run() throws Exception;}
  private void safe(Checked r){try{r.run();}catch(Exception e){error(e.toString());}}
  private void error(String s){if(!isFinishing()&&!isDestroyed())new AlertDialog.Builder(this).setTitle("Action could not complete").setMessage(s).setPositiveButton("OK",null).show();}
+ @Override public void onBackPressed(){if(busy)return;guardDraft(()->{dirty=false;super.onBackPressed();});}
  @Override protected void onDestroy(){io.shutdown();super.onDestroy();}
 }

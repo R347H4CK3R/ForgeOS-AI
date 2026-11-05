@@ -22,6 +22,32 @@ public class NativeReviewTest {
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
   try(FileOutputStream out=new FileOutputStream(new File(dir,name+".png"))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}bitmap.recycle();
  }
+ private Object field(Object object,String name)throws Exception{java.lang.reflect.Field f=object.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(object);}
+ private void call(Object object,String name,Class<?> type,Object value)throws Exception{java.lang.reflect.Method m=object.getClass().getDeclaredMethod(name,type);m.setAccessible(true);m.invoke(object,value);}
+ @Test public void slowOpenLocksEditorAndCannotRebindSavedDocument()throws Exception {
+  android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
+  File a=new File(context.getCacheDir(),"race-a.txt"),b=new File(context.getCacheDir(),"race-b.txt");
+  try(FileOutputStream out=new FileOutputStream(a)){out.write("original A".getBytes("UTF-8"));}
+  try(FileOutputStream out=new FileOutputStream(b)){out.write("document B".getBytes("UTF-8"));}
+  java.util.concurrent.CountDownLatch gate=new java.util.concurrent.CountDownLatch(1);
+  try(ActivityScenario<MainActivity> s=ActivityScenario.launch(MainActivity.class)){
+   click(s,"Code Studio");
+   s.onActivity(activity->{try{
+    edit(activity.getWindow().getDecorView()).setText("draft A");
+    ((java.util.concurrent.ExecutorService)field(activity,"io")).execute(()->{try{gate.await(5,java.util.concurrent.TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}});
+    call(activity,"load",android.net.Uri.class,android.net.Uri.fromFile(b));
+    assertFalse(edit(activity.getWindow().getDecorView()).isEnabled());
+    call(activity,"write",android.net.Uri.class,android.net.Uri.fromFile(a));
+   }catch(Exception e){throw new AssertionError(e);}});
+   gate.countDown();
+   java.util.concurrent.atomic.AtomicBoolean busy=new java.util.concurrent.atomic.AtomicBoolean(true);
+   long end=android.os.SystemClock.elapsedRealtime()+5000;
+   while(busy.get()&&android.os.SystemClock.elapsedRealtime()<end){s.onActivity(activity->{try{busy.set((Boolean)field(activity,"busy"));}catch(Exception e){throw new AssertionError(e);}});android.os.SystemClock.sleep(20);}
+   assertFalse("Open did not finish",busy.get());
+   s.onActivity(activity->{try{assertEquals(android.net.Uri.fromFile(b),field(activity,"document"));assertEquals("document B",edit(activity.getWindow().getDecorView()).getText().toString());}catch(Exception e){throw new AssertionError(e);}});
+   try(FileInputStream in=new FileInputStream(a)){byte[] bytes=new byte[100];int n=in.read(bytes);assertEquals("original A",new String(bytes,0,n,"UTF-8"));}
+  } finally{gate.countDown();a.delete();b.delete();}
+ }
  @Test public void cancelledBeforeEntryDoesNotRestart()throws Exception{LocalEngine.prepare();LocalEngine.cancel();try{LocalEngine.generate(-1,new byte[]{65});fail("Cancelled run started");}catch(IOException expected){assertTrue(expected.getMessage().contains("Cancelled"));}finally{LocalEngine.prepare();}}
  @Test public void nativeRuntimeRejectsEmptyPrompt()throws Exception{try{LocalEngine.generate(-1,new byte[0]);fail("Empty prompt accepted");}catch(IOException expected){assertTrue(expected.getMessage().contains("Prompt"));}}
  @Test public void nativeNavigationEditorRecreationAndThemes()throws Exception{
