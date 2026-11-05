@@ -54,6 +54,16 @@ def run(args):
     return completed.stdout.decode("utf-8", errors="replace")
 
 
+def verify_system_image(output, public_pem, tool=DEFAULT_TOOL):
+    # Hashtree descriptors reopen partition_name + input extension. Isolate the
+    # signed inode under that exact name so an original system.img is never read.
+    output = require_regular(safe_path(output))
+    with tempfile.TemporaryDirectory(prefix="forgeos-avb-verify-", dir=output.parent) as verify_dir:
+        alias = Path(verify_dir) / "system.img"
+        os.link(output, alias)
+        run([sys.executable, tool, "verify_image", "--image", alias, "--key", public_pem])
+
+
 def prefix_sha256(path, count):
     digest = hashlib.sha256()
     with require_regular(path).open("rb") as stream:
@@ -146,7 +156,7 @@ def sign_system_image(image, output, evidence, public_pem, expected_public_sha25
                       "--prop","com.android.build.system.os_version:16",
                       "--prop","com.android.build.system.security_patch:"+patch,
                       "--prop","com.android.build.system.fingerprint:"+fingerprint])
-            run(base+["verify_image","--image",output,"--key",public_pem])
+            verify_system_image(output, public_pem, tool)
             info = run(base+["info_image","--image",output])
             if prefix_sha256(output,fsbytes)!=original_hash:
                 raise ValueError("signed filesystem prefix changed")

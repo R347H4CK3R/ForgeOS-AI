@@ -66,6 +66,31 @@ class BoundaryTests(unittest.TestCase):
             env=signing.clean_environment()
             self.assertFalse(any(key in env for key in
                 ("FORGEOS_AVB_DEV_KEY","GH_TOKEN","GITHUB_TOKEN","AWS_SECRET_ACCESS_KEY")))
+    def test_verifier_alias_is_signed_inode_and_removed_on_success_and_failure(self):
+        self.output.write_bytes(b"signed inode")
+        original=self.image.read_bytes()
+        for fail in (False,True):
+            observed=[]
+            def fake_run(args):
+                alias=Path(args[args.index("--image")+1])
+                observed.append(alias)
+                self.assertEqual(alias.name,"system.img")
+                self.assertNotEqual(alias.parent,self.root)
+                self.assertFalse(alias.is_symlink())
+                self.assertTrue(os.path.samefile(alias,self.output))
+                self.assertEqual(alias.read_bytes(),b"signed inode")
+                if fail: raise RuntimeError("fixture verifier failure")
+                return ""
+            with patch.object(signing,"run",side_effect=fake_run):
+                if fail:
+                    with self.assertRaisesRegex(RuntimeError,"fixture verifier failure"):
+                        signing.verify_system_image(self.output,self.public)
+                else:
+                    signing.verify_system_image(self.output,self.public)
+            self.assertEqual(len(observed),1)
+            self.assertFalse(observed[0].parent.exists())
+            self.assertEqual(self.image.read_bytes(),original)
+            self.assertEqual(self.output.read_bytes(),b"signed inode")
     def test_modified_avbtool_rejected(self):
         tool=self.root/"avbtool.py"; tool.write_text("fixture")
         with self.assertRaisesRegex(ValueError,"checksum"): self.invoke(tool=tool)
@@ -104,7 +129,11 @@ class IntegrationTests(unittest.TestCase):
             self.assertFalse(report["trusted_avb"])
             self.assertFalse(report["boot_tested"])
             self.assertEqual(list(root.glob("forgeos-avb-*")),[])
-            signing.run([sys.executable,signing.DEFAULT_TOOL,"verify_image",
-                         "--image",root/"signed.img","--key",public])
+            with tempfile.TemporaryDirectory(prefix="independent-verify-",dir=root) as verify_dir:
+                alias=Path(verify_dir)/"system.img"
+                os.link(root/"signed.img",alias)
+                signing.run([sys.executable,signing.DEFAULT_TOOL,"verify_image",
+                             "--image",alias,"--key",public])
+            self.assertEqual(signing.sha256_file(image),original)
 
 if __name__=="__main__": unittest.main()
