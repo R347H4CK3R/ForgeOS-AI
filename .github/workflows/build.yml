@@ -2,7 +2,9 @@ name: Build ForgeOS AI Android APK
 on:
   push:
     branches: [main]
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**']
   pull_request:
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**']
   workflow_dispatch:
 permissions:
   contents: read
