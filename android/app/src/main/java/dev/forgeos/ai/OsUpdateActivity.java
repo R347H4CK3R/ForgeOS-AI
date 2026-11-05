@@ -17,7 +17,7 @@ public final class OsUpdateActivity extends Activity {
  private final Runnable poll=new Runnable(){public void run(){if(!active)return;status.setText(coordinator.snapshot());handler.postDelayed(this,1000);}};
  @Override public void onCreate(Bundle state){
   super.onCreate(state);coordinator=OsUpdateCoordinator.get(this);pickerOpen=state!=null&&state.getBoolean("picker");
-  LinearLayout page=new LinearLayout(this);page.setOrientation(1);page.setPadding(24,24,24,24);page.setFitsSystemWindows(true);page.setBackgroundColor(0xff101d29);
+  LinearLayout page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setPadding(24,24,24,24);page.setFitsSystemWindows(true);page.setBackgroundColor(0xff101d29);
   ScrollView scroll=new ScrollView(this);scroll.addView(page);setContentView(scroll);
   TextView title=new TextView(this);title.setText("ForgeOS / OS updates");title.setTextSize(25);title.setTextColor(-1);page.addView(title);
   TextView warning=new TextView(this);warning.setText("EXPERIMENTAL - STAGING ONLY\nImages have no boot acceptance. Downloading does not install an OS. No flash, unlock or wipe is available here.");warning.setTextColor(0xffffc879);warning.setTextSize(17);page.addView(warning);
