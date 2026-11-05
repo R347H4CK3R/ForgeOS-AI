@@ -89,15 +89,7 @@ jobs:
           profile: pixel_c
           ram-size: 2048M
           disable-animations: true
-          script: |
-            cd android
-            gradle --no-daemon --max-workers=2 -PforgeAbi=x86_64 assembleDebug
-            adb install -r app/build/outputs/apk/debug/app-debug.apk
-            adb shell run-as dev.forgeos.ai mkdir -p files
-            adb exec-in run-as dev.forgeos.ai tee files/test-model.gguf < ../test-model.gguf > /dev/null
-            gradle --no-daemon --max-workers=2 -PforgeAbi=x86_64 connectedDebugAndroidTest
-            mkdir -p ../preview
-            adb pull /sdcard/Android/data/dev.forgeos.ai/files/review ../preview/
+          script: bash .github/scripts/ui-review.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:

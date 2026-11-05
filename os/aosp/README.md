@@ -1,0 +1,9 @@
+# Experimental Android 15 GSI product integration
+This directory is real AOSP product source, but has NOT been built into a system image or verified on onn hardware. It must not be described as a completed ROM.
+Copy device/forgeos into a clean Android15 AOSP source tree's device/forgeos directory. Place the verified same-commit ARM64 native APK at device/forgeos/prebuilt/ForgeOSLauncher.apk. Record its SHA256. Include its third-party notices.
+The product inherits upstream aosp_arm64.mk, imports the native HOME launcher and adds platform multi-window/freeform overlays plus the freeform system feature. These settings alone are NOT functional verification. Stock tablet settings are never modified by this product directory.
+AOSP environment selection: source build/envsetup.sh, inspect available release configurations for the checked-out revision, then lunch forgeos_arm64 with its supported release/userdebug combination and build systemimage. AndroidProducts.mk lists trunk_staging for the Android15 development tree; a tagged release may require its actual release configuration instead.
+No vendor/kernel/bootloader images, firmware blobs, signing trust chain or partition layout are supplied. This is not an onn device tree and must not generate a flash-all script.
+Building requires a Linux AOSP environment and approximately 400GB source/build space per AOSP guidance: https://source.android.com/docs/setup/start/requirements . That capacity is not provisioned by this APK workflow. No WSL workload is started on GamingLaptop.
+Gate image work on exact stock recovery evidence, a suitable isolated build worker, branch pinning, vendor/VINTF validation, AVB signing review and the user's installation authorization. Consult ../docs/recovery-and-installation-gates.md.
+For Android15, no Android16+ desktop-windowing-only resource flags are assumed. CTS window-manager tests and actual touch/mouse split/freeform interactions remain mandatory before acceptance.
