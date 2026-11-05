@@ -77,7 +77,9 @@ public final class MainActivity extends Activity {
    Button item=new Button(this);item.setText(destination);item.setAllCaps(false);item.setTextSize(10);item.setTextColor(ink);item.setMinWidth(0);item.setMinimumWidth(0);item.setPadding(dp(3),dp(7),dp(3),dp(6));
    android.graphics.drawable.Drawable image=ForgeStyle.glyph(glyph(destination),destination.equals(name)?0xff557eec:0xff465777);image.setBounds(0,0,dp(25),dp(25));item.setCompoundDrawables(null,image,null,null);item.setCompoundDrawablePadding(dp(5));item.setBackground(destination.equals(name)?ForgeStyle.glass(this,dark,20):new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));item.setSelected(destination.equals(name));item.setOnClickListener(v->render(destination));nav.addView(item,new LinearLayout.LayoutParams(dp(Math.max(48,Math.min(72,(getResources().getConfiguration().screenWidthDp-56)/6))),dp(68)));
   }
-  dock.addView(nav);page.addView(dock);setContentView(page);
+  dock.addView(nav);FrameLayout floating=new FrameLayout(this);floating.setPadding(dp(14),dp(10),dp(14),dp(10));
+  int dockWidth=dp(Math.max(1,Math.min(500,getResources().getConfiguration().screenWidthDp-28)));
+  floating.addView(dock,new FrameLayout.LayoutParams(dockWidth,-2,Gravity.CENTER));page.addView(floating,new LinearLayout.LayoutParams(-1,-2));setContentView(page);
   if(android.os.Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController bars=getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);}
   else {View decor=getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);}
   switch(name) {
