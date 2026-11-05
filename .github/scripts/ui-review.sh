@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 cd android
+# Match the observed onn display and reduce emulator rendering overhead.
+adb shell wm size 800x1280
+adb shell wm density 160
+adb shell settings put system accelerometer_rotation 0
+adb shell settings put system user_rotation 0
 gradle --no-daemon --max-workers=2 -PforgeAbi=x86_64 assembleDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell run-as dev.forgeos.ai mkdir -p files
