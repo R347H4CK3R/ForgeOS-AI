@@ -35,6 +35,8 @@ def inspect(lock,out):
  props=dict(line.split("=",1) for line in prop.splitlines() if "=" in line and not line.lstrip().startswith("#"))
  api=props.get("ro.system.build.version.sdk",props.get("ro.build.version.sdk"))
  if api!=str(lock["android_api"]):raise ValueError("unexpected Android API: "+str(api))
+ patch=props.get("ro.system.build.version.security_patch",props.get("ro.build.version.security_patch"))
+ if lock.get("security_patch") and patch!=lock["security_patch"]:raise ValueError("base security patch differs from pin")
  framework=extract(raw,root+"/framework/framework-res.apk",report/"framework-res.apk")
  for inside,name in [(root+"/overlay/config/config.xml","overlay-config.xml"),(root+"/etc/selinux/plat_file_contexts","plat_file_contexts")]:
   try:extract(raw,inside,report/name)

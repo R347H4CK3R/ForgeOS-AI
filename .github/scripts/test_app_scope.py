@@ -22,6 +22,9 @@ class ScopeTests(unittest.TestCase):
  def test_workflow_or_bridge_change_requires_app_validation(self):
   self.commit("bridge/server.py","changed")
   self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
+ def test_checkout_attributes_can_affect_signed_test_assets(self):
+  self.commit(".gitattributes","*.sig binary")
+  self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
  def test_unknown_baseline_cannot_silently_skip(self):
   with self.assertRaises(subprocess.CalledProcessError):has_app_changes("does-not-exist","HEAD",self.root)
 

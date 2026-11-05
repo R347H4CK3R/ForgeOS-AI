@@ -1,4 +1,5 @@
 name: ForgeOS offline system image
+run-name: ForgeOS ${{ inputs.operation || 'validation' }}
 on:
   pull_request:
     paths: ['os/image/**', 'os/aosp/**', '.github/workflows/os-image.yml']
@@ -58,7 +59,7 @@ jobs:
           "$AAPT" dump overlayable image-work/inspection/framework-res.apk > image-work/inspection/framework-overlayable.txt
           "$AAPT" dump resources image-work/inspection/framework-res.apk > image-work/framework-resources.txt
           python - <<'PY'
-          import hashlib,json,os,re
+          import json,os,re
           from pathlib import Path
           text=Path("image-work/framework-resources.txt").read_text()
           lines=text.splitlines();chosen=[]
@@ -69,24 +70,42 @@ jobs:
           supported=bool(re.search(r"bool/config_supportsMultiWindow\n\s+\(\) true",text))
           if os.environ["OPERATION"]=="build" and not supported:
               raise SystemExit("Base default multi-window resource was not verified true")
-          evidence={"supportsMultiWindow":supported,"runtime_verified":False,"obsolete_freeform_resource_used":False}
-          Path("image-work/inspection/window-config.json").write_text(json.dumps(evidence,indent=2))
+          Path("image-work/inspection/window-config.json").write_text(json.dumps({"supportsMultiWindow":supported,"runtime_verified":False,"obsolete_freeform_resource_used":False},indent=2))
           PY
       - name: Fetch exact verified same-source workstation APK
         if: inputs.operation == 'build'
         env:
           GH_TOKEN: ${{ github.token }}
         run: python os/image/fetch_apk.py --lock os/image/base.lock.json --repository "$GITHUB_REPOSITORY" --output image-work/application
+      - name: Sign workstation with stable app identity
+        if: inputs.operation == 'build'
+        env:
+          FORGEOS_APK_SIGNING_KEY: ${{ secrets.FORGEOS_APK_SIGNING_KEY }}
+        run: |
+          python - <<'PY'
+          import json,os,sys
+          from pathlib import Path
+          sys.path.insert(0,"os/image")
+          from sign_apk import sign_apk
+          lock=json.loads(Path("os/image/base.lock.json").read_text())
+          result=sign_apk(Path("image-work/application/ForgeOS.apk"),Path("image-work/application/ForgeOS-signed.apk"),
+              Path("os/image/forgeos-apk-signing-cert.pem"),"4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a",
+              Path(os.environ["ANDROID_HOME"])/"build-tools/35.0.0/apksigner",Path("image-work/application/signing-evidence.json"),
+              source=lock["apk"]["source_commit"],expected_input_sha256=lock["apk"]["sha256"],expected_input_bytes=lock["apk"]["bytes"])
+          lock["release_apk"]=result["signed_apk"]
+          Path("image-work/runtime-lock.json").write_text(json.dumps(lock,indent=2))
+          PY
       - name: Adapt and verify offline ext4 filesystem
         if: inputs.operation == 'build'
         run: |
           mkdir image-work/output
-          python os/image/build_image.py --base image-work/base.img --apk image-work/application/ForgeOS.apk --output image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img --lock os/image/base.lock.json --report image-work/output/image-evidence.json
-          cp os/image/base.lock.json image-work/output/input-lock.json
+          python os/image/build_image.py --base image-work/base.img --apk image-work/application/ForgeOS-signed.apk --output image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img --lock image-work/runtime-lock.json --report image-work/output/image-evidence.json
+          cp image-work/runtime-lock.json image-work/output/input-lock.json
+          cp image-work/application/signing-evidence.json image-work/output/signing-evidence.json
           cp image-work/inspection/base-evidence.json image-work/output/upstream-inspection.json
           cp image-work/inspection/window-config.json image-work/output/window-config.json
           cp os/image/README.md image-work/output/READ-ME-FIRST.md
-      - name: Compress image without a second archive compression pass
+      - name: Compress image
         if: inputs.operation == 'build'
         run: |
           xz -T2 -3 image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img
@@ -99,11 +118,49 @@ jobs:
           path: image-work/inspection/
           if-no-files-found: error
           retention-days: 7
+      - name: Upload image-only archive
+        id: system_image
+        if: success() && inputs.operation == 'build'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH
+          path: image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img.xz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
+      - name: Sign repository update catalog
+        if: success() && inputs.operation == 'build'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORGEOS_UPDATE_SIGNING_KEY: ${{ secrets.FORGEOS_UPDATE_SIGNING_KEY }}
+          IMAGE_ARTIFACT_ID: ${{ steps.system_image.outputs.artifact-id }}
+          IMAGE_ARCHIVE_SHA: ${{ steps.system_image.outputs.artifact-digest }}
+        run: |
+          ARCHIVE_BYTES="$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$IMAGE_ARTIFACT_ID" --jq .size_in_bytes)"
+          python os/image/update_catalog.py --evidence image-work/output/image-evidence.json --image image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img.xz --artifact-id "$IMAGE_ARTIFACT_ID" --archive-sha "$IMAGE_ARCHIVE_SHA" --archive-bytes "$ARCHIVE_BYTES" --run-id "$GITHUB_RUN_ID" --commit "$GITHUB_SHA" --public-key android/app/src/main/res/raw/forgeos_update_public_key.pem --output image-work/update-metadata
       - uses: actions/upload-artifact@v4
         if: success() && inputs.operation == 'build'
         with:
-          name: ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH
-          path: image-work/output/
-          compression-level: 0
+          name: ForgeOS-update-metadata
+          path: image-work/update-metadata/
+          if-no-files-found: error
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always() && inputs.operation == 'build'
+        with:
+          name: ForgeOS-image-evidence
+          path: |
+            image-work/output/*.json
+            image-work/output/*.md
+            image-work/output/SHA256SUMS
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: success() && inputs.operation == 'build'
+        with:
+          name: ForgeOS-stable-signed-workstation
+          path: |
+            image-work/application/ForgeOS-signed.apk
+            image-work/application/signing-evidence.json
           if-no-files-found: error
           retention-days: 7

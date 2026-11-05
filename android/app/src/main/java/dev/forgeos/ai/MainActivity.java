@@ -100,6 +100,7 @@ public final class MainActivity extends Activity {
   note("Use Android task controls for split screen. Tablet window behavior is not yet verified.");
  }
  private void settings() {
+  button(body,"OS updates · stage and export",()->startActivity(new Intent(this,OsUpdateActivity.class)));
   button(body,dark?"Use light theme":"Use dark theme",()->{dark=!dark;getPreferences(0).edit().putBoolean("dark",dark).apply();render(screen);});
   button(body,"Wi-Fi",()->openSettings(Settings.ACTION_WIFI_SETTINGS));
   button(body,"Bluetooth",()->openSettings(Settings.ACTION_BLUETOOTH_SETTINGS));

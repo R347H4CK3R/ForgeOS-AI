@@ -1,5 +1,5 @@
 """Offline ext4 adaptation, never flashing. Original input bytes remain untouched."""
-import argparse,json,re,shutil,struct,tempfile,zipfile,xml.etree.ElementTree as ET
+import argparse,json,os,re,shutil,struct,tempfile,zipfile,xml.etree.ElementTree as ET
 from pathlib import Path
 from image_tools import *
 CONTEXT=b"u:object_r:system_file:s0\0"
@@ -43,7 +43,8 @@ def adapt_image(base,apk,output,lock):
  tool_path(base);tool_path(apk);tool_path(output)
  if output.exists() or output.is_symlink():raise ValueError("output must be a new regular file")
  base_hash=verify_file(base,lock["raw_sha256"],base.stat().st_size)
- apk_hash=verify_file(apk,lock["apk"]["sha256"],lock["apk"]["bytes"])
+ expected_apk=lock.get("release_apk",lock["apk"])
+ apk_hash=verify_file(apk,expected_apk["sha256"],expected_apk["bytes"])
  validate_apk(apk)
  if image_kind(base)!="ext4":raise ValueError("adapter accepts raw ext4 only")
  fs_bytes,free_bytes,free_inodes=filesystem_bytes(base)
@@ -67,11 +68,15 @@ def adapt_image(base,apk,output,lock):
      chunk=source.read(min(2*1024*1024,remaining))
      if not chunk:raise ValueError("base truncated during copy")
      target.write(chunk);remaining-=len(chunk)
+   directories=[]
    def label(path,directory=False):
     debugfs(output,"set_inode_field "+path+" mode "+("040755" if directory else "0100644"),write=True)
     debugfs(output,"set_inode_field "+path+" uid 0",write=True)
     debugfs(output,"set_inode_field "+path+" gid 0",write=True)
     debugfs(output,"ea_set -f "+tool_path(context)+" "+path+" security.selinux",write=True)
+    meta=inode_metadata(output,path)
+    if meta["uid"]!=0 or meta["gid"]!=0 or meta["mode"]!=("0755" if directory else "0644") or "u:object_r:system_file:s0" not in meta["xattrs"]:raise ValueError("new inode metadata mismatch")
+    if directory:directories.append({"path":path,"metadata":meta})
    def mkdir(path):
     if exists(output,path):return
     parent=path.rsplit("/",1)[0]
@@ -99,9 +104,11 @@ def adapt_image(base,apk,output,lock):
     feature=work/"feature.xml";feature.write_bytes(FEATURE);put(feature_path,feature)
     feature_action="feature declaration added; platform support still requires runtime acceptance"
    marker=work/"build.json"
+   sequence=int(os.environ.get("GITHUB_RUN_ID","0"));commit=os.environ.get("GITHUB_SHA","unbuilt")
    marker.write_text(json.dumps({"acceptance":"EXPERIMENTAL-DO-NOT-FLASH","base_sha256":base_hash,
     "apk_sha256":apk_hash,"source":lock.get("source_release"),"security_patch":lock.get("security_patch"),
-    "trusted_avb":False,"vendor_boot_tested":False},indent=2))
+    "trusted_avb":False,"vendor_boot_tested":False,"sequence":sequence,"repository":"R347H4CK3R/ForgeOS-AI",
+    "version":"0.3.0-os."+commit[:12]+"."+str(sequence)},indent=2))
    put(root+"/etc/forgeos/build.json",marker)
    for i,path in enumerate(sentinels):
     if inode_metadata(output,path)!=before[path]:raise ValueError("upstream inode metadata changed: "+path)
@@ -112,6 +119,7 @@ def adapt_image(base,apk,output,lock):
    report={"acceptance":"EXPERIMENTAL-DO-NOT-FLASH","trusted_avb":False,"boot_tested":False,
     "base_sha256":base_hash,"apk_sha256":apk_hash,"output_sha256":sha256_file(output),
     "output_bytes":output.stat().st_size,"system_root":root,"payloads":payload,"feature":feature_action,
+    "new_directories":directories,"security_patch":lock.get("security_patch"),
     "fsck_clean":True,"fsck_output":fsck,"upstream_sentinels":before,
     "avb_note":"Only ext4 filesystem bytes copied. Original AVB footer/hash tree/vbmeta omitted; no trusted signing claim.",
     "partition_note":"No partition expansion. No boot/vendor/super/userdata images or flash commands generated."}

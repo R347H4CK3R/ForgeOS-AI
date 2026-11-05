@@ -24,6 +24,12 @@ public class NativeReviewTest {
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
   try(FileOutputStream out=new FileOutputStream(new File(dir,name+".png"))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}bitmap.recycle();
  }
+ @Test public void repositoryUpdaterShowsStagingGateWithoutInstallControls()throws Exception {
+  try(ActivityScenario<OsUpdateActivity> scenario=ActivityScenario.launch(OsUpdateActivity.class)){
+   scenario.onActivity(activity->{View root=activity.getWindow().getDecorView();assertFalse(hasWebView(root));assertNotNull(find(root,"Check latest repository build"));assertNotNull(find(root,"Export verified image"));assertNull(find(root,"Install update"));});
+   shot("os-updater");
+  }
+ }
  private Object field(Object object,String name)throws Exception{java.lang.reflect.Field f=object.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(object);}
  private void call(Object object,String name,Class<?> type,Object value)throws Exception{java.lang.reflect.Method m=object.getClass().getDeclaredMethod(name,type);m.setAccessible(true);m.invoke(object,value);}
  @Test public void slowOpenLocksEditorAndCannotRebindSavedDocument()throws Exception {
