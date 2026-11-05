@@ -75,7 +75,7 @@ public final class MainActivity extends Activity {
   nav.setPadding(dp(7),dp(4),dp(7),dp(4));nav.setBackground(ForgeStyle.glass(this,dark,28));dock.setHorizontalScrollBarEnabled(false);
   for(String destination:new String[]{"Home","Files","Code Studio","Devices","Diagnostics","Settings"}){
    Button item=new Button(this);item.setText(destination);item.setAllCaps(false);item.setTextSize(10);item.setTextColor(ink);item.setMinWidth(0);item.setMinimumWidth(0);item.setPadding(dp(3),dp(7),dp(3),dp(6));
-   android.graphics.drawable.Drawable image=ForgeStyle.glyph(glyph(destination),destination.equals(name)?0xff557eec:0xff465777);image.setBounds(0,0,dp(25),dp(25));item.setCompoundDrawables(null,image,null,null);item.setCompoundDrawablePadding(dp(5));item.setBackground(destination.equals(name)?ForgeStyle.glass(this,dark,20):new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));item.setSelected(destination.equals(name));item.setOnClickListener(v->render(destination));nav.addView(item,new LinearLayout.LayoutParams(dp(62),dp(68)));
+   android.graphics.drawable.Drawable image=ForgeStyle.glyph(glyph(destination),destination.equals(name)?0xff557eec:0xff465777);image.setBounds(0,0,dp(25),dp(25));item.setCompoundDrawables(null,image,null,null);item.setCompoundDrawablePadding(dp(5));item.setBackground(destination.equals(name)?ForgeStyle.glass(this,dark,20):new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));item.setSelected(destination.equals(name));item.setOnClickListener(v->render(destination));nav.addView(item,new LinearLayout.LayoutParams(dp(Math.max(48,Math.min(72,(getResources().getConfiguration().screenWidthDp-56)/6))),dp(68)));
   }
   dock.addView(nav);page.addView(dock);setContentView(page);
   if(android.os.Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController bars=getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);}
@@ -110,7 +110,7 @@ public final class MainActivity extends Activity {
   TextView hint=text(tree==null?"Choose a workspace above to connect your files.":"Workspace connected. Open Projects to browse files.",13);hint.setAlpha(.8f);body.addView(hint);
  }
  private void settings() {
-  button(body,"OS updates Â· stage and export",()->startActivity(new Intent(this,OsUpdateActivity.class)));
+  button(body,"OS updates · stage and export",()->startActivity(new Intent(this,OsUpdateActivity.class)));
   button(body,dark?"Use light theme":"Use dark theme",()->{dark=!dark;getPreferences(0).edit().putBoolean("dark",dark).apply();render(screen);});
   button(body,"Wi-Fi",()->openSettings(Settings.ACTION_WIFI_SETTINGS));
   button(body,"Bluetooth",()->openSettings(Settings.ACTION_BLUETOOTH_SETTINGS));
@@ -142,7 +142,7 @@ public final class MainActivity extends Activity {
   button(controls,"Save as",this::saveAs);body.addView(controls);
   editor=new EditText(this);editor.setTextColor(ink);editor.setGravity(Gravity.TOP);editor.setTypeface(android.graphics.Typeface.MONOSPACE);editor.setTextSize(14);editor.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE|android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
   editor.setMinLines(15);editor.setText(draft);body.addView(editor,new LinearLayout.LayoutParams(-1,-2));
-  note("UTF-8 text editor Â· 256 KiB limit Â· use Termux for execution");
+  note("UTF-8 text editor · 256 KiB limit · use Termux for execution");
  }
  private void guardDraft(Runnable next){capture();if(!dirty){next.run();return;}new AlertDialog.Builder(this).setTitle("Discard unsaved changes?").setMessage("Save the current document before opening another to keep your edits.").setNegativeButton("Cancel",null).setPositiveButton("Discard", (d,w)->next.run()).show();}
  private void saveAs(){capture();safe(()->startActivityForResult(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("text/plain").addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE,"untitled.txt"),12));}
@@ -193,7 +193,7 @@ public final class MainActivity extends Activity {
    note(dir.toString());
    button(body,"Workspace root",()->render("Files"));
    button(body,"New project folder here",()->newFolder(dir));
-   for(Entry item:entries)button(body,(item.folder?"Folder Â· ":"File Â· ")+item.name,()->{if(item.folder)list(item.uri);else guardDraft(()->load(item.uri));});
+   for(Entry item:entries)button(body,(item.folder?"Folder · ":"File · ")+item.name,()->{if(item.folder)list(item.uri);else guardDraft(()->load(item.uri));});
    if(entries.size()==500)note("Up to 500 entries shown.");
   });
  }

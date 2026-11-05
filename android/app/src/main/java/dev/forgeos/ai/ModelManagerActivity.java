@@ -61,11 +61,11 @@ public final class ModelManagerActivity extends Activity {
         box.setFitsSystemWindows(true);
         scroll.addView(box);
         TextView title = new TextView(this);
-        title.setText("Starter model Â· SmolLM2 135M");
+        title.setText("Starter model · SmolLM2 135M");
         title.setTextSize(24);
         box.addView(title);
         TextView info = new TextView(this);
-        info.setText("Q4_K_M GGUF Â· 105,454,432 bytes. Download uses Wi-Fi only, with metered networks and roaming disabled. Android continues the download in the background. SHA256 verification runs before selection. No model runs automatically.");
+        info.setText("Q4_K_M GGUF · 105,454,432 bytes. Download uses Wi-Fi only, with metered networks and roaming disabled. Android continues the download in the background. SHA256 verification runs before selection. No model runs automatically.");
         box.addView(info);
         location = new TextView(this);
         location.setTextIsSelectable(true);
@@ -240,7 +240,7 @@ public final class ModelManagerActivity extends Activity {
                     if (!result.finished) {
                         start.setEnabled(false);
                         progress.setIndeterminate(true);
-                        status.setText("Download complete (" + bytes + "). Verifying exact size and SHA256 in backgroundâ€¦");
+                        status.setText("Download complete (" + bytes + "). Verifying exact size and SHA256 in background…");
                     } else if (!result.valid) {
                         status.setText("Verification failed: " + result.error
                                 + "\nThis file cannot be selected. Retry downloads a new copy.");
