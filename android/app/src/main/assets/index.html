@@ -18,7 +18,7 @@
 <div class="tile"><h3>RustDesk</h3><p id="rustdesk">Checking...</p><button onclick="openApp('rustdesk')">Open RustDesk</button></div>
 <div class="tile"><h3>Terminal</h3><p id="termux">Checking...</p><button onclick="openApp('termux')">Open Termux</button></div>
 </div><h3>Desktop Commander bridge</h3><p>Desktop Commander runs on your authorized Windows computer. Connect to that computer through its existing remote agent; ForgeOS does not embed a Desktop Commander Android agent.</p><p><a href="https://mcp.desktopcommander.app/">Desktop Commander device management</a></p></section>
-<section id="system"><h2>System</h2><pre>onn. 100135925 · Android 15
+<section id="system"><h2>System</h2><h3>ForgeOS workspace</h3><p id="workspaceInfo">Not checked</p><button onclick="prepareWorkspace()">Initialize model and project folders</button><p class="muted">Only creates folders inside the app private storage. It does not repartition, format, or move Android system storage.</p><pre>onn. 100135925 · Android 15
 MediaTek MT8786 · ARM64 · ~3 GB RAM
 Adopted SD card: 119 GB usable
 Stock ROM: unchanged · Bootloader: locked
@@ -27,9 +27,9 @@ USB-C display output: unverified
 AI inference engine: not installed</pre><p id="deviceStatus"></p></section>
 </main><script>
 function show(id){document.querySelectorAll('section').forEach(e=>e.classList.toggle('active',e.id===id));if(id==='connect'||id==='system')refresh()}
-function settings(s){if(window.ForgeBridge)ForgeBridge.openSettings(s)}
+function prepareWorkspace(){try{const r=JSON.parse(ForgeBridge.prepareWorkspace());document.getElementById("workspaceInfo").textContent=r.ok?"Workspace ready: "+r.path+" ("+r.freeGb+" GB free)":"Workspace error: "+r.error}catch(e){document.getElementById("workspaceInfo").textContent=String(e)}}function settings(s){if(window.ForgeBridge)ForgeBridge.openSettings(s)}
 function openApp(s){if(window.ForgeBridge)ForgeBridge.openApp(s)}
-function refresh(){if(!window.ForgeBridge){document.getElementById('live').textContent='Native bridge unavailable';return}try{const x=JSON.parse(ForgeBridge.status());document.getElementById('live').textContent='Live Android status';for(const k of ['wifi','bluetooth','tailscale','termux','rustdesk'])document.getElementById(k).textContent=x[k]?'Available / enabled':'Unavailable / off';document.getElementById('display').textContent=x.externalDisplay?'Additional display detected ('+x.displays+' total)':'No additional display detected';document.getElementById('deviceStatus').textContent=x.device+' · Android '+x.android}catch(e){document.getElementById('live').textContent='Status error: '+e}}
+function refresh(){if(!window.ForgeBridge){document.getElementById('live').textContent='Native bridge unavailable';return}try{const x=JSON.parse(ForgeBridge.status());document.getElementById('live').textContent='Live Android status';for(const k of ['wifi','bluetooth','tailscale','termux','rustdesk'])document.getElementById(k).textContent=x[k]?'Available / enabled':'Unavailable / off';document.getElementById('display').textContent=x.externalDisplay?'Additional display detected ('+x.displays+' total)':'No additional display detected';document.getElementById('deviceStatus').textContent=x.device+' · Android '+x.android;document.getElementById('workspaceInfo').textContent=x.workspaceAvailable?'App storage: '+x.workspace+' ('+x.workspaceFreeGb+' GB free)':'Workspace not initialized'}catch(e){document.getElementById('live').textContent='Status error: '+e}}
 try{document.getElementById('code').value=localStorage.getItem('forgeos-code')||''}catch(e){}
 function save(){try{localStorage.setItem('forgeos-code',document.getElementById('code').value);document.getElementById('saveStatus').textContent='Saved'}catch(e){document.getElementById('saveStatus').textContent='Storage unavailable: export instead'}}
 function exportFile(){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([document.getElementById('code').value],{type:'text/plain'}));a.href=u;a.download=document.getElementById('filename').value||'scratch.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
