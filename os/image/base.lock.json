@@ -16,10 +16,10 @@
                                   "No working FOD/UDFPS"
                               ],
     "apk":  {
-                "source_commit":  "cf01a34edddb5466643e09229f33554f7662e8d4",
-                "run_id":  41978243888,
-                "artifact_id":  13392956874,
-                "sha256":  "c6ac7a200f9fc45f2f18d5e141c01b71345026a4588d6130909db015e5b36dea",
+                "source_commit":  "d575156f3aeb3b71b2fe477f2d96cb6c496ff675",
+                "run_id":  42033284670,
+                "artifact_id":  13417052956,
+                "sha256":  "96a968d5e87f527f3f9375f02db72d1b786095dc09e9b19c8e7916fc44c79175",
                 "bytes":  6722453
             },
     "acceptance":  "EXPERIMENTAL OFFLINE ONLY: no target boot/AVB/vendor/recovery acceptance",

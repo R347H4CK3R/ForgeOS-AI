@@ -3,6 +3,13 @@ on:
   pull_request:
     paths: ['os/image/**', 'os/aosp/**', '.github/workflows/os-image.yml']
   workflow_dispatch:
+    inputs:
+      operation:
+        description: Offline inspection or experimental image build
+        required: true
+        default: inspect
+        type: choice
+        options: [inspect, build]
 permissions:
   contents: read
   actions: read
@@ -18,13 +25,16 @@ jobs:
       - name: Image tool tests
         working-directory: os/image
         run: python -m unittest discover -s tests -v
-  inspect:
+  image:
     if: github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -40,24 +50,60 @@ jobs:
           sdkmanager "build-tools;35.0.0" "platforms;android-35"
       - name: Inspect upstream regular-file image
         run: python os/image/inspect_base.py --lock os/image/base.lock.json --output image-work
-      - name: Inspect actual framework overlay policies
+      - name: Verify actual Android15 window resources
+        env:
+          OPERATION: ${{ inputs.operation }}
         run: |
           AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt2"
           "$AAPT" dump overlayable image-work/inspection/framework-res.apk > image-work/inspection/framework-overlayable.txt
           "$AAPT" dump resources image-work/inspection/framework-res.apk > image-work/framework-resources.txt
           python - <<'PY'
+          import hashlib,json,os,re
           from pathlib import Path
-          lines=Path("image-work/framework-resources.txt").read_text().splitlines()
-          chosen=[]
+          text=Path("image-work/framework-resources.txt").read_text()
+          lines=text.splitlines();chosen=[]
           for i,line in enumerate(lines):
-              if "config_supportsMultiWindow" in line or "config_freeformWindowManagement" in line:
+              if any(key in line for key in ("config_supportsMultiWindow","config_supportsSplitScreenMultiWindow","config_freeformWindowManagement")):
                   chosen.extend(lines[max(0,i-2):i+5])
           Path("image-work/inspection/window-resources.txt").write_text("\n".join(chosen))
+          supported=bool(re.search(r"bool/config_supportsMultiWindow\n\s+\(\) true",text))
+          if os.environ["OPERATION"]=="build" and not supported:
+              raise SystemExit("Base default multi-window resource was not verified true")
+          evidence={"supportsMultiWindow":supported,"runtime_verified":False,"obsolete_freeform_resource_used":False}
+          Path("image-work/inspection/window-config.json").write_text(json.dumps(evidence,indent=2))
           PY
+      - name: Fetch exact verified same-source workstation APK
+        if: inputs.operation == 'build'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python os/image/fetch_apk.py --lock os/image/base.lock.json --repository "$GITHUB_REPOSITORY" --output image-work/application
+      - name: Adapt and verify offline ext4 filesystem
+        if: inputs.operation == 'build'
+        run: |
+          mkdir image-work/output
+          python os/image/build_image.py --base image-work/base.img --apk image-work/application/ForgeOS.apk --output image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img --lock os/image/base.lock.json --report image-work/output/image-evidence.json
+          cp os/image/base.lock.json image-work/output/input-lock.json
+          cp image-work/inspection/base-evidence.json image-work/output/upstream-inspection.json
+          cp image-work/inspection/window-config.json image-work/output/window-config.json
+          cp os/image/README.md image-work/output/READ-ME-FIRST.md
+      - name: Compress image without a second archive compression pass
+        if: inputs.operation == 'build'
+        run: |
+          xz -T2 -3 image-work/output/ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH.img
+          cd image-work/output
+          sha256sum *.img.xz > SHA256SUMS
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ForgeOS-base-inspection
           path: image-work/inspection/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: success() && inputs.operation == 'build'
+        with:
+          name: ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH
+          path: image-work/output/
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
