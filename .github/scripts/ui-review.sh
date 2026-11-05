@@ -22,7 +22,7 @@ result=0
 timeout 240s adb shell am instrument -w -r -e class dev.forgeos.ai.NativeReviewTest,dev.forgeos.ai.OsUpdateSignatureTest "${APP_ID}.test/androidx.test.runner.AndroidJUnitRunner" | tee ../preview/instrumentation.txt || result=$?
 adb pull /sdcard/Android/data/${APP_ID}/files/review ../preview/ || result=1
 adb pull /sdcard/Android/data/${APP_ID}/files/inference-result.txt ../preview/inference-result.txt || result=1
-adb logcat -d -t 2000 > ../preview/emulator-logcat.txt
+adb logcat -d > ../preview/emulator-logcat.txt
 # am instrument itself can return zero on failed tests: assert the runner result.
 grep -Eq '^OK \(10 tests\)' ../preview/instrumentation.txt || result=1
 if grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed' ../preview/instrumentation.txt; then result=1; fi

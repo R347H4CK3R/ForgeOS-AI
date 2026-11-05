@@ -131,7 +131,7 @@ jobs:
           api-level: 35
           arch: x86_64
           profile: pixel_c
-          ram-size: 2048M
+          ram-size: 3072M
           disable-animations: true
           script: bash .github/scripts/ui-review.sh
       - uses: actions/upload-artifact@v4

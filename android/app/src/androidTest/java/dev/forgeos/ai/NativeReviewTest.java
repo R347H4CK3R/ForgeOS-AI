@@ -16,10 +16,18 @@ public class NativeReviewTest {
  private boolean hasWebView(View v){if(v instanceof android.webkit.WebView)return true;if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++)if(hasWebView(g.getChildAt(i)))return true;}return false;}
  private EditText edit(View v){if(v instanceof EditText)return (EditText)v;if(v instanceof ViewGroup){ViewGroup g=(ViewGroup)v;for(int i=0;i<g.getChildCount();i++){EditText r=edit(g.getChildAt(i));if(r!=null)return r;}}return null;}
  private void click(ActivityScenario<MainActivity> s,String label){s.onActivity(a->{View v=find(a.getWindow().getDecorView(),label);assertNotNull(label,v);assertTrue(v.performClick());});InstrumentationRegistry.getInstrumentation().waitForIdleSync();}
+ private boolean systemError(android.view.accessibility.AccessibilityNodeInfo node){
+  if(node==null)return false;
+  CharSequence text=node.getText();
+  if("android".contentEquals(node.getPackageName()==null?"":node.getPackageName())&&text!=null){String value=text.toString().toLowerCase(java.util.Locale.ROOT);if(value.contains("responding")||value.contains("keeps stopping"))return true;}
+  for(int i=0;i<node.getChildCount();i++){android.view.accessibility.AccessibilityNodeInfo child=node.getChild(i);if(systemError(child))return true;}
+  return false;
+ }
  private void shot(String name)throws Exception{
   InstrumentationRegistry.getInstrumentation().waitForIdleSync();
   InstrumentationRegistry.getInstrumentation().getUiAutomation().waitForIdle(250,5000);
   android.os.SystemClock.sleep(1500); // Let SurfaceFlinger present the current Activity frame.
+  assertFalse("Android system error dialog blocks UI preview",systemError(InstrumentationRegistry.getInstrumentation().getUiAutomation().getRootInActiveWindow()));
   File dir=new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getExternalFilesDir(null),"review");assertTrue(dir.isDirectory()||dir.mkdirs());
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
   try(FileOutputStream out=new FileOutputStream(new File(dir,name+".png"))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}bitmap.recycle();
