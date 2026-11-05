@@ -31,8 +31,9 @@ def model_request(route,payload,timeout):
   if len(raw)>LIMIT:raise ValueError("inference response too large")
   return json.loads(raw)
  finally:MODEL_GATE.release()
+TOOL_SCHEMA={"type":"object","properties":{"tool":{"type":"string","enum":["list_files","read_file","propose_edit","finish"]},"args":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"},"summary":{"type":"string"}},"additionalProperties":False}},"required":["tool","args"],"additionalProperties":False}
 def ollama_turn(messages,model,timeout):
- result=model_request("/api/chat",{"model":model,"messages":messages,"format":"json","stream":False,"keep_alive":0,"options":{"num_predict":1536,"num_ctx":4096,"num_thread":2}},timeout)
+ result=model_request("/api/chat",{"model":model,"messages":messages,"format":TOOL_SCHEMA,"stream":False,"keep_alive":0,"options":{"num_predict":1536,"num_ctx":4096,"num_thread":2,"temperature":0,"seed":42}},timeout)
  return result["message"]["content"]
 def handler(workspace,token,infer=ollama_turn):
  planner=Agent(workspace.root,infer)
