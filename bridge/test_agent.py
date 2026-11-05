@@ -16,6 +16,9 @@ class AgentTests(unittest.TestCase):
  def test_approved_exact_plan_applies_and_backs_up(self):
   agent=self.agent(self.calls());plan=self.plan(agent);result=agent.approve(plan["plan_id"],plan["plan_sha256"],True)
   self.assertTrue(result["ok"]);self.assertFalse(result["executed_code"]);self.assertEqual((self.project/"main.py").read_text(),"print(2)\n");self.assertEqual((self.project/result["backup"]/"main.py").read_text(),"print(1)\n")
+ def test_returned_plan_cannot_mutate_pending_approved_content(self):
+  agent=self.agent(self.calls());plan=self.plan(agent);plan['edits'][0]['content']='print(99)'
+  agent.approve(plan['plan_id'],plan['plan_sha256'],True);self.assertEqual((self.project/'main.py').read_text(),'print(2)\n')
  def test_missing_confirmation_cannot_write(self):
   agent=self.agent(self.calls());plan=self.plan(agent)
   with self.assertRaises(PermissionError):agent.approve(plan["plan_id"],plan["plan_sha256"],False)

@@ -132,14 +132,15 @@ class Agent:
   with self.lock:
    self.plans={k:v for k,v in self.plans.items() if time.monotonic()-v[0]<600}
    if len(self.plans)>=4:raise ValueError("approve or expire pending plans before creating more")
-   self.plans[plan_id]=(time.monotonic(),plan_hash,plan)
+   self.plans[plan_id]=(time.monotonic(),plan_hash,payload)
   return {**plan,"approval_required":True,"plan_id":plan_id,"plan_sha256":plan_hash}
  def approve(self,plan_id,expected_hash,confirmed):
   if confirmed is not True:raise PermissionError("explicit plan confirmation required")
   with self.lock:
    entry=self.plans.get(plan_id)
    if entry is None or time.monotonic()-entry[0]>=600:raise ValueError("plan missing or expired")
-   _,actual_hash,plan=entry
+   _,actual_hash,payload=entry
+   plan=json.loads(payload)
    if not isinstance(expected_hash,str) or not secrets.compare_digest(actual_hash,expected_hash):raise ValueError("plan hash mismatch")
    workspace=self.project(plan["project"]);originals={}
    for edit in plan["edits"]:
