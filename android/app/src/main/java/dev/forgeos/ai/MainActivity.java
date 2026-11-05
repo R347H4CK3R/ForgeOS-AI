@@ -99,7 +99,7 @@ public final class MainActivity extends Activity {
  private void code() {
   documentLabel=text(document==null?"Untitled":document.toString(),13);body.addView(documentLabel);
   LinearLayout controls=new LinearLayout(this);
-  button(controls,"Open",()->guardDraft(()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*").addCategory(Intent.CATEGORY_OPENABLE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION),11)))));
+  button(controls,"Open",()->guardDraft(()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*").addCategory(Intent.CATEGORY_OPENABLE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION),11))));
   button(controls,"Save",()->{capture();if(document==null)saveAs();else confirmSave();});
   button(controls,"Save as",this::saveAs);body.addView(controls);
   editor=new EditText(this);editor.setTextColor(ink);editor.setGravity(Gravity.TOP);editor.setTypeface(android.graphics.Typeface.MONOSPACE);editor.setTextSize(14);editor.setInputType(android.text.InputType.TYPE_CLASS_TEXT|android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE|android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
