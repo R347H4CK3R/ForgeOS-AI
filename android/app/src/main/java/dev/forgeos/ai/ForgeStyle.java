@@ -11,7 +11,7 @@ import android.widget.*;
 public final class ForgeStyle {
  private ForgeStyle(){}
  public static int dp(Context c,int n){return Math.round(n*c.getResources().getDisplayMetrics().density);}
- public static boolean dark(Context c){return c.getSharedPreferences("MainActivity",0).getBoolean("dark",true);}
+ public static boolean dark(Context c){String name=MainActivity.class.getName(),prefix=c.getPackageName()+".";String key=name.startsWith(prefix)?name.substring(prefix.length()):name;return c.getSharedPreferences(key,0).getBoolean("dark",true);}
  public static int ink(boolean dark){return dark?0xfff5f6ff:0xff172338;}
  public static GradientDrawable glass(Context c,boolean dark,int radius){
   GradientDrawable g=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{dark?0xd52a3149:0xeefbfcff,dark?0xc318233b:0xe5e2eaff});

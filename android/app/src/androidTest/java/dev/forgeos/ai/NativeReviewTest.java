@@ -110,7 +110,7 @@ public class NativeReviewTest {
    click(s,"Code Studio");s.onActivity(a->{EditText e=edit(a.getWindow().getDecorView());assertNotNull(e);e.setText("print(42)");});
    click(s,"Diagnostics");click(s,"Code Studio");s.onActivity(a->assertEquals("print(42)",edit(a.getWindow().getDecorView()).getText().toString()));
    s.recreate();s.onActivity(a->assertEquals("print(42)",edit(a.getWindow().getDecorView()).getText().toString()));shot("editor-portrait");
-   click(s,"Settings");click(s,"Use light theme");shot("settings-light");click(s,"Home");shot("home-light");click(s,"Settings");
+   click(s,"Settings");click(s,"Use light theme");s.onActivity(a->assertFalse("Tool theme must follow the launcher in review and release packages",ForgeStyle.dark(a)));shot("settings-light");click(s,"Home");shot("home-light");click(s,"Settings");
    InstrumentationRegistry.getInstrumentation().getUiAutomation().setRotation(UiAutomation.ROTATION_FREEZE_90);
    InstrumentationRegistry.getInstrumentation().waitForIdleSync();
    s.recreate();android.os.SystemClock.sleep(1500);
