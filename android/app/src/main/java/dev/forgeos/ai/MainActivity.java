@@ -20,7 +20,10 @@ public final class MainActivity extends Activity {
  private TextView documentLabel;
  private Uri document,tree;
  private String draft="",screen="Home";
- private boolean dirty=false,dark=true;
+ private boolean dirty=false,dark=true,busy=false;
+ private void enabled(View view,boolean value){view.setEnabled(value);if(view instanceof android.view.ViewGroup){android.view.ViewGroup group=(android.view.ViewGroup)view;for(int i=0;i<group.getChildCount();i++)enabled(group.getChildAt(i),value);}}
+ private void busy(boolean value){busy=value;if(page!=null)enabled(page,!value);}
+ private void complete(Runnable action){runOnUiThread(()->{if(isDestroyed()||isFinishing())return;busy(false);action.run();});}
  private final java.util.concurrent.ExecutorService io=java.util.concurrent.Executors.newSingleThreadExecutor();
  private int ink,bg,panel;
  @Override public void onCreate(Bundle state) {
@@ -41,7 +44,7 @@ public final class MainActivity extends Activity {
  private void button(LinearLayout target,String title,Runnable action){Button b=new Button(this);b.setText(title);b.setAllCaps(false);b.setOnClickListener(v->action.run());target.addView(b);}
  private void note(String s){body.addView(text(s,16));}
  private void render(String name) {
-  capture();editor=null;screen=name;
+  if(busy)return;capture();editor=null;screen=name;
   ink=dark?Color.rgb(231,239,247):Color.rgb(20,36,50);
   bg=dark?Color.rgb(13,22,32):Color.rgb(241,245,249);
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
@@ -115,17 +118,19 @@ public final class MainActivity extends Activity {
  private void write(Uri uri) {
   capture();final String content=draft;final byte[] bytes=content.getBytes(StandardCharsets.UTF_8);
   if(!WorkspacePolicy.editableSize(bytes.length)){error("Document exceeds 256 KiB limit");return;}
-  io.execute(()->{try(OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new IOException("Provider did not open document");out.write(bytes);out.flush();runOnUiThread(()->{document=uri;capture();dirty=!draft.equals(content);Toast.makeText(this,"Saved",Toast.LENGTH_SHORT).show();if(screen.equals("Code Studio"))render(screen);});}catch(Exception e){runOnUiThread(()->error(e.toString()));}});
+  if(busy)return;busy(true);
+  io.execute(()->{try(OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new IOException("Provider did not open document");out.write(bytes);out.flush();complete(()->{document=uri;capture();dirty=!draft.equals(content);Toast.makeText(this,"Saved",Toast.LENGTH_SHORT).show();if(screen.equals("Code Studio"))render(screen);});}catch(Exception e){complete(()->error(e.toString()));}});
  }
  private void load(Uri uri) {
+  if(busy)return;busy(true);
   io.execute(()->{try(InputStream in=getContentResolver().openInputStream(uri)){
    if(in==null)throw new IOException("Provider did not open file");
    ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int n;
    while((n=in.read(buffer))!=-1){if(!WorkspacePolicy.editableSize((long)out.size()+n))throw new IOException("File exceeds 256 KiB editor limit");out.write(buffer,0,n);}
    byte[] bytes=out.toByteArray();for(byte b:bytes)if(b==0)throw new IOException("Binary files cannot be edited");
    String content=StandardCharsets.UTF_8.newDecoder().decode(java.nio.ByteBuffer.wrap(bytes)).toString();
-   runOnUiThread(()->{editor=null;draft=content;dirty=false;document=uri;render("Code Studio");});
-  }catch(Exception e){runOnUiThread(()->error(e.toString()));}});
+   complete(()->{editor=null;draft=content;dirty=false;document=uri;render("Code Studio");});
+  }catch(Exception e){complete(()->error(e.toString()));}});
  }
  private Uri currentDir;
  private void files() {
@@ -164,6 +169,6 @@ public final class MainActivity extends Activity {
  private void openSettings(String action){safe(()->startActivity(new Intent(action)));}
  private interface Checked {void run() throws Exception;}
  private void safe(Checked r){try{r.run();}catch(Exception e){error(e.toString());}}
- private void error(String s){if(!isFinishing())new AlertDialog.Builder(this).setTitle("Action could not complete").setMessage(s).setPositiveButton("OK",null).show();}
+ private void error(String s){if(!isFinishing()&&!isDestroyed())new AlertDialog.Builder(this).setTitle("Action could not complete").setMessage(s).setPositiveButton("OK",null).show();}
  @Override protected void onDestroy(){io.shutdown();super.onDestroy();}
 }

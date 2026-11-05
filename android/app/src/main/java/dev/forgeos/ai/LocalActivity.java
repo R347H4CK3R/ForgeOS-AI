@@ -34,6 +34,7 @@ public final class LocalActivity extends Activity {
   ActivityManager.MemoryInfo memory=new ActivityManager.MemoryInfo();((ActivityManager)getSystemService(ACTIVITY_SERVICE)).getMemoryInfo(memory);
   if(memory.lowMemory||memory.availMem<850L*1048576){status.setText("At least 850 MiB available RAM is required. Close other apps and retry.");return;}
   if(!RUNNING.compareAndSet(false,true)){status.setText("A local generation is already running.");return;}
+  try{LocalEngine.prepare();}catch(LinkageError e){RUNNING.set(false);status.setText("Native runtime unavailable: "+e.getMessage());return;}
   run.setEnabled(false);choose.setEnabled(false);status.setText("Loading model and generating locally…");
   final Uri selected=model;
   WORKER.execute(()->{

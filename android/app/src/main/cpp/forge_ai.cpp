@@ -9,15 +9,17 @@
 static std::mutex lock;
 static std::atomic<bool> cancelled{false};
 static bool abort_run(void *) { return cancelled.load(); }
+extern "C" JNIEXPORT void JNICALL Java_dev_forgeos_ai_LocalEngine_prepare(JNIEnv *, jclass) { cancelled=false; }
 extern "C" JNIEXPORT void JNICALL Java_dev_forgeos_ai_LocalEngine_cancel(JNIEnv *, jclass) { cancelled=true; }
 extern "C" JNIEXPORT jbyteArray JNICALL Java_dev_forgeos_ai_LocalEngine_generate(JNIEnv *env,jclass,jint fd,jbyteArray input) {
- std::lock_guard<std::mutex> guard(lock);cancelled=false;
+ std::lock_guard<std::mutex> guard(lock);
  try {
   jsize len=env->GetArrayLength(input);
   if(len<1||len>8192)throw std::runtime_error("Prompt must be 1..8192 UTF-8 bytes");
   std::string prompt(len,' ');env->GetByteArrayRegion(input,0,len,reinterpret_cast<jbyte*>(prompt.data()));
   static std::once_flag initialized;std::call_once(initialized,[]{llama_backend_init();});
-  auto mp=llama_model_default_params();mp.n_gpu_layers=0;mp.use_mmap=true;
+  if(cancelled)throw std::runtime_error("Cancelled before model load");
+  auto mp=llama_model_default_params();mp.n_gpu_layers=0;mp.progress_callback=[](float,void *){return !cancelled.load();};
   std::string path="/proc/self/fd/"+std::to_string(fd);
   std::unique_ptr<llama_model,decltype(&llama_model_free)> model(llama_model_load_from_file(path.c_str(),mp),llama_model_free);
   if(!model)throw std::runtime_error("Model could not load; select a supported small GGUF");

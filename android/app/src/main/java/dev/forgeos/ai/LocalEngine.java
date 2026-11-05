@@ -3,5 +3,6 @@ final class LocalEngine {
  static { System.loadLibrary("forge_ai"); }
  static native byte[] generate(int fd,byte[] prompt) throws java.io.IOException;
  static native void cancel();
+ static native void prepare();
  private LocalEngine() {}
 }
