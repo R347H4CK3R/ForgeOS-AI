@@ -25,7 +25,7 @@ public final class ForgeStyle {
   Button back=new Button(activity);back.setText("\u2039  ForgeOS");back.setAllCaps(false);back.setTextColor(ink);back.setTextSize(16);back.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);back.setBackgroundColor(Color.TRANSPARENT);back.setMinHeight(dp(activity,48));back.setOnClickListener(v->activity.finish());outer.addView(back,new LinearLayout.LayoutParams(-1,dp(activity,52)));
   content.setFitsSystemWindows(false);style(activity,content,dark);
   outer.addView(content,new LinearLayout.LayoutParams(-1,0,1));activity.setContentView(outer);
-  WindowInsetsController bars=activity.getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+  if(android.os.Build.VERSION.SDK_INT>=30){WindowInsetsController bars=activity.getWindow().getInsetsController();if(bars!=null)bars.setSystemBarsAppearance(dark?0:WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);}
  }
  private static void style(Context c,View view,boolean dark){
   if(view instanceof EditText){
