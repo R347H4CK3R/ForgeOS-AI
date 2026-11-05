@@ -15,6 +15,11 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: 8bed7cfb999cebc03d2cc5b78911026a8d57549a
+          path: android/app/src/main/cpp/llama.cpp
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -29,7 +34,7 @@ jobs:
       - name: Bridge tests
         run: python -m unittest discover -s bridge -v
       - name: SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
       - name: Test lint and build
         working-directory: android
         run: gradle --no-daemon --max-workers=2 testDebugUnitTest lintDebug assembleDebug
@@ -53,6 +58,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: 8bed7cfb999cebc03d2cc5b78911026a8d57549a
+          path: android/app/src/main/cpp/llama.cpp
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

@@ -45,11 +45,11 @@ public final class MainActivity extends Activity {
   ink=dark?Color.rgb(231,239,247):Color.rgb(20,36,50);
   bg=dark?Color.rgb(13,22,32):Color.rgb(241,245,249);
   panel=dark?Color.rgb(23,39,53):Color.WHITE;
-  page=new LinearLayout(this);page.setOrientation(1);page.setBackgroundColor(bg);
+  page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setBackgroundColor(bg);
   page.setPadding(dp(14),dp(12),dp(14),dp(8));page.setFitsSystemWindows(true);
   page.addView(text("ForgeOS AI  /  "+name,25));
   ScrollView scroll=new ScrollView(this);
-  body=new LinearLayout(this);body.setOrientation(1);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackgroundColor(panel);
+  body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackgroundColor(panel);
   scroll.addView(body);page.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
   HorizontalScrollView dock=new HorizontalScrollView(this);LinearLayout nav=new LinearLayout(this);
   for(String s:new String[]{"Home","Files","Code Studio","Devices","Diagnostics","Settings"})button(nav,s,()->render(s));
@@ -70,7 +70,9 @@ public final class MainActivity extends Activity {
   button(body,"Browse workspace",()->render("Files"));
   button(body,"Edit source file",()->render("Code Studio"));
   button(body,"Terminal / Python / Git (Termux)",()->launch("com.termux",false));
-  note("Local AI runtime and autonomous repair are not implemented in this build. No model or terminal is bundled.");
+  button(body,"Remote AI and development",()->startActivity(new Intent(this,RemoteActivity.class)));
+  button(body,"Local AI / GGUF model",()->startActivity(new Intent(this,LocalActivity.class)));
+  note("Local inference requires a small GGUF model and sufficient free RAM. No model or terminal is bundled. Autonomous repair is not yet implemented.");
   note("Floating windows and split screen are controlled by Android. Resizable manifest support does not verify hardware support.");
  }
  private void settings() {
@@ -87,7 +89,8 @@ public final class MainActivity extends Activity {
   button(body,"Open terminal",()->launch("com.termux",false));
   button(body,"Open terminal beside ForgeOS (request)",()->launch("com.termux",true));
   note("Tailscale login and Termux configuration are managed by those apps. Installed apps are not proof of an active connection.");
-  note("Desktop Commander bridge and remote AI are not configured. No credentials are included.");
+  button(body,"Configure remote AI / project bridge",()->startActivity(new Intent(this,RemoteActivity.class)));
+  note("The opt-in bridge supports project listing, reads, Git status and host AI. It does not impersonate a native Desktop Commander Android agent. No credentials are included.");
  }
  private void diagnostics() {
   android.app.ActivityManager.MemoryInfo m=new android.app.ActivityManager.MemoryInfo();((android.app.ActivityManager)getSystemService(ACTIVITY_SERVICE)).getMemoryInfo(m);
