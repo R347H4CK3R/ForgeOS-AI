@@ -1,5 +1,5 @@
 # ForgeOS verification matrix
-Evidence: 2026-11-05 UTC, native software candidate 5d52b06; OS pipeline d3c177b. This is a development review, not OS acceptance.
+Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21a82. This is a development review, not OS acceptance.
 
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
@@ -33,7 +33,12 @@ Evidence: 2026-11-05 UTC, native software candidate 5d52b06; OS pipeline d3c177b
 | Repository OS updates | Partially working | Pinned RSA-signed metadata, bounded Wi-Fi download, verification/export and lifecycle tests; full native artifact transfer and target session unverified |
 | Seamless OTA application | Not implemented | No trusted device-specific payload, platform signing or tested recovery path |
 
-## Current updater software evidence
+## Current visual and integrated image evidence
+[Native workflow42054065879](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42054065879): all jobs passed;26 unit tests,10 emulator tests in72.067seconds, actual local135M and remote1.5B checks, lint0errors/65warnings. Dark/light/landscape, editor, model, remote and updater screenshots were inspected.
+[OS workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871): integrated Strata-style APK, stable signer, clean ext4, exact payload metadata and signed catalog passed. Downloaded catalog signature/artifact identity/APK hashes independently cross-checked. Hardware classifications below are not upgraded by this build.
+See [UI preview](STRATA_UI_REVIEW.md) and [exact image evidence](OS_REVIEW.md).
+
+## Previous updater software evidence
 [Workflow 42043033635](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635) passed all jobs: 26 Android unit tests (0 failures), 10 instrumented emulator tests, ARM64 APK verification, actual remote-model integration and lint (0 errors / 64 warnings). The emulator uses 3 GB RAM; screenshots reject visible Android crash/ANR dialogs. 25 OS pipeline tests passed on Linux, including real ext4 adaptation, signing/catalog and malformed-artifact checks.
 The OS-only pin commit proved build scoping: workflow42045236220 skipped all three heavy app jobs after its scope check.
 

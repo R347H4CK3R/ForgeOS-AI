@@ -1,47 +1,40 @@
-# Experimental OS image and repository update review
-Date:2026-11-05 UTC. Owner UI approval is recorded. Nothing new was installed or booted on the tablet.
+# Experimental OS image and signed update review
+Current integrated build: [successful workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871), source df21a82bcb80dd69736d2d4242b88ab174a9080c.
+This actual Android15 ARM64 system filesystem now includes the verified Strata-style native workstation. It adapts a pinned vanilla TrebleDroid GSI offline; it is not a full-source AOSP build or accepted onn firmware.
 
-## Delivered build
-[Integrated successful workflow42045228207](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42045228207), image source d3c177b5c67a19b3583fdafac0cc12067d1e37cd.
-This is an actual Android15 ARM64 ext4 system filesystem adapted from a pinned vanilla TrebleDroid GSI, with the native workstation preinstalled as an ordinary app. It is not a full-source AOSP build, exact onn ROM or accepted device installation.
+## Artifacts
+- [ForgeOS-Android15-ARM64-EXPERIMENTAL-DO-NOT-FLASH](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871/artifacts/13430415448)
+- [ForgeOS-update-metadata](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871/artifacts/13429926771)
+- [ForgeOS-image-evidence](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871/artifacts/13429562636)
+- [ForgeOS-stable-signed-workstation](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871/artifacts/13428468535)
+Artifacts expire 2026-11-12T15:37:47Z. Expired latest metadata/artifacts fail closed; a new verified build is required.
 
-| Output | Artifact |
-|---|---|
-| Experimental system image | [13423349012](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42045228207/artifacts/13423349012) |
-| Signed update catalog | [13423259147](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42045228207/artifacts/13423259147) |
-| Filesystem/provenance/signing evidence | [13424462259](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42045228207/artifacts/13424462259) |
-| Stable-signed ARM64 workstation APK | [13425455386](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42045228207/artifacts/13425455386) |
-| Native UI and10instrumented tests | [13423447452](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635/artifacts/13423447452) |
+## Exact identity
+| Component | Bytes | SHA256 |
+|---|---:|---|
+| Raw ext4 | 2113343488 | c327a91573677530f0c08e82126500114b1046ae5c83d1ee08bb7cff30b3ca9c |
+| XZ image | 774763916 | 1acb51160ed57f1baa25949c340c463d76ddc69f18a15e5243098076b373b384 |
+| GitHub ZIP | 774764142 | c4f8b48dd478a6f127b8b442f329466317a3de30b0a2c0f1078feecae2c3b711 |
+| Stable APK | 6767509 | e728a652d30a6b9cbd7ea376a0b610c81b54c9b5ee15d1d64a51ddb05a2c51dc |
+Catalog version: 0.3.0-os.df21a82bcb80.42056016871. Separate stable app certificate SHA256: 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a.
+Downloaded catalog signature independently verified with OpenSSL: Verified OK. Actual GitHub archive metadata matches signed identity/digest/size. Downloaded stable APK matches receipt and injected payload evidence. XZ-to-raw decompression agreement, clean e2fsck, ownership/modes/SELinux labels and original-base preservation passed on the isolated worker. The775MB image was not downloaded to GamingLaptop.
 
-Image artifacts expire2026-11-12. An expired latest catalog/artifact fails closed; rebuild a verified candidate to create a newer sequence.
+## UI and test evidence
+[Actual Strata-style UI review](STRATA_UI_REVIEW.md): native source10e2d26, successful workflow42054065879;26 unit tests and10 emulator tests in72.067seconds; lint0errors/65warnings; ARM64 verification and real remote1.5B integration passed. Real local135M generation/model download verification, editor recreation, navigation, shared theme and pinned RSA signature/tamper checks ran.
+The reviewed home has native app icons, real clock/workspace widgets, blue/violet ribbon wallpaper and a centered floating dock. Dark/light/landscape, editor, remote, model manager and updater captures were inspected. No bitmap wallpaper, blur or continuous animation loop was added.
+OS pipeline25tests passed, including actual ext4, malformed artifacts, signing/tampering and APK source provenance. OS-only integration workflow42056033341 skipped all heavy app/model jobs after scope validation.
+Small public evidence is preserved under evidence/os-42056016871/. Earlier run42045228207 remains historical evidence, not the current UI image.
 
-## Exact image identity
-- Raw ext4: 2,113,343,488 bytes; SHA256 e309675589406fd9780011648ee93997446c0bfba4aa05282e76f88e7a91c04a.
-- XZ: 774,758,480 bytes; SHA256 1b859a5c3f771148f7f4317a5b4845efbfb50e8ffd59bbc8264729efb1d1daa2.
-- GitHub ZIP: 774,758,706 bytes; SHA256 09404d828eb9a181c62c3371bdd46b7e1c15fdf430efb81e30f6c18a9b6a86dd.
-- Stable APK: 6,767,509 bytes; SHA256 75979054bae6338e5c6c6bfcec6702d080f62886d1abd041a7819498f979caf9.
-- APK certificate SHA256: 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a.
-- Catalog version: 0.3.0-os.d3c177b5c67a.42045228207; sequence 42045228207.
-The small downloaded catalog was independently verified with OpenSSL and the app's pinned public key: Verified OK. Downloaded signed APK bytes/hash match both the signing receipt and injected filesystem payload evidence. Raw/XZ agreement was verified by decompression on the isolated build worker; the775MB image was not downloaded to GamingLaptop.
+## Repository updates
+Settings / OS updates verifies exact-byte RSA3072/SHA256 metadata before trusting signed artifact identity/bounds. Validated unmetered Wi-Fi transfer checks archive size/hash and extracted XZ size/hash; cancellation and verified SAF export are implemented. Private-repository token is session-only. Signing private keys are outside app/source and in encrypted Actions secrets.
+This is staging only. Seamless OTA application, full real-image transfer in the native client and physical tablet session/storage acceptance remain unverified. There is no install, flash, unlock or wipe control. App signing grants neither platform privileges nor AVB trust.
 
-## Actual validation
-Native workflow42043033635 passed26unit tests and10Android15 emulator integration tests in57.837seconds, with3GB RAM and a screenshot guard against visible system error dialogs. It exercised real135M GGUF inference and model download/hash/recreation, editor/navigation, remote review, and production-key signature/tamper checks. Lint:0errors/64warnings. Actual remote1.5B integration passed on a separate GitHub worker.
-OS validation42045844737 passed25/25Linux tests, including real ext4 metadata/preservation, malformed archives, actual OpenSSL signing/tampering, stable signer checks and actual Git provenance fixtures. Windows passed22with3Linux-only skips.
-Integrated image build verified the exact upstream bytes, API35/security patch, actual framework multi-window resource, stable APK signer, original base preservation, payload bytes/UID/GID/mode/SELinux labels and clean read-only e2fsck. The modified image omits invalid upstream AVB footer/hash-tree/vbmeta. No trusted AVB claim is made.
-Independent source review found no high-impact image/signing issue. Its provenance recommendation was implemented in353560b, extending source checks to APK workflow/scripts/attributes; it does not change this built image's payload.
+## Hardware, recovery and installation gates
+No new APK, image boot, unlock, wipe, partition change, SD format or migration was performed.
+The base remains userdebug/test-keys with patch2025-03-05, older than stock2026-04-05; upstream reports Internet failures on some devices. Modified upstream AVB footer/hash-tree/vbmeta are omitted. This is EXPERIMENTAL-DO-NOT-FLASH and unsuitable as a production-security baseline.
+Freeform resource/feature checks do not prove target floating windows, snapping, touch, graphics, audio, power, Wi-Fi, Bluetooth or USB preservation. Exact authenticated100135925/t402aa/TTA.31 recovery firmware, tested restoration, AVB/rollback and vendor/VINTF/SELinux acceptance remain unresolved. Adopted SD app access and wired display capability are unverified. Virtual A/B is not dual boot.
+The stock DynamicSystem binder/package are present, but trusted ForgeOS DSU boot is not established; see [fresh audit](2026-11-05-followup-audit.md). No arbitrary Android16 image was substituted for API35.
 
-## Repository update behavior
-Settings / OS updates discovers the latest successful explicit ForgeOS build and verifies exact RSA3072/SHA256 metadata before trusting artifact identity or bounds. Validated unmetered Wi-Fi downloads enforce archive byte/hash limits and extracted XZ hash/size. Staging can be cancelled; verified output can be exported with the document picker. A memory-only token is needed for this private repository; no reusable token or signing private key is embedded.
-![Actual native staging UI](ui-preview/os-updater.png)
-The catalog and APK use separate keys. Stable app signing is not platform signing or AVB trust. Full real-image transfer in the native client and physical tablet HTTPS/session/storage behavior remain unverified. Seamless OTA apply is not implemented; there is no install/flash/unlock control.
-
-## Hardware and installation limits
-The base patch2025-03-05 is older than stock2026-04-05 and is userdebug/test-keys. Upstream lists Internet failures on some devices. This is an unsuitable production-security baseline and remains EXPERIMENTAL-DO-NOT-FLASH.
-Freeform feature/config validation is not proof of target split-screen, snapping, floating controls, input, graphics, audio, power, Wi-Fi, Bluetooth or USB preservation. Exact matching OEM firmware and tested recovery are unavailable; locked AVB and rollback/VINTF/SELinux compatibility remain unresolved. Genuine dual boot is blocked; Virtual A/B is not dual boot.
-The adopted SD mount was observed, but app access through its shared view remains blocked. No migration/reformat was performed. No wired-display capability is claimed.
-
-## Recovery and proposed procedure
-There is no safe executable firmware installation procedure yet. Preserve stock Android, user data and adopted encryption keys.
-Before proposing any boot/flash: obtain and authenticate exact100135925/t402aa/TTA.31 stock recovery firmware; prove restore and rollback; verify partition/snapshot state, signer/AVB trust and vendor compatibility; back up and restore-test user files; then present exact candidate hashes and a device-specific recovery/install sequence for separate owner authorization.
-An APK-only test is a separate reversible step: verify signer/package compatibility first, preserve original home and old apps, use a new workspace and grant only its document URI. Never uninstall an existing package or erase data to bypass a signing mismatch.
-See [recovery gates](recovery-and-installation-gates.md), [verification matrix](verification-matrix.md), [hardware/OTA audit](os-phase-audit.md) and [UI review](UI_REVIEW.md).
+No executable firmware installation procedure is safe to provide yet. Obtain exact authenticated stock recovery firmware, prove rollback/restoration, back up and restore-test user data/adopted-key dependencies, validate partition/snapshot/vendor/signing compatibility, then present exact image hashes and a device-specific procedure for separate owner authorization.
+Earlier UI approval is recorded; the requested redesign has a new review preview. A separately scoped APK-only test must verify package/signer compatibility, preserve original home/old apps, and use a new workspace. Never uninstall user data to bypass a signing mismatch.
+See [recovery gates](recovery-and-installation-gates.md), [verification matrix](verification-matrix.md) and [deliverables](deliverables.md).

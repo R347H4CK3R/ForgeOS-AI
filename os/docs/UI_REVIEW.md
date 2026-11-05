@@ -1,7 +1,7 @@
 # ForgeOS AI: native workstation review
-**Native UI approved by the owner. An experimental system filesystem is now built offline; hardware boot acceptance and genuine dual boot remain blocked.**
+**Earlier native UI approval is recorded. The requested Strata-style revision now has its own [actual preview and test report](STRATA_UI_REVIEW.md). Hardware boot acceptance and genuine dual boot remain blocked.**
 
-## Current repository updater review
+## Previous repository updater review
 [Native workflow42043033635](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635) passed all jobs: 26 Android unit tests, 10 emulator integration tests, lint 0 errors / 64 warnings, ARM64 verification and real remote-model integration.
 Native source: 5d52b065ecf56a63be494617ba8036ff35c7a22d. Debug APK: 6,756,328 bytes; SHA256 6953d2e1303de689d6258809c5f1401b70940b05ee03cb0b183ca003102a9985. This debug artifact is not the stable-signed OS payload.
 ![Actual native OS updater](ui-preview/os-updater.png)
