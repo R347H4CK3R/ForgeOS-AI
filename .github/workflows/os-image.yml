@@ -10,7 +10,7 @@ on:
         required: true
         default: inspect
         type: choice
-        options: [inspect, inspect-android16, build]
+        options: [inspect, inspect-android16, build, build-android16-candidate]
 permissions:
   contents: read
   actions: read
@@ -31,6 +31,8 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      BASE_LOCK: ${{ (inputs.operation == 'inspect-android16' || inputs.operation == 'build-android16-candidate') && 'os/image/candidates/android16.lock.json' || 'os/image/base.lock.json' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,8 +52,6 @@ jobs:
           sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils xz-utils attr
           sdkmanager "build-tools;35.0.0" "platforms;android-35"
       - name: Inspect upstream regular-file image
-        env:
-          BASE_LOCK: ${{ inputs.operation == 'inspect-android16' && 'os/image/candidates/android16.lock.json' || 'os/image/base.lock.json' }}
         run: python os/image/inspect_base.py --lock "$BASE_LOCK" --output image-work
       - name: Inspect actual AVB descriptors
         env:
@@ -66,7 +66,7 @@ jobs:
           result=subprocess.run([sys.executable,"os/image/vendor/avbtool.py","info_image","--image",str(Path("image-work")/raw)],capture_output=True,text=True,timeout=120)
           Path("image-work/inspection/avb-info.txt").write_text(result.stdout+result.stderr)
           if result.returncode:raise SystemExit("AVB metadata was not readable; no trusted boot claim")
-          if os.environ["OPERATION"]=="inspect-android16":
+          if os.environ["OPERATION"] in ("inspect-android16","build-android16-candidate"):
               expected="Prop: com.android.build.system.security_patch -> '"+evidence["security_patch"]+"'"
               if expected not in result.stdout:raise SystemExit("AVB security patch does not match inspected build properties")
           PY
@@ -92,12 +92,12 @@ jobs:
           Path("image-work/inspection/window-config.json").write_text(json.dumps({"supportsMultiWindow":supported,"runtime_verified":False,"obsolete_freeform_resource_used":False},indent=2))
           PY
       - name: Fetch exact verified same-source workstation APK
-        if: inputs.operation == 'build'
+        if: inputs.operation == 'build' || inputs.operation == 'build-android16-candidate'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python os/image/fetch_apk.py --lock os/image/base.lock.json --repository "$GITHUB_REPOSITORY" --output image-work/application
+        run: python os/image/fetch_apk.py --lock "$BASE_LOCK" --repository "$GITHUB_REPOSITORY" --output image-work/application
       - name: Sign workstation with stable app identity
-        if: inputs.operation == 'build'
+        if: inputs.operation == 'build' || inputs.operation == 'build-android16-candidate'
         env:
           FORGEOS_APK_SIGNING_KEY: ${{ secrets.FORGEOS_APK_SIGNING_KEY }}
         run: |
@@ -106,7 +106,7 @@ jobs:
           from pathlib import Path
           sys.path.insert(0,"os/image")
           from sign_apk import sign_apk
-          lock=json.loads(Path("os/image/base.lock.json").read_text())
+          lock=json.loads(Path(os.environ["BASE_LOCK"]).read_text())
           result=sign_apk(Path("image-work/application/ForgeOS.apk"),Path("image-work/application/ForgeOS-signed.apk"),
               Path("os/image/forgeos-apk-signing-cert.pem"),"4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a",
               Path(os.environ["ANDROID_HOME"])/"build-tools/35.0.0/apksigner",Path("image-work/application/signing-evidence.json"),
@@ -114,6 +114,69 @@ jobs:
           lock["release_apk"]=result["signed_apk"]
           Path("image-work/runtime-lock.json").write_text(json.dumps(lock,indent=2))
           PY
+      - name: Adapt Android16 separate-system candidate
+        if: inputs.operation == 'build-android16-candidate'
+        run: |
+          mkdir image-work/candidate-work image-work/candidate
+          python os/image/build_image.py --base image-work/base.img --apk image-work/application/ForgeOS-signed.apk --output image-work/candidate-work/system-unsigned.img --lock image-work/runtime-lock.json --report image-work/candidate/adaptation-evidence.json
+          cp image-work/runtime-lock.json image-work/candidate/input-lock.json
+          cp image-work/application/signing-evidence.json image-work/candidate/signing-evidence.json
+          cp os/image/CANDIDATE-README.md image-work/candidate/READ-ME-FIRST.md
+      - name: Sign and verify developer AVB footer
+        if: inputs.operation == 'build-android16-candidate'
+        env:
+          FORGEOS_AVB_DEV_KEY: ${{ secrets.FORGEOS_AVB_DEV_KEY }}
+        run: |
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,"os/image")
+          from sign_avb import sign_system_image
+          evidence=json.loads(Path("image-work/inspection/base-evidence.json").read_text())
+          sign_system_image(Path("image-work/candidate-work/system-unsigned.img"),Path("image-work/candidate/ForgeOS-Android16-ARM64-DSU-CANDIDATE-DO-NOT-FLASH.raw"),
+            Path("image-work/candidate/adaptation-evidence.json"),Path("os/image/forgeos-avb-dsu-public.pem"),
+            "50d95733f9b562b115b6ddebbebc17ac809a1fe972351017f313630dbd5cb61b",evidence["security_patch"],evidence["fingerprint"],
+            Path("image-work/candidate/developer-avb-evidence.json"))
+          PY
+      - name: Compress and verify DSU candidate transport
+        if: inputs.operation == 'build-android16-candidate'
+        run: |
+          gzip -n -1 -c image-work/candidate/ForgeOS-Android16-ARM64-DSU-CANDIDATE-DO-NOT-FLASH.raw > image-work/candidate/ForgeOS-Android16-ARM64-DSU-CANDIDATE-DO-NOT-FLASH.raw.gz
+          python - <<'PY'
+          import gzip,hashlib,json
+          from pathlib import Path
+          folder=Path("image-work/candidate")
+          record=json.loads((folder/"developer-avb-evidence.json").read_text())
+          transport=folder/"ForgeOS-Android16-ARM64-DSU-CANDIDATE-DO-NOT-FLASH.raw.gz"
+          digest=hashlib.sha256();count=0
+          with gzip.open(transport,"rb") as source:
+              for chunk in iter(lambda:source.read(2*1024*1024),b""):
+                  count+=len(chunk)
+                  if count>record["output_bytes"]:raise SystemExit("Candidate decompression exceeds expected size")
+                  digest.update(chunk)
+          if count!=record["output_bytes"] or digest.hexdigest()!=record["output_sha256"]:raise SystemExit("Candidate transport does not match signed image")
+          compressed=hashlib.sha256()
+          with transport.open("rb") as source:
+              for chunk in iter(lambda:source.read(2*1024*1024),b""):compressed.update(chunk)
+          (folder/"transport-evidence.json").write_text(json.dumps({"name":transport.name,"compressed_bytes":transport.stat().st_size,"compressed_sha256":compressed.hexdigest(),"raw_bytes":count,"raw_sha256":digest.hexdigest(),"boot_tested":False,"OEM_trusted":False,"native_API35_feed":False},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success() && inputs.operation == 'build-android16-candidate'
+        with:
+          name: ForgeOS-Android16-DSU-CANDIDATE-DO-NOT-FLASH
+          path: image-work/candidate/*.raw.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always() && inputs.operation == 'build-android16-candidate'
+        with:
+          name: ForgeOS-Android16-candidate-evidence
+          path: |
+            image-work/candidate/*.json
+            image-work/candidate/*.md
+          if-no-files-found: warn
+          retention-days: 7
       - name: Adapt and verify offline ext4 filesystem
         if: inputs.operation == 'build'
         run: |
