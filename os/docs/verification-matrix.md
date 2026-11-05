@@ -26,7 +26,7 @@ Scope: development review, not OS acceptance. Evidence timestamp November 4, 202
 | Model downloads | Not implemented | User-selected GGUF supported; pinned CI test model download only |
 | Full AOSP image | Not implemented | Hardware/recovery gating unresolved; APK is not a system image |
 ## Test accounting
-Bridge filesystem tests: 4 passed on GamingLaptop. HTTP tests: 5 added and executed (consult run output for final aggregate). Android unit policy suite passed in earlier CI even when lint failed. Native/UI/inference results must be updated from the final same-commit workflow before any success claim.
+Bridge tests: 9/9 passed on GamingLaptop (4 filesystem + 5 real local HTTP tests). ARM64 build at e858c21 in Actions41965711640 passed with 3/3 Android unit tests, lint0 errors/36 warnings, APK signature verification and SHA256. APK SHA256:8848c2b99bb9f0ebe69da645bc5e6494412f4cde651d9e8c200d2e5233fe16cc. Emulator UI/inference tests remain pending in that run; a successful native build does not establish target functionality.
 ## Review fixes
 Independent source review found load/save races, destroyed-activity callbacks, provider work on main thread, and a cancelled-before-entry race. Corrections and regression tests are committed. Successful regression execution is still required.
 ## Authorization
