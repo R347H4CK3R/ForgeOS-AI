@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 cd android
 gradle --no-daemon --max-workers=2 -PforgeAbi=x86_64 assembleDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell run-as dev.forgeos.ai mkdir -p files
-adb exec-in run-as dev.forgeos.ai tee files/test-model.gguf < ../test-model.gguf > /dev/null
+# ADB exec-in can keep stdin open: stop after the exact verified file size.
+timeout 90s adb exec-in run-as dev.forgeos.ai sh -c '"head -c 105454432 > files/test-model.gguf"' < ../test-model.gguf
+adb exec-out run-as dev.forgeos.ai sha256sum files/test-model.gguf | grep '^2e8040ceae7815abe0dcb3540b9995eaa1fa0d2ca9e797d0a635ae4433c68c2d '
 result=0
 gradle --no-daemon --max-workers=2 -PforgeAbi=x86_64 connectedDebugAndroidTest || result=$?
 mkdir -p ../preview
