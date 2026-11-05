@@ -18,6 +18,8 @@ public class NativeReviewTest {
  private void click(ActivityScenario<MainActivity> s,String label){s.onActivity(a->{View v=find(a.getWindow().getDecorView(),label);assertNotNull(label,v);assertTrue(v.performClick());});InstrumentationRegistry.getInstrumentation().waitForIdleSync();}
  private void shot(String name)throws Exception{
   InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+  InstrumentationRegistry.getInstrumentation().getUiAutomation().waitForIdle(250,5000);
+  android.os.SystemClock.sleep(1500); // Let SurfaceFlinger present the current Activity frame.
   File dir=new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getExternalFilesDir(null),"review");assertTrue(dir.isDirectory()||dir.mkdirs());
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
   try(FileOutputStream out=new FileOutputStream(new File(dir,name+".png"))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}bitmap.recycle();
