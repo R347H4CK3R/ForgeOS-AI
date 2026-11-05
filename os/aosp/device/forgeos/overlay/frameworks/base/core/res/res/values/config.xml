@@ -2,5 +2,5 @@
 <!-- Experimental platform build overlay; never applied to stock tablet by app. -->
 <resources>
     <bool name="config_supportsMultiWindow">true</bool>
-    <bool name="config_freeformWindowManagement">true</bool>
+    <!-- Android15 enables freeform through the package-manager feature; no obsolete resource. -->
 </resources>

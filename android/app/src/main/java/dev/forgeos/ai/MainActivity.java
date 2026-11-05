@@ -86,7 +86,7 @@ public final class MainActivity extends Activity {
  private void home() {
   TextView hero=text("Your AI workspace",30);hero.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);body.addView(hero);
   note("Create projects, work with code, and choose local or remote AI.");
-  TextView badge=text("REVIEW BUILD · STOCK ANDROID",12);badge.setTextColor(dark?0xff79ddcb:0xff087f8c);body.addView(badge);
+  TextView badge=text((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM)!=0?"FORGEOS OS PREVIEW · HARDWARE UNVERIFIED":"REVIEW BUILD · STOCK ANDROID",12);badge.setTextColor(dark?0xff79ddcb:0xff087f8c);body.addView(badge);
   button(body,"Choose workspace folder",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
   note(tree==null?"Choose a folder to begin. SD-card access still needs device verification.":"Workspace folder selected. Open Projects to browse it.");
   int columns=getResources().getConfiguration().screenWidthDp>=600?2:1;
