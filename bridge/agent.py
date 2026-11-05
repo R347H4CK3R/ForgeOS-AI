@@ -87,7 +87,7 @@ class Agent:
    "A failed syntax check allows at most2 corrected proposals. No file changes occur until the owner separately approves the exact plan. "
    "Do not claim unit tests ran. Task: "+task)
   messages=[{"role":"system","content":prompt},{"role":"user","content":"Analyze project "+project+" and begin with a tool call."}]
-  read_paths=set();summary="";deadline=time.monotonic()+110
+  read_paths=set();summary="";last_call=None;deadline=time.monotonic()+110
   for turn in range(6):
    remaining=deadline-time.monotonic()
    if remaining<=0:steps.append({"status":"stopped","reason":"planning time budget reached"});break
@@ -96,6 +96,9 @@ class Agent:
    if not isinstance(response,dict):raise ValueError("model did not return a tool object")
    tool=response.get("tool");args=response.get("args",{})
    if not isinstance(args,dict):raise ValueError("tool arguments must be an object")
+   signature=json.dumps(response,sort_keys=True)
+   if signature==last_call:steps.append({"status":"stopped","reason":"model repeated an identical tool call"});break
+   last_call=signature
    messages.append({"role":"assistant","content":json.dumps(response)})
    try:
     if tool=="list_files":result={"files":workspace.files()}
@@ -121,7 +124,10 @@ class Agent:
     else:raise ValueError("unsupported tool")
    except (KeyError,ValueError,OSError,UnicodeError) as error:result={"error":str(error)}
    steps.append({"tool":tool,"result":{k:v for k,v in result.items() if k!="content"}})
-   messages.append({"role":"user","content":"Tool result: "+json.dumps(result)})
+   next_step="Continue the original task using supported tools only."
+   if tool=="read_file" and "error" not in result:next_step="This file has been read. Now propose_edit its full replacement if needed, or finish. Do not read the unchanged file again."
+   if tool=="propose_edit" and result.get("status")=="proposed; not written":next_step="This edit is staged for review. Do not repeat it. Finish with a summary if the task is addressed, otherwise inspect another relevant file."
+   messages.append({"role":"user","content":"Tool result: "+json.dumps(result)+"\n"+next_step})
   plan={"project":project,"task":task,"edits":list(edits.values()),"steps":steps,"summary":summary,"repair_attempts":repairs,
    "checks_kind":"Python syntax only; no generated code, unit tests or shell commands executed"}
   if any("syntax repair limit" in str(step) for step in steps):raise ValueError("model exceeded the repair budget")

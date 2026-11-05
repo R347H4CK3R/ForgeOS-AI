@@ -48,4 +48,15 @@ class AgentTests(unittest.TestCase):
   try:(self.project/"escape").symlink_to(self.root,target_is_directory=True)
   except OSError:self.skipTest("symlink not permitted")
   with self.assertRaises(ValueError):Project(self.project).path("escape/secret")
-if __name__=="__main__":unittest.main()
+
+
+ def test_repeated_identical_tool_call_stops_without_writes(self):
+  calls=[]
+  def repeat(messages,model,timeout):
+   calls.append(1)
+   return {"tool":"read_file","args":{"path":"main.py"}}
+  plan=self.plan(Agent(self.root,repeat))
+  self.assertLessEqual(len(calls),2)
+  self.assertFalse(plan["approval_required"])
+  self.assertEqual(plan["steps"][-1]["reason"],"model repeated an identical tool call")
+  self.assertEqual((self.project/"main.py").read_text(),"print(1)\n")

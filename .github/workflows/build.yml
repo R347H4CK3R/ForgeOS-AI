@@ -130,7 +130,7 @@ jobs:
       OLLAMA_MAX_LOADED_MODELS: '1'
       OLLAMA_KEEP_ALIVE: '0'
       CUDA_VISIBLE_DEVICES: '-1'
-      FORGEOS_LIVE_MODEL: qwen2.5-coder:0.5b
+      FORGEOS_LIVE_MODEL: qwen2.5-coder:1.5b
       FORGEOS_EVIDENCE_FILE: agent-evidence.json
     steps:
       - uses: actions/checkout@v4
