@@ -48,3 +48,14 @@ def extract(image,inside,destination):
  debugfs(image,'dump -p '+inside+' '+str(destination))
  if not destination.is_file():raise ValueError("missing image path: "+inside)
  return destination
+
+
+def validate_security_patch(observed,minimum):
+ import datetime,re
+ dates=[]
+ for value in (observed,minimum):
+  if not isinstance(value,str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}",value):
+   raise ValueError("missing or malformed security patch date")
+  dates.append(datetime.date.fromisoformat(value))
+ if dates[0]<dates[1]:raise ValueError("base security patch is older than target floor")
+ return observed

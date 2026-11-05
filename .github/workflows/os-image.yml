@@ -10,7 +10,7 @@ on:
         required: true
         default: inspect
         type: choice
-        options: [inspect, build]
+        options: [inspect, inspect-android16, build]
 permissions:
   contents: read
   actions: read
@@ -50,8 +50,27 @@ jobs:
           sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils xz-utils attr
           sdkmanager "build-tools;35.0.0" "platforms;android-35"
       - name: Inspect upstream regular-file image
-        run: python os/image/inspect_base.py --lock os/image/base.lock.json --output image-work
-      - name: Verify actual Android15 window resources
+        env:
+          BASE_LOCK: ${{ inputs.operation == 'inspect-android16' && 'os/image/candidates/android16.lock.json' || 'os/image/base.lock.json' }}
+        run: python os/image/inspect_base.py --lock "$BASE_LOCK" --output image-work
+      - name: Inspect actual AVB descriptors
+        env:
+          OPERATION: ${{ inputs.operation }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess,sys
+          from pathlib import Path
+          evidence=json.loads(Path("image-work/inspection/base-evidence.json").read_text())
+          raw=evidence["raw_file"]
+          if raw not in ("base.img","raw.img"):raise SystemExit("Unexpected raw image path")
+          result=subprocess.run([sys.executable,"os/image/vendor/avbtool.py","info_image","--image",str(Path("image-work")/raw)],capture_output=True,text=True,timeout=120)
+          Path("image-work/inspection/avb-info.txt").write_text(result.stdout+result.stderr)
+          if result.returncode:raise SystemExit("AVB metadata was not readable; no trusted boot claim")
+          if os.environ["OPERATION"]=="inspect-android16":
+              expected="Prop: com.android.build.system.security_patch -> '"+evidence["security_patch"]+"'"
+              if expected not in result.stdout:raise SystemExit("AVB security patch does not match inspected build properties")
+          PY
+      - name: Verify actual Android window resources
         env:
           OPERATION: ${{ inputs.operation }}
         run: |

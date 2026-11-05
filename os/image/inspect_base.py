@@ -37,6 +37,7 @@ def inspect(lock,out):
  if api!=str(lock["android_api"]):raise ValueError("unexpected Android API: "+str(api))
  patch=props.get("ro.system.build.version.security_patch",props.get("ro.build.version.security_patch"))
  if lock.get("security_patch") and patch!=lock["security_patch"]:raise ValueError("base security patch differs from pin")
+ if lock.get("minimum_security_patch"):validate_security_patch(patch,lock["minimum_security_patch"])
  framework=extract(raw,root+"/framework/framework-res.apk",report/"framework-res.apk")
  for inside,name in [(root+"/overlay/config/config.xml","overlay-config.xml"),(root+"/etc/selinux/plat_file_contexts","plat_file_contexts")]:
   try:extract(raw,inside,report/name)
@@ -50,7 +51,7 @@ def inspect(lock,out):
   magic,major,minor,original,vbmeta_offset,vbmeta_size=struct.unpack(">4sIIQQQ28x",footer)
   avb={"major":major,"minor":minor,"original_bytes":original,"vbmeta_offset":vbmeta_offset,"vbmeta_bytes":vbmeta_size}
  evidence={"archive_sha256":checksum,"publisher_checksum_supplied":False,"matches_pinned_sha":lock["sha256"] is not None,
-  "upstream":lock,"raw_bytes":raw.stat().st_size,"raw_sha256":sha256_file(raw),"system_root":root,
+  "upstream":lock,"raw_file":raw.name,"raw_bytes":raw.stat().st_size,"raw_sha256":sha256_file(raw),"system_root":root,
   "api":api,"security_patch":props.get("ro.system.build.version.security_patch",props.get("ro.build.version.security_patch")),
   "fingerprint":props.get("ro.system.build.fingerprint",props.get("ro.build.fingerprint")),"avb_footer":avb,
   "fsck_exit_policy":"read-only inspection; findings retained, not repaired",
