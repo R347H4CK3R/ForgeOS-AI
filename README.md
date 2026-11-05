@@ -8,7 +8,7 @@ Native Android workstation development and experimental AOSP GSI product integra
 - Native UTF-8 editor with open, save, save-as, draft recreation, bounded reads, overwrite confirmation and load/save exclusion.
 - Android document-provider workspace access, directory browsing, project-folder creation and eight workspace directories.
 - Light/dark launcher themes and responsive scrollable portrait/landscape views.
-- On-device GGUF runtime through pinned llama.cpp JNI: CPU only, two threads, 512-token context, 128 output tokens, 550 MiB file limit, 600M parameter limit and available-RAM checks. Model selection uses a persisted document grant. Target performance is unverified.
+- On-device GGUF runtime through pinned llama.cpp JNI: CPU only, two threads, 512-token context, 128 output tokens, 550 MiB file limit, 600M parameter limit and available-RAM checks. Model selection uses a persisted document grant. Real 135M generation passes in the isolated emulator; target performance is unverified. A native Wi-Fi-only download manager verifies the pinned starter model SHA256 before selection.
 - Opt-in Termux terminal integration: review every command, then execute via the supported RUN_COMMAND service and receive results privately. Python/Git/SSH packages and Termux configuration are separate prerequisites.
 - HTTPS remote AI/development client with memory-only session token; authenticated, loopback-only Python host bridge for workspace reads, project listing, fixed Git status and an already configured Ollama service.
 - Android resizable activity support and adjacent launch requests. Target floating-window behavior, snapping and native window controls remain unverified.
@@ -23,6 +23,8 @@ Host tests: `python -m unittest discover -s bridge -v`.
 Actions produces APK, signature check, SHA256, unit/lint reports, isolated emulator interaction results and UI PNGs. A pinned SHA256-checked 135M GGUF is used for actual emulator generation; it is not bundled in the APK.
 
 ## Verification and installation gates
+- [UI review and proposed tablet test](os/docs/UI_REVIEW.md)
+- [Deliverables and evidence](os/docs/deliverables.md)
 - [Hardware audit](os/docs/hardware-audit.md)
 - [Verification matrix](os/docs/verification-matrix.md)
 - [Recovery and installation gates](os/docs/recovery-and-installation-gates.md)
@@ -30,4 +32,4 @@ Actions produces APK, signature check, SHA256, unit/lint reports, isolated emula
 - [Remote bridge](bridge/README.md)
 The adopted card is mounted, but its shared emulated view is unmounted and Android primary shared storage remains internal. App workspace access to that card is not established; no storage migration or formatting is performed.
 Exact stock recovery firmware, AVB trust, a tested restore procedure and an adequately sized Linux image-build worker remain prerequisites for an OS release.
-Autonomous repair agent, model download manager, complete window manager, full file operations, end-to-end tailnet inference and physical-peripheral acceptance remain incomplete.
+The bounded repair agent and model download manager are implemented. Complete window controls, full file operations, target tailnet inference and physical-peripheral acceptance remain incomplete. See [actual UI and software review](os/docs/UI_REVIEW.md).

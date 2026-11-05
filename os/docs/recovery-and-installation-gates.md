@@ -26,3 +26,7 @@ After approval, a limited APK-only test could preserve stock firmware and keep t
 DP Alt Mode remains unverified. No software flag can establish missing physical support.
 A DisplayLink USB graphics dock is a possible hardware-dependent alternative, not verified on this tablet: https://www.synaptics.com/products/displaylink-graphics/downloads/android
 It requires compatible DisplayLink hardware and USB host; adapter test is deferred until connected. Network mirroring is separate from native wired display output.
+
+## Firmware search checkpoint (2026-11-05 UTC)
+Exact model/build queries did not establish an authenticated OEM TTA.31 recovery download. A community archive at https://sourceforge.net/projects/onn-tablet-firmwares/files/ is only a research lead, not a verified recovery source; model-number requests in reviews are not firmware. Driver downloads and firmware for 100135923 are not recovery images for this100135925. No candidate archive was flashed or treated as rollback proof.
+USB-C connector/adapter listings also do not prove this tablet supports DP Alt Mode. Preserve the unverified classification until hardware documentation or the actual adapter test establishes it.

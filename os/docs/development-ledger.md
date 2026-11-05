@@ -1,28 +1,35 @@
-# ForgeOS development ledger — 2026-11-04
-Baseline b2569c0, WebView shell. Existing untracked build-output/build-v02 were preserved; isolated worktree ForgeOS-Native and branch forgeos/native-workstation.
-- 35f33ef: workspace contract tests and validation pipeline.
-- 3ac9ea2: native dashboard, document editor, workspace source.
-- 6f19e74: removed unavailable legacy SDK tools package from setup.
-- 2f0c37f: corrected document-picker syntax; bounded loopback host bridge.
-- 4bd04e0: emulator navigation/recreation and screenshot tests.
-- e28ca70: local JNI inference, remote HTTPS client, actual HTTP tests.
-- f040da8: adapted pinned llama model-load API, cancellation and lifecycle guards; live hardware/recovery evidence.
-- a72f235: background provider operations and slow-open/save regression.
-- 249b78c: pinned real-model test, split ABI jobs, third-party license.
-- bac9192: reviewed opt-in Termux command integration and persistable URI grant corrections.
-- e858c21: emulator shell root-cause correction; experimental AOSP product source.
-## Verification evidence
-GamingLaptop: 9 bridge tests passed. Earlier Android policy suite: 3 passed. bac9192 ARM64 job in run41965275757 succeeded: tests/lint/APK build/signature/checksum. Its UI job failed because the emulator runner executed every script line in a separate shell; a standalone shell script corrected the working-directory dependency.
-Current run41965711640 validates e858c21; await actual UI/inference results.
+# Development ledger
+Updated 2026-11-05 UTC. Baseline b2569c0 was a WebView shell. Original working tree, existing build outputs and existing tablet app were preserved. Worktree: ForgeOS-Native; branch: forgeos/native-workstation; draft PR1.
+
+## Development milestones
+Native HOME dashboard, provider-backed editor/workspace, lifecycle/race guards, JNI GGUF inference, supported Termux handoff, HTTPS host bridge, bounded tool agent and native verified downloader are implemented.
+61de690 integrated the manager, agent UI and dashboard.
+c90ffdd pinned an independently verified extra Ollama manifest layer after the integrity test rejected it.
+b18e1a4 captured bounded synthetic backend errors and waited for landscape composition.
+5b13bd6 constrained backend tool output with a closed schema and deterministic sampling.
+757e8a0 added next-step guidance and a regression-proven repeated-call stop after the 0.5B model looped on reads. Acceptance moved to pinned remote-only 1.5B weights.
+6bc8fd7 introduced a window-controller startup NPE. Actual emulator logs identified the premature call; 74dd5ef moved it after setContentView and passed all jobs.
+bf5ac33 corrected snapshot timing after visual inspection found stale/blank frames despite passing UI interactions.
+cf01a34 matched the window backing to light/dark themes. Final screenshots were visually inspected.
+
+## Final evidence
+[Actions 41978243888](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/41978243888), source cf01a34edddb5466643e09229f33554f7662e8d4: all three jobs successful.
+8 Android unit tests; 8 native integration tests in 37.863 seconds; real 1.5B read/propose/confirmed apply in 33.181 seconds. Lint: 0 errors / 62 warnings.
+Windows bridge: 29 discovered, 28 passed, 1 live skip. Linux normal suite: 27 passed / 2 expected skips; live job separately passed.
+APK: 6,722,453 bytes; SHA256 c6ac7a200f9fc45f2f18d5e141c01b71345026a4588d6130909db015e5b36dea.
+See UI_REVIEW.md, verification-matrix.md and evidence/.
+
 ## Decisions and limits
-Ruling: Keep the new native launcher as the reviewable interim environment, separately labeled from the OS product — locked bootloader, exact recovery absent — cost: no replacement operating system yet.
-Ruling: Use persisted SAF grants instead of raw adopted-volume paths — ordinary app access to private adopted storage is not established — cost: SD workspace remains blocked until a valid exposed folder/application placement is tested.
-Ruling: Native inference is CPU-only, 2 threads, 512 context, 128 output tokens, file-size/RAM guard — limited 3GB tablet memory — cost: short prompts and modest model capability.
-Ruling: Bridge exposes no shell/write endpoint and is not auto-started — prevent unreviewed remote destructive operations or gaming load — cost: build automation and remote editing remain incomplete.
-Ruling: Use AOSP product integration without fabricating vendor/kernel blobs — preserve hardware assumptions — cost: no built or verified onn system image.
-Ruling: No AOSP build on GamingLaptop — observed about 128GiB free disk, 16GB total RAM and under1GB free at an observation, below AOSP400GB disk guidance — cost: a suitable isolated Linux worker is still needed.
+The review APK dev.forgeos.ai.review is separate from the older app. Stock home and data remain intact.
+SAF is the supported workspace interface. Adopted-card app access is not established; no path bypass/migration.
+Local inference is CPU-only, two threads, context512/output128, with model/RAM guards. No target performance claim.
+The host agent has no arbitrary shell/project-test execution. Python diagnostics parse syntax. Writes require a separate exact-plan approval; conflict detection is optimistic.
+The 1.5B live fixture is a small edit, not proof of general repair. Repeated-call stopping may return an incomplete plan for review.
+Experimental AOSP files are not a verified OS image. The laptop's observed disk/RAM conditions were inadequate for AOSP; no heavy host build or WSL session started.
+Exact firmware/recovery and DSU trust remain unverified; Virtual A/B is not dual boot.
+Termux overlapping results share a last-result slot; output-truncation usability remains limited.
+Production update signing is not configured; do not erase existing app data to replace mismatched debug keys.
+
 ## Review
-Independent reviewer identified document-operation races, stale activity callbacks, UI-thread provider work and pre-entry cancellation reset. Corrections committed; tests include a real delayed-IO load/save sequence and cancelled-before-native-entry check.
-Deferred minor: concurrent Termux results share one last-result slot without command correlation.
-Deferred minor: original Termux stdout/stderr truncation lengths are not displayed.
-No unlock, boot, image install, APK install, storage migration, format or flash was performed on the tablet.
+Independent reviews identified and helped resolve provider races, stale callbacks, UI-thread work, cancellation reset, Windows aliases/junctions and mutable pending plans. Final source review found no important correctness/security blockers in the schema, loop guard and window-controller fixes. UI captures were additionally inspected manually.
+No new APK install, image boot, unlock, wipe, partition change, SD format/migration or flash was performed on the tablet.

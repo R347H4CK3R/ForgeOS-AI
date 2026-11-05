@@ -1,6 +1,6 @@
 # Efficiency decisions
 ## Tablet
-- Native Android controls replace the always-running WebView surface.
+- Native Android controls replace the WebView interface.
 - CPU inference is compiled in Release mode even in the debuggable review APK.
 - GGUF model file limit550MiB, parameter limit600M, two inference/prefill threads, context512, max output128 tokens.
 - Reject inference when Android reports low memory or less than850MiB available.
@@ -21,3 +21,5 @@ After optimization:6,704,780 bytes APK (3102180), approximately53.8% smaller.
 These are observed APK file sizes, not inference-speed claims or target RAM measurements.
 ## Remaining limits
 Actual tablet inference speed, peak app memory, thermal throttling, concurrent-window behavior and battery draw require the approved physical-device test. No claim of60FPS under local inference is made.
+
+Final cf01a34 review artifact: 6,722,453 bytes (53.7% below 14,508,156). Remote planning uses a closed tool schema, temperature 0 and seed 42. The accepted remote-only 1.5B fixture completed read/propose/finish and approved apply in 33.181 seconds. The 0.5B model was unreliable and is not an accepted general repair backend.

@@ -1,33 +1,39 @@
 # ForgeOS verification matrix
-Scope: development review, not OS acceptance. Evidence timestamp November 4, 2026 (America/Chicago).
+Evidence: 2026-11-05 UTC, software candidate cf01a34. This is a development review, not OS acceptance.
+
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
-| Custom OS boot compatibility | Blocked | Locked AVB; exact stock recovery not verified; no candidate boot test authorized |
-| Touch input | Partially working | Stock feature enumeration reports multitouch; ForgeOS target touch interaction not tested |
-| Multi-window management | Partially working | Launcher activities resizable; adjacent task request implemented; target split/freeform/snapping/minimize not verified |
-| Wi-Fi | Verified working | Wireless ADB read-only commands completed; throughput and roaming not tested |
-| Bluetooth | Partially working | Enabled and supported; pairing and input not exercised |
-| USB peripherals | Blocked | USB host feature present; no connected physical test performed |
-| External display | Blocked | No external physical display; RustDesk virtual screen is not HDMI |
-| Adopted SD mount | Verified working | f2fs private volume mounted; df reports 119G / 118G free |
-| ForgeOS SD workspace access | Blocked | Card emulated view unmounted; primary shared storage internal; no ForgeOS install or workspace grant |
-| Local AI inference | Partially working | Bounded JNI llama source and native build pipeline; real model emulator test added; target runtime untested |
-| Remote AI inference | Partially working | HTTPS client + authenticated loopback bridge + Ollama adapter implemented; no end-to-end host inference test |
-| Code editor | Partially working | Native UTF-8 open/save/save-as and draft recreation; emulator tests pending; target untested |
-| Terminal | Partially working | Supported opt-in Termux RUN_COMMAND with explicit confirmation and result callback; live permission/configuration not tested |
-| Python execution | Blocked | Termux installed; Python package and command result not verified |
-| Git operations | Partially working | Host Git used successfully; bridge fixed status action implemented; tablet Git unverified |
-| Tailscale | Partially working | Installed tablet app and laptop BackendState Running; tablet-to-host tailnet path not tested |
-| Desktop Commander | Partially working | Authorized GamingLaptop integration used for development; no native Android agent claimed; app bridge is a separate constrained host service |
-| File management | Partially working | SAF directory listing and folder creation implemented with provider error paths; target storage grant not exercised |
-| Recovery / rollback | Blocked | No authenticated exact recovery package or tested restore route |
-| True dual boot | Blocked | Virtual A/B is not independent dual OS storage; DSU signer/OEM support unverified |
-| Tool-calling repair agent | Not implemented | No automatic model-driven shell execution or write loop claimed |
-| Model downloads | Not implemented | User-selected GGUF supported; pinned CI test model download only |
-| Full AOSP image | Not implemented | Hardware/recovery gating unresolved; APK is not a system image |
-## Test accounting
-Bridge tests: 9/9 passed on GamingLaptop (4 filesystem + 5 real local HTTP tests). ARM64 build at e858c21 in Actions41965711640 passed with 3/3 Android unit tests, lint0 errors/36 warnings, APK signature verification and SHA256. APK SHA256:8848c2b99bb9f0ebe69da645bc5e6494412f4cde651d9e8c200d2e5233fe16cc. Emulator UI/inference tests remain pending in that run; a successful native build does not establish target functionality.
-## Review fixes
-Independent source review found load/save races, destroyed-activity callbacks, provider work on main thread, and a cancelled-before-entry race. Corrections and regression tests are committed. Successful regression execution is still required.
-## Authorization
-No new ForgeOS APK or OS image installed on tablet. No boot, unlock, wipe, repartition, flashing, SD reformat, or storage migration authorized or performed.
+| Custom OS boot | Blocked | Locked AVB; exact recovery firmware and tested restoration unverified; no candidate boot authorized |
+| Touch input | Partially working | Emulator interactions pass; physical target interaction pending |
+| Native multi-window | Partially working | Resizable activities and adjacent launch requests; target behavior not verified |
+| Floating-window controls/snapping | Not implemented | No verified privileged window manager/image |
+| Wi-Fi | Verified working | Wireless ADB and 3/3 Internet ping; throughput/roaming not measured |
+| Bluetooth | Partially working | Enabled and supported; pairing and input untested |
+| USB peripherals | Blocked | Host feature present; actual peripheral acceptance not performed |
+| External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
+| Adopted SD mount | Verified working | Encrypted private f2fs mounted, 119G total / 118G free at audit |
+| ForgeOS SD access | Blocked | Shared emulated view unmounted; primary shared storage internal; no app grant/migration |
+| Local AI | Partially working | Actual pinned 135M GGUF generates in emulator; target performance/quality unverified |
+| Model downloads | Partially working | Actual DownloadManager transfer, SHA256 and recreation pass; target handoff/placement pending |
+| Remote AI | Partially working | Real 1.5B worker test passes; tablet HTTPS session unverified |
+| Tool-calling repair | Partially working | Real read/propose/approved apply; syntax repair and permission regressions; complex-project behavior unverified |
+| Agent project test/build execution | Not implemented | Python syntax parsing only; no arbitrary generated-code execution |
+| Code editor | Partially working | Native edit/recreation and real-file race tests pass; target untested |
+| Terminal | Partially working | Supported Termux request/confirmation/result implementation; actual configuration pending |
+| Python execution | Blocked | Host syntax checks verified; tablet Python package/execution unverified |
+| Git operations | Partially working | Host Git used, bounded status endpoint implemented; tablet Git unverified |
+| SSH / remote terminal builds | Not implemented | No integrated arbitrary host command/session endpoint; Termux setup unverified |
+| Tailscale | Partially working | Tablet-to-laptop tailnet ping 3/3; app HTTPS setup pending |
+| Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
+| File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
+| Recovery / rollback | Blocked | App rollback documented; authenticated exact firmware and tested firmware restoration absent |
+| Genuine dual boot | Blocked | Virtual A/B is not dual boot; DSU trust/support unestablished |
+| Full AOSP image | Not implemented | Experimental product source only; recovery, vendor compatibility and adequate build worker unresolved |
+
+## Software evidence
+[Workflow 41978243888](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/41978243888) completed successfully on cf01a34: ARM64 build, signature/hash checks, 8 Android unit tests, lint (0 errors / 62 warnings), 8 emulator integration tests in 37.863 seconds and actual remote 1.5B integration in 33.181 seconds.
+Windows suite: 29 discovered / 28 passed / 1 live skip. Linux suite: 29 discovered / 27 passed / 2 platform/live skips; the separate live job passed.
+Actual screenshots, test output and synthetic model evidence are linked in [UI review](UI_REVIEW.md).
+
+## Scope
+A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. No new APK or OS image installed on tablet; no boot, unlock, wipe, partition change, SD reformat or migration performed.
