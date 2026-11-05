@@ -49,7 +49,7 @@ public class NativeReviewTest {
   } finally{gate.countDown();a.delete();b.delete();}
  }
  @Test public void cancelledBeforeEntryDoesNotRestart()throws Exception{LocalEngine.prepare();LocalEngine.cancel();try{LocalEngine.generate(-1,new byte[]{65});fail("Cancelled run started");}catch(IOException expected){assertTrue(expected.getMessage().contains("Cancelled"));}finally{LocalEngine.prepare();}}
- @Test public void realSmallGgufGeneratesText()throws Exception{
+ @Test(timeout=180000) public void realSmallGgufGeneratesText()throws Exception{
   File file=new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(),"test-model.gguf");assertTrue("Pinned test model missing",file.isFile());
   LocalEngine.prepare();
   try(android.os.ParcelFileDescriptor fd=android.os.ParcelFileDescriptor.open(file,android.os.ParcelFileDescriptor.MODE_READ_ONLY)){
