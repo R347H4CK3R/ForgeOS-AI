@@ -1,7 +1,8 @@
 """ForgeOS opt-in bridge. Bind loopback; expose only behind authenticated Tailscale HTTPS.
 No shell endpoint. Tokens supplied at runtime, never committed.
 """
-import hmac, json, os, subprocess
+import hmac, json, os, subprocess, threading
+from agent import Agent
 from pathlib import Path, PureWindowsPath
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.request import Request, urlopen
@@ -21,7 +22,20 @@ class Workspace:
   if len(data)>LIMIT: raise ValueError("file exceeds 256 KiB")
   return data.decode("utf-8")
  def projects(self): return sorted(p.name for p in self.root.iterdir() if p.is_dir() and not p.is_symlink())[:500]
-def handler(workspace,token):
+MODEL_GATE=threading.Lock()
+def model_request(route,payload,timeout):
+ if not MODEL_GATE.acquire(blocking=False):raise RuntimeError("host inference is busy")
+ try:
+  request=Request("http://127.0.0.1:11434"+route,data=json.dumps(payload).encode(),headers={"Content-Type":"application/json"})
+  with urlopen(request,timeout=timeout) as response:raw=response.read(LIMIT+1)
+  if len(raw)>LIMIT:raise ValueError("inference response too large")
+  return json.loads(raw)
+ finally:MODEL_GATE.release()
+def ollama_turn(messages,model,timeout):
+ result=model_request("/api/chat",{"model":model,"messages":messages,"format":"json","stream":False,"keep_alive":0,"options":{"num_predict":1536,"num_ctx":4096,"num_thread":2}},timeout)
+ return result["message"]["content"]
+def handler(workspace,token,infer=ollama_turn):
+ planner=Agent(workspace.root,infer)
  class Handler(BaseHTTPRequestHandler):
   def log_message(self,*args): pass  # never log prompts, tokens, filenames or content
   def reply(self,status,data):
@@ -37,7 +51,7 @@ def handler(workspace,token):
     if not 0<size<=LIMIT: raise ValueError("invalid body length")
     self.connection.settimeout(15)
     body=json.loads(self.rfile.read(size))
-    if self.path=="/health": result={"ok":True,"capabilities":["projects","read","git-status","inference"],"writes":False}
+    if self.path=="/health": result={"ok":True,"capabilities":["projects","read","git-status","inference","agent-plan","agent-approve"],"writes":"confirmation_required","arbitraryShell":False}
     elif self.path=="/projects": result={"projects":workspace.projects()}
     elif self.path=="/read": result={"text":workspace.read(body["path"])}
     elif self.path=="/git-status":
@@ -45,16 +59,17 @@ def handler(workspace,token):
      if not folder.is_dir(): raise ValueError("not a project directory")
      proc=subprocess.run(["git","-c","core.fsmonitor=false","--no-optional-locks","status","--short"],cwd=folder,capture_output=True,text=True,timeout=15,shell=False)
      result={"exitCode":proc.returncode,"output":(proc.stdout+proc.stderr)[:32768]}
+    elif self.path=="/agent/plan":result=planner.plan(body["project"],body["task"],body["model"])
+    elif self.path=="/agent/approve":result=planner.approve(body["plan_id"],body["plan_sha256"],body.get("confirmed",False))
     elif self.path=="/inference":
      prompt=body.get("prompt","");model=body.get("model","")
      if not isinstance(prompt,str) or not 0<len(prompt)<=16384: raise ValueError("prompt length must be 1..16384")
      if not isinstance(model,str) or not 0<len(model)<=120: raise ValueError("model required")
-     request=Request("http://127.0.0.1:11434/api/generate",data=json.dumps({"model":model,"prompt":prompt,"stream":False,"keep_alive":0,"options":{"num_predict":512,"num_ctx":2048}}).encode(),headers={"Content-Type":"application/json"})
-     with urlopen(request,timeout=120) as response: raw=response.read(LIMIT+1)
-     if len(raw)>LIMIT: raise ValueError("inference response too large")
-     result={"response":json.loads(raw)["response"],"execution":"GamingLaptop"}
+     response=model_request("/api/generate",{"model":model,"prompt":prompt,"stream":False,"keep_alive":0,"options":{"num_predict":512,"num_ctx":2048,"num_thread":2}},120)
+     result={"response":response["response"],"execution":"GamingLaptop"}
     else: self.reply(404,{"error":"unknown action"});return
     self.reply(200,result)
+   except PermissionError:self.reply(403,{"error":"explicit review confirmation required"})
    except (ValueError,KeyError,UnicodeError): self.reply(400,{"error":"invalid request or workspace path"})
    except Exception: self.reply(502,{"error":"operation failed; check local service and workspace permissions"})
  return Handler

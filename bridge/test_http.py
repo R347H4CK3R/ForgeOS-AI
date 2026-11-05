@@ -17,7 +17,7 @@ class HTTPTests(unittest.TestCase):
   with urlopen(request,timeout=3) as response:return json.load(response)
  def test_authenticated_health(self):
   self.assertTrue(self.post("/health",{})["ok"])
-  self.assertFalse(self.post("/health",{})["writes"])
+  self.assertEqual(self.post("/health",{})["writes"],"confirmation_required");self.assertFalse(self.post("/health",{})["arbitraryShell"])
  def test_bad_token_is_rejected(self):
   with self.assertRaises(HTTPError) as result:self.post("/health",{},"bad")
   self.assertEqual(result.exception.code,401)

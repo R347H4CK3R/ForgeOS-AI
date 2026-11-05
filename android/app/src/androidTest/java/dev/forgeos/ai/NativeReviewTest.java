@@ -57,6 +57,36 @@ public class NativeReviewTest {
    File report=new File(file.getParentFile(),"inference-result.txt");try(FileOutputStream out=new FileOutputStream(report)){out.write(output);}
   }
  }
+ @Test public void modelManagerIsNativeAndUnverifiedModelCannotBeSelected()throws Exception{
+  try(ActivityScenario<ModelManagerActivity> scenario=ActivityScenario.launch(ModelManagerActivity.class)){
+   scenario.onActivity(a->{assertFalse(hasWebView(a.getWindow().getDecorView()));View use=find(a.getWindow().getDecorView(),"Use verified model");assertNotNull(use);assertFalse(use.isEnabled());});
+   shot("model-manager");
+  }
+ }
+ @Test public void remoteAgentShowsReviewGateWithoutNetworkRequest()throws Exception{
+  try(ActivityScenario<RemoteActivity> scenario=ActivityScenario.launch(RemoteActivity.class)){
+   scenario.onActivity(a->{assertFalse(hasWebView(a.getWindow().getDecorView()));assertNotNull(find(a.getWindow().getDecorView(),"Plan / diagnose project task (no writes)"));assertNotNull(find(a.getWindow().getDecorView(),"Review and apply last edit plan"));});
+   shot("remote-agent");
+  }
+ }
+ @Test(timeout=150000) public void modelDownloadVerifiesAcrossActivityRecreation()throws Exception{
+  try(ActivityScenario<ModelManagerActivity> scenario=ActivityScenario.launch(ModelManagerActivity.class)){
+   try{
+    scenario.onActivity(a->{View start=find(a.getWindow().getDecorView(),"Download starter model");assertNotNull(start);start.performClick();});
+    android.os.SystemClock.sleep(500);scenario.recreate();
+    java.util.concurrent.atomic.AtomicBoolean verified=new java.util.concurrent.atomic.AtomicBoolean(false);
+    java.util.concurrent.atomic.AtomicReference<String> detail=new java.util.concurrent.atomic.AtomicReference<>("");
+    long deadline=android.os.SystemClock.elapsedRealtime()+120000;
+    while(!verified.get()&&android.os.SystemClock.elapsedRealtime()<deadline){
+     scenario.onActivity(a->{try{verified.set(field(a,"verifiedFile")!=null);detail.set(((TextView)field(a,"status")).getText().toString());}catch(Exception e){throw new AssertionError(e);}});
+     android.os.SystemClock.sleep(500);
+    }
+    assertTrue(detail.get(),verified.get());shot("model-manager-verified");
+   }finally{
+    scenario.onActivity(a->{try{java.lang.reflect.Method remove=a.getClass().getDeclaredMethod("removeCurrent");remove.setAccessible(true);remove.invoke(a);}catch(Exception e){throw new AssertionError(e);}});
+   }
+  }
+ }
  @Test public void nativeRuntimeRejectsEmptyPrompt()throws Exception{try{LocalEngine.generate(-1,new byte[0]);fail("Empty prompt accepted");}catch(IOException expected){assertTrue(expected.getMessage().contains("Prompt"));}}
  @Test public void nativeNavigationEditorRecreationAndThemes()throws Exception{
   try(ActivityScenario<MainActivity> s=ActivityScenario.launch(MainActivity.class)){

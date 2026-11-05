@@ -41,7 +41,20 @@ public final class MainActivity extends Activity {
  private void capture(){if(editor!=null){String next=editor.getText().toString();if(!next.equals(draft))dirty=true;draft=next;}}
  private int dp(int n){return (int)(n*getResources().getDisplayMetrics().density);}
  private TextView text(String value,int size){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(ink);t.setPadding(dp(8),dp(6),dp(8),dp(6));return t;}
- private void button(LinearLayout target,String title,Runnable action){Button b=new Button(this);b.setText(title);b.setAllCaps(false);b.setOnClickListener(v->action.run());target.addView(b);}
+ private android.graphics.drawable.GradientDrawable surface(int color,int radius) {
+  android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();d.setColor(color);d.setCornerRadius(dp(radius));return d;
+ }
+ private void button(LinearLayout target,String title,Runnable action){
+  Button b=new Button(this);b.setText(title);b.setAllCaps(false);b.setTextColor(ink);b.setMinHeight(dp(48));b.setPadding(dp(14),dp(8),dp(14),dp(8));b.setBackground(surface(dark?0xff233b4d:0xffe1eaf1,10));
+  b.setOnClickListener(v->action.run());LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(target.getOrientation()==LinearLayout.VERTICAL?-1:-2,-2);p.setMargins(dp(3),dp(4),dp(3),dp(4));target.addView(b,p);
+ }
+ private void tile(LinearLayout row,String title,String subtitle,int icon,Runnable action){
+  Button b=new Button(this);String value=title+"\n"+subtitle;android.text.SpannableString label=new android.text.SpannableString(value);
+  label.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),0,title.length(),0);label.setSpan(new android.text.style.RelativeSizeSpan(1.25f),0,title.length(),0);
+  b.setText(label);b.setTextSize(14);b.setAllCaps(false);b.setTextColor(ink);b.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);b.setPadding(dp(20),dp(14),dp(20),dp(14));b.setBackground(surface(dark?0xff20394b:0xffe5edf4,16));
+  android.graphics.drawable.Drawable image=getDrawable(icon);if(image!=null){image.setTint(dark?0xff79ddcb:0xff087f8c);image.setBounds(0,0,dp(28),dp(28));b.setCompoundDrawables(image,null,null,null);b.setCompoundDrawablePadding(dp(14));}
+  b.setOnClickListener(v->action.run());LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(118),1);p.setMargins(dp(5),dp(5),dp(5),dp(5));row.addView(b,p);
+ }
  private void note(String s){body.addView(text(s,16));}
  private void render(String name) {
   if(busy)return;capture();editor=null;screen=name;
@@ -54,7 +67,7 @@ public final class MainActivity extends Activity {
   ScrollView scroll=new ScrollView(this);
   body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(dp(8),dp(8),dp(8),dp(8));body.setBackgroundColor(panel);
   scroll.addView(body);page.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
-  HorizontalScrollView dock=new HorizontalScrollView(this);LinearLayout nav=new LinearLayout(this);
+  HorizontalScrollView dock=new HorizontalScrollView(this);dock.setFillViewport(true);LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);
   for(String s:new String[]{"Home","Files","Code Studio","Devices","Diagnostics","Settings"})button(nav,s,()->render(s));
   dock.addView(nav);page.addView(dock);setContentView(page);
   switch(name) {
@@ -67,16 +80,20 @@ public final class MainActivity extends Activity {
   }
  }
  private void home() {
-  note("Your tablet workstation");
-  note("Native Android review build · stock Android remains active");
-  button(body,"Choose workspace on SD card",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
-  button(body,"Browse workspace",()->render("Files"));
-  button(body,"Edit source file",()->render("Code Studio"));
-  button(body,"Terminal / Python / Git (Termux)",()->startActivity(new Intent(this,TerminalActivity.class)));
-  button(body,"Remote AI and development",()->startActivity(new Intent(this,RemoteActivity.class)));
-  button(body,"Local AI / GGUF model",()->startActivity(new Intent(this,LocalActivity.class)));
-  note("Local inference requires a small GGUF model and sufficient free RAM. No model or terminal is bundled. Autonomous repair is not yet implemented.");
-  note("Floating windows and split screen are controlled by Android. Resizable manifest support does not verify hardware support.");
+  TextView hero=text("Your AI workspace",30);hero.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);body.addView(hero);
+  note("Create projects, work with code, and choose local or remote AI.");
+  TextView badge=text("REVIEW BUILD · STOCK ANDROID",12);badge.setTextColor(dark?0xff79ddcb:0xff087f8c);body.addView(badge);
+  button(body,"Choose workspace folder",()->safe(()->startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION|Intent.FLAG_GRANT_PREFIX_URI_PERMISSION),10)));
+  note(tree==null?"Choose a folder to begin. SD-card access still needs device verification.":"Workspace folder selected. Open Projects to browse it.");
+  int columns=getResources().getConfiguration().screenWidthDp>=600?2:1;
+  String[] titles={"Projects","Code Studio","Local AI","Terminal","Remote AI & agent","Devices"};
+  String[] descriptions={"Files and project folders","Edit and save source","Offline models and downloads","Python, Git and SSH","Diagnose and review repairs","Tailscale and connections"};
+  int[] icons={android.R.drawable.ic_menu_agenda,android.R.drawable.ic_menu_edit,android.R.drawable.ic_menu_compass,android.R.drawable.ic_menu_manage,android.R.drawable.ic_menu_search,android.R.drawable.ic_menu_share};
+  Runnable[] actions={()->render("Files"),()->render("Code Studio"),()->startActivity(new Intent(this,LocalActivity.class)),()->startActivity(new Intent(this,TerminalActivity.class)),()->startActivity(new Intent(this,RemoteActivity.class)),()->render("Devices")};
+  LinearLayout row=null;
+  for(int i=0;i<titles.length;i++){if(i%columns==0){row=new LinearLayout(this);body.addView(row);}tile(row,titles[i],descriptions[i],icons[i],actions[i]);}
+  note("Local AI stays on this device. Remote tasks use your configured host.");
+  note("Use Android task controls for split screen. Tablet window behavior is not yet verified.");
  }
  private void settings() {
   button(body,dark?"Use light theme":"Use dark theme",()->{dark=!dark;getPreferences(0).edit().putBoolean("dark",dark).apply();render(screen);});

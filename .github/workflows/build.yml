@@ -119,3 +119,51 @@ jobs:
             android/app/build/reports/androidTests/
             android/app/build/outputs/androidTest-results/
           if-no-files-found: error
+
+  live-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OLLAMA_HOST: 127.0.0.1:11434
+      OLLAMA_MODELS: ${{ runner.temp }}/forge-models
+      OLLAMA_NUM_PARALLEL: '1'
+      OLLAMA_MAX_LOADED_MODELS: '1'
+      OLLAMA_KEEP_ALIVE: '0'
+      CUDA_VISIBLE_DEVICES: '-1'
+      FORGEOS_LIVE_MODEL: qwen2.5-coder:0.5b
+      FORGEOS_EVIDENCE_FILE: agent-evidence.json
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned model backend on isolated worker
+        run: |
+          curl --fail --location --retry 2 --max-time 300 -o ollama.tar.zst https://github.com/ollama/ollama/releases/download/v0.40.14/ollama-linux-amd64.tar.zst
+          echo "993e83d08c3d13d17c55009a3e2664c8a25445e644aec3a68bef5abb6abce67d  ollama.tar.zst" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/forge-ollama"
+          tar --zstd -xf ollama.tar.zst -C "$RUNNER_TEMP/forge-ollama"
+          echo "$RUNNER_TEMP/forge-ollama/bin" >> "$GITHUB_PATH"
+      - name: Start loopback backend
+        run: |
+          ollama serve > ollama.log 2>&1 &
+          python - <<'PY'
+          import json,time,urllib.request
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen("http://127.0.0.1:11434/api/version",timeout=1) as response:
+                      assert json.load(response)["version"]=="0.40.14"
+                  break
+              except Exception:
+                  if attempt==29:raise
+                  time.sleep(1)
+          PY
+      - name: Pull small free model
+        run: ollama pull "$FORGEOS_LIVE_MODEL"
+      - name: Verify real tool-calling and approval boundaries
+        run: python -m unittest discover -s bridge -p test_agent_live.py -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ForgeOS-live-agent-evidence
+          path: |
+            agent-evidence.json
+            ollama.log
+          if-no-files-found: error
