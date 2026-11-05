@@ -1,7 +1,7 @@
 # ForgeOS AI
 Native Android workstation development and experimental AOSP GSI product integration for onn 100135925 / t402aa.
 
-**This repository does not yet provide a verified onn operating-system image or true dual boot.** The native review APK runs on stock Android. The owner approved the UI review; no new build has been installed on the tablet. Image boot, unlock, wipe, repartition and flash remain separately gated.
+**This repository does not yet provide a verified onn operating-system image or true dual boot.** The native review APK runs on stock Android. The owner approved the Strata-style design and authorized unlock/flash/wipe if necessary while requiring stock Android preservation. The separate native review APK is installed on stock Android; no OS image has been booted or flashed. Recovery, USB/bootloader and compatibility remain technical gates.
 
 ## Implemented source
 - Native Strata-style HOME dashboard, clock/workspace widgets, responsive app icons, floating glass dock and matching tool panels; no WebView runtime, bitmap wallpaper or blur pass.
@@ -24,6 +24,8 @@ Host tests: `python -m unittest discover -s bridge -v`.
 Actions produces APK, signature check, SHA256, unit/lint reports, isolated emulator interaction results and UI PNGs. A pinned SHA256-checked 135M GGUF is used for actual emulator generation; it is not bundled in the APK.
 
 ## Verification and installation gates
+- [Android16 second-system candidate, actual backup and physical preflight](os/docs/SECOND_SYSTEM_REVIEW.md)
+- [Recorded authorization and stock-preservation requirements](os/docs/AUTHORIZATION.md)
 - [Strata-style UI: actual dark/light/landscape previews and tests](os/docs/STRATA_UI_REVIEW.md)
 - [Experimental OS image, signed updates and exact artifact hashes](os/docs/OS_REVIEW.md)
 - [UI review and proposed tablet test](os/docs/UI_REVIEW.md)

@@ -30,4 +30,4 @@ No bitmap wallpaper, runtime blur, continuous animation or extra dependency. And
 ![Signed OS staging](ui-preview/os-updater.png)
 No visible system error dialog, obscured screen or clipped primary control was accepted. These are actual emulator captures, not generated mockups. They do not establish physical tablet acceptance.
 The image pipeline pins this exact successful APK in commit df21a82; integrated workflow42056016871 passed. Current image artifact13430415448 and stable APK artifact13428468535 are recorded with exact hashes in [OS_REVIEW.md](OS_REVIEW.md).
-Physical tablet UI/peripheral/window acceptance and firmware recovery gates remain separate. No new APK or OS is installed.
+The owner approved the Strata-style design. The separate stable-signed APK is now installed on the actual adopted volume and its process runs. The secure lock screen still prevents visible UI/local-model/window acceptance. No OS image is installed or booted; see [second-system preflight](SECOND_SYSTEM_REVIEW.md).

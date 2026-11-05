@@ -1,0 +1,10 @@
+{
+  "name": "ForgeOS-Android16-ARM64-DSU-CANDIDATE-DO-NOT-FLASH.raw.gz",
+  "compressed_bytes": 1436550186,
+  "compressed_sha256": "d7312eacbf461a50e2b331134c09bb41949854c1eada0a23f5006ecf035b27e4",
+  "raw_bytes": 2955452416,
+  "raw_sha256": "d20bf46729bb99447cda51b3c4e5ea5680e68ac6e4c60c7148f535e65f11b164",
+  "boot_tested": false,
+  "OEM_trusted": false,
+  "native_API35_feed": false
+}

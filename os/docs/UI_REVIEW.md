@@ -1,5 +1,5 @@
 # ForgeOS AI: native workstation review
-**Earlier native UI approval is recorded. The requested Strata-style revision now has its own [actual preview and test report](STRATA_UI_REVIEW.md). Hardware boot acceptance and genuine dual boot remain blocked.**
+**Current Strata-style design approval is recorded. The requested Strata-style revision now has its own [actual preview and test report](STRATA_UI_REVIEW.md). Hardware boot acceptance and genuine dual boot remain blocked.**
 
 ## Previous repository updater review
 [Native workflow42043033635](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42043033635) passed all jobs: 26 Android unit tests, 10 emulator integration tests, lint 0 errors / 64 warnings, ARM64 verification and real remote-model integration.
@@ -7,7 +7,7 @@ Native source: 5d52b065ecf56a63be494617ba8036ff35c7a22d. Debug APK: 6,756,328 by
 ![Actual native OS updater](ui-preview/os-updater.png)
 The signed repository updater checks the latest successful build, validates exact RSA-signed catalog bytes and bounded image/archive hashes, downloads on validated unmetered Wi-Fi, and exports a verified candidate. Token lifetime is session-only. It does not install or apply firmware. Rotation, cancellation, publication rollback and service-generation races have tests; a full real 775 MB native transfer and physical tablet session remain unverified.
 
-No new APK or image has been installed on the target tablet.
+The owner subsequently approved this design. The separate stable-signed review APK is now installed on stock Android; no OS image was installed or booted. See SECOND_SYSTEM_REVIEW.md.
 
 ## Source and artifacts
 - Candidate: [cf01a34](https://github.com/R347H4CK3R/ForgeOS-AI/commit/cf01a34edddb5466643e09229f33554f7662e8d4).

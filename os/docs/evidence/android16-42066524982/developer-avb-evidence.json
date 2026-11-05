@@ -1,0 +1,21 @@
+{
+  "input_sha256": "245b2a94903587016fd1b210e2f49988c5faef9440708030b9f515836b5b7cf2",
+  "filesystem_bytes": 2888343552,
+  "output_sha256": "d20bf46729bb99447cda51b3c4e5ea5680e68ac6e4c60c7148f535e65f11b164",
+  "output_bytes": 2955452416,
+  "public_key_sha256": "50d95733f9b562b115b6ddebbebc17ac809a1fe972351017f313630dbd5cb61b",
+  "security_patch": "2026-09-01",
+  "fingerprint": "google/crdroid_gsi/tdgsi_arm64_ab:16/BP4A.251205.006/eng.androi:user/release-keys",
+  "partition_size": 2955452416,
+  "rollback_index": 1788220800,
+  "algorithm": "SHA256_RSA4096",
+  "avbtool_commit": "5ac0c3a071d811846a62412383dd6e259f341e6e",
+  "avbtool_sha256": "e5a664a38db623da00f080219bc0ee60a640a9dc4a872803616fae4938ac749b",
+  "avb_info": "Footer version:           1.0\nImage size:               2955452416 bytes\nOriginal image size:      2888343552 bytes\nVBMeta offset:            2911096832\nVBMeta size:              2432 bytes\n--\nMinimum libavb version:   1.0\nHeader Block:             256 bytes\nAuthentication Block:     576 bytes\nAuxiliary Block:          1600 bytes\nPublic key (sha1):        f32f405e0d8585658092adf10f9896d33338eea9\nAlgorithm:                SHA256_RSA4096\nRollback Index:           1788220800\nFlags:                    0\nRollback Index Location:  0\nRelease String:           'avbtool 1.3.0'\nDescriptors:\n    Hashtree descriptor:\n      Version of dm-verity:  1\n      Image Size:            2888343552 bytes\n      Tree Offset:           2888343552\n      Tree Size:             22753280 bytes\n      Data Block Size:       4096 bytes\n      Hash Block Size:       4096 bytes\n      FEC num roots:         0\n      FEC offset:            0\n      FEC size:              0 bytes\n      Hash Algorithm:        sha1\n      Partition Name:        system\n      Salt:                  340d6ecfd9e738a3f1b4bfc4faa808a72f718466\n      Root Digest:           00a234f99c44c746424a305e195bc4644372ae55\n      Flags:                 0\n    Prop: com.android.build.system.os_version -> '16'\n    Prop: com.android.build.system.security_patch -> '2026-09-01'\n    Prop: com.android.build.system.fingerprint -> 'google/crdroid_gsi/tdgsi_arm64_ab:16/BP4A.251205.006/eng.androi:user/release-keys'\n",
+  "fsck_clean": true,
+  "boot_tested": false,
+  "OEMtrust": false,
+  "trusted_avb": false,
+  "unlocked_bootloader_required": true,
+  "DSU_candidate_only": true
+}

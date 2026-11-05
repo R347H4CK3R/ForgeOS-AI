@@ -12,7 +12,7 @@ Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21
 | USB peripherals | Blocked | Host feature present; actual peripheral acceptance not performed |
 | External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
 | Adopted SD mount | Verified working | Encrypted private f2fs mounted, 119G total / 118G free at audit |
-| ForgeOS SD access | Blocked | Shared emulated view unmounted; primary shared storage internal; no app grant/migration |
+| ForgeOS SD access | Partially working | Installed APK and private data on adopted UUID; visible SAF workspace/model placement unverified; debug run-as does not resolve adopted path |
 | Local AI | Partially working | Actual pinned 135M GGUF generates in emulator; target performance/quality unverified |
 | Model downloads | Partially working | Actual DownloadManager transfer, SHA256 and recreation pass; target handoff/placement pending |
 | Remote AI | Partially working | Real 1.5B worker test passes; tablet HTTPS session unverified |
@@ -26,14 +26,18 @@ Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21
 | Tailscale | Partially working | Tablet-to-laptop tailnet ping 3/3; app HTTPS setup pending |
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
-| Recovery / rollback | Blocked | App rollback documented; authenticated exact firmware and tested firmware restoration absent |
-| Genuine dual boot | Blocked | Virtual A/B is not dual boot; DSU trust/support unestablished |
+| Recovery / rollback | Blocked | Partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
+| Genuine dual boot | Blocked | Separate DSU candidate built, but no target boot/stock-return or permanent boot selector verified. Virtual A/B is not dual boot |
 | Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
 | Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |
 | Repository OS updates | Partially working | Pinned RSA-signed metadata, bounded Wi-Fi download, verification/export and lifecycle tests; full native artifact transfer and target session unverified |
 | Seamless OTA application | Not implemented | No trusted device-specific payload, platform signing or tested recovery path |
 
-## Current visual and integrated image evidence
+## Current second-system and physical preflight
+[Android16 candidate42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982) passed36Linux tests plus actual developer AVB/hash-tree/signature/prefix/fsck/gzip verification. Patch2026-09-01 matches system/AVB descriptors. This is not OEM trust or target boot proof.
+The native review APK installed on the actual adopted code/private-data volume; process runs and stock HOME remains com.android.launcher3. UI/local-inference/window tests await normal screen unlock. Shared-file backup:47files/335,610,967bytes verified; app-private data and adopted keys excluded. See SECOND_SYSTEM_REVIEW.md.
+
+## Earlier visual and integrated image evidence
 [Native workflow42054065879](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42054065879): all jobs passed;26 unit tests,10 emulator tests in72.067seconds, actual local135M and remote1.5B checks, lint0errors/65warnings. Dark/light/landscape, editor, model, remote and updater screenshots were inspected.
 [OS workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871): integrated Strata-style APK, stable signer, clean ext4, exact payload metadata and signed catalog passed. Downloaded catalog signature/artifact identity/APK hashes independently cross-checked. Hardware classifications below are not upgraded by this build.
 See [UI preview](STRATA_UI_REVIEW.md) and [exact image evidence](OS_REVIEW.md).
@@ -48,4 +52,4 @@ Windows suite: 29 discovered / 28 passed / 1 live skip. Linux suite: 29 discover
 Actual screenshots, test output and synthetic model evidence are linked in [UI review](UI_REVIEW.md).
 
 ## Scope
-A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. No new APK or OS image installed on tablet; no boot, unlock, wipe, partition change, SD reformat or migration performed.
+A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. Native review APK installed on stock Android after design approval; no OS boot, unlock, wipe, partition change, SD reformat or migration performed.

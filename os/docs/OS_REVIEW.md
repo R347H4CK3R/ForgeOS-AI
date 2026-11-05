@@ -1,4 +1,5 @@
-# Experimental OS image and signed update review
+# Legacy Android15 image and signed update review
+Newer Android16 candidate and current authorization/hardware state: [SECOND_SYSTEM_REVIEW.md](SECOND_SYSTEM_REVIEW.md). This older image remains historical/API35 staging evidence.
 Current integrated build: [successful workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871), source df21a82bcb80dd69736d2d4242b88ab174a9080c.
 This actual Android15 ARM64 system filesystem now includes the verified Strata-style native workstation. It adapts a pinned vanilla TrebleDroid GSI offline; it is not a full-source AOSP build or accepted onn firmware.
 
@@ -30,11 +31,11 @@ Settings / OS updates verifies exact-byte RSA3072/SHA256 metadata before trustin
 This is staging only. Seamless OTA application, full real-image transfer in the native client and physical tablet session/storage acceptance remain unverified. There is no install, flash, unlock or wipe control. App signing grants neither platform privileges nor AVB trust.
 
 ## Hardware, recovery and installation gates
-No new APK, image boot, unlock, wipe, partition change, SD format or migration was performed.
+A separate stable-signed native review APK was subsequently installed on stock Android. No image boot, unlock, wipe, partition change, SD format or migration was performed.
 The base remains userdebug/test-keys with patch2025-03-05, older than stock2026-04-05; upstream reports Internet failures on some devices. Modified upstream AVB footer/hash-tree/vbmeta are omitted. This is EXPERIMENTAL-DO-NOT-FLASH and unsuitable as a production-security baseline.
 Freeform resource/feature checks do not prove target floating windows, snapping, touch, graphics, audio, power, Wi-Fi, Bluetooth or USB preservation. Exact authenticated100135925/t402aa/TTA.31 recovery firmware, tested restoration, AVB/rollback and vendor/VINTF/SELinux acceptance remain unresolved. Adopted SD app access and wired display capability are unverified. Virtual A/B is not dual boot.
 The stock DynamicSystem binder/package are present, but trusted ForgeOS DSU boot is not established; see [fresh audit](2026-11-05-followup-audit.md). No arbitrary Android16 image was substituted for API35.
 
-No executable firmware installation procedure is safe to provide yet. Obtain exact authenticated stock recovery firmware, prove rollback/restoration, back up and restore-test user data/adopted-key dependencies, validate partition/snapshot/vendor/signing compatibility, then present exact image hashes and a device-specific procedure for separate owner authorization.
+No executable firmware installation procedure is safe to provide yet. Obtain exact authenticated stock recovery firmware, prove rollback/restoration, back up and restore-test user data/adopted-key dependencies, validate partition/snapshot/vendor/signing compatibility, then present exact image hashes and a device-specific procedure under the recorded owner authorization once all technical gates pass.
 Earlier UI approval is recorded; the requested redesign has a new review preview. A separately scoped APK-only test must verify package/signer compatibility, preserve original home/old apps, and use a new workspace. Never uninstall user data to bypass a signing mismatch.
 See [recovery gates](recovery-and-installation-gates.md), [verification matrix](verification-matrix.md) and [deliverables](deliverables.md).

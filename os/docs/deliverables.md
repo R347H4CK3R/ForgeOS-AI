@@ -26,3 +26,7 @@ The native review APK is a stock-Android interim environment. Virtual A/B is not
 Current native test evidence: 26 unit tests, 10 emulator tests in57.837seconds, lint0errors/64warnings. Current Linux image tools:25/25 pass. See [OS image and update report](OS_REVIEW.md) for integrated signing/build artifacts and remaining gates.
 
 Current visual revision: [Strata-style preview](STRATA_UI_REVIEW.md). Current image: [workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871), image artifact13430415448, stable APK artifact13428468535. Native26unit/10instrumented tests pass; lint0errors/65warnings. Exact hashes and signature verification are in OS_REVIEW.md. No installation performed.
+
+## New Android16 candidate and target preflight
+[Candidate42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982) passed36Linux tests and actual developer-AVB image validation. Artifact13433059297; metadata/evidence13433154313. Security patch2026-09-01, actual API36/user release properties, native workstation integrated. Not OEM trusted, boot verified, permanent dual boot or API36 native update-feed acceptance.
+The stable native APK was subsequently installed on the tablet's adopted storage with stock home preserved. Shared backup47files/335,610,967bytes verified; private data/keys excluded. Current authorization, USB/screen/recovery gates and exact hashes: SECOND_SYSTEM_REVIEW.md.
