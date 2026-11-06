@@ -59,3 +59,7 @@ The initial Code28 failure was diagnosed using the present device hardware IDs a
 product:t402v; version-bootloader:t402v-c492161-20250419153113-20260411163423. Android still reports ro.product.board=t402aa and ro.boot.hardware=mt8786. These are different observed identifiers for the same USB-serial-matched physical tablet. Do not choose firmware for a similar model from either string alone.
 
 Bootloader partition-size values are hexadecimal: boot_b0x2000000 (32MiB), init_boot_b0x800000 (8MiB), vendor_boot_b0x4000000 (64MiB), super0x194000000 (6,777,995,264bytes). These are metadata, not partition backups. Full read-only query output and independently checked stock-return properties are saved alongside the screenshot manifest.
+
+## OEM settings follow-up
+
+Normal screen unlock is verified. Developer options exposes OEM unlocking with an enabled, currently unchecked switch. The supported setting was tapped; Android requests secondary PIN verification. The permission is not yet verified enabled and no unlock/wipe/flash was sent. Only the owner enters the PIN directly on the device. Sanitized observation: [OEM setting availability](evidence/physical-usb-20261106/oem-setting-availability.json).
