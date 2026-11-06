@@ -27,6 +27,7 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
 | Recovery / rollback | Blocked | Normal bootloader-to-stock return verified; partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
+| Temporary official DSU test | Blocked | Official newer API37 GSI hash/AVB/fsck/patch verified; reserved space fits. Native installer request awaits Android credential confirmation; no install completion/OEM trust/boot acceptance. See [route](OFFICIAL_DSU_COMPAT_REVIEW.md). |
 | Genuine dual boot | Blocked | Separate DSU candidate built, but no alternate-OS boot-and-stock-return cycle or permanent boot selector verified. Virtual A/B is not dual boot |
 | Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
 | Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |

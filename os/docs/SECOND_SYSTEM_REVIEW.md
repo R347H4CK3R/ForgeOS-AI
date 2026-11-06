@@ -46,3 +46,7 @@ This covers selected readable shared media/documents/download folders for the cu
 4. Validate the new 2GiB guest/streamed-source allocation on the actual vendor service without silently formatting the adopted card or claiming its encryption keys are backed up. The read-only planner passes; transport and actual allocation are pending.
 
 A read-only bootloader reboot was attempted after restoring the temporary stay-awake setting. The matching signed Windows driver was installed; read-only fastboot queries succeeded and stock returned with boot_completed=1, the original fingerprint, slot_b and locked/green AVB. No unlock, data wipe, firmware flash, DSU preparation/boot, slot switching or SD reformat/migration has occurred. Existing authorization will be used once the technical gates are satisfied; no repeated permission request is needed for already-approved actions.
+
+## Additional stock-preserving compatibility route
+
+The built-in catalog was rejected because its patches predate stock. A newer unmodified official Android17 GSI passed full archive/AVB/fsck/actual-property checks in workflow42227213753. A native temporary DSU install request is prepared with2GiB userdata and automatic reboot disabled; Android credential confirmation is pending. This is an application compatibility environment, not the custom Android16 ForgeOS image or verified permanent dual boot. See [actual route and evidence](OFFICIAL_DSU_COMPAT_REVIEW.md).

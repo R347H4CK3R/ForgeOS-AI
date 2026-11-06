@@ -1,0 +1,15 @@
+{
+  "operation": "Native DSU VerificationActivity START_INSTALL request",
+  "purpose": "Unmodified official GSI for native workstation APK compatibility testing",
+  "url": "https://dl.google.com/developers/android/cinnamonbun/images/gsi/aosp_arm64-exp-CP3A.260905.010-16176746-4a869a69.zip",
+  "system_bytes": 2072014848,
+  "userdata_bytes": 2147483648,
+  "public_key_sha1": "1ffb1af796b18ebf40d18faed213f686720f73f2",
+  "dsu_slot": "forgeos_compat",
+  "KEY_ONE_SHOT": true,
+  "KEY_ENABLE_WHEN_COMPLETED": false,
+  "observed_activity": "com.android.settings/.password.ConfirmDeviceCredentialActivity",
+  "installation_complete_verified": false,
+  "booted": false,
+  "credential_recorded": false
+}

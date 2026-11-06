@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "available_bytes": 7062597632,
+  "system_bytes": 2072014848,
+  "transport_bytes": 1166864309,
+  "userdata_bytes": 2147483648,
+  "reserve_bytes": 1073741824,
+  "allocation_allowance_bytes": 134217728,
+  "streaming": {
+    "required_bytes": 5427458048,
+    "free_after_allocation_bytes": 2708881408,
+    "fits": true
+  },
+  "staged": {
+    "required_bytes": 6594322357,
+    "free_after_allocation_bytes": 1542017099,
+    "fits": true
+  },
+  "boot_ready": false,
+  "limitations": [
+    "Capacity estimate only; vendor allocation and guest first boot are untested.",
+    "Streaming requires an actually reachable source; no stream server is provisioned by this tool.",
+    "OEM key trust, unlock policy, VINTF compatibility and recovery remain separate gates.",
+    "A 2 GiB guest is for a small evaluation, not a complete development workspace.",
+    "Adopted SD storage is neither counted nor reformatted."
+  ],
+  "measurement": "Actual USB df -k /data immediately before installer request,2026-11-06UTC"
+}

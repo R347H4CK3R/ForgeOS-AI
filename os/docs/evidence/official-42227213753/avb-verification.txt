@@ -1,0 +1,3 @@
+Verifying image compatibility-work/system.img using embedded public key
+vbmeta: Successfully verified footer and SHA256_RSA4096 vbmeta struct in compatibility-work/system.img
+system: Successfully verified sha256 hashtree of compatibility-work/system.img for image of 2039234560 bytes
