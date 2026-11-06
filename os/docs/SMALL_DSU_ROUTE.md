@@ -41,3 +41,7 @@ Do not use a local-file URI as a workaround for signature/revocation errors: And
 ## Still required
 
 Normal device unlock to inspect the OEM setting; authenticated exact100135925/TTA.31 recovery evidence; vendor/VINTF/AVB/rollback validation; actual source transport and allocation checks. Stock remains locked/AVBgreen on slot_b. No candidate installation/boot, unlock, wipe, slot switch or SD reformat occurred. The adopted card is excluded from this allocation calculation and is not treated as a portable DSU volume.
+
+## Verification
+
+Windows suite:42 discovered /38passed /4Linux-only skips in4.114seconds. [Linux workflow42150498887](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42150498887) on d181ca79 passed all42tests in3.844seconds, including real ext4/AVB checks and the six new DSU capacity cases. Image construction was correctly skipped for this preflight-only change; no new system image or APK is claimed.
