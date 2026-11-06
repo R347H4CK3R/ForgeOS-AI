@@ -24,15 +24,15 @@ The older Android15 stage-only update feed is retained separately. This Android1
 ## Dual-system route and limits
 Android DSU is the candidate route for a separate system while leaving physical stock boot/system/vendor partitions intact. It is a temporary alternate-system facility, not established permanent dual boot or a tested boot menu. Virtual A/B is not used as a dual-boot mechanism.
 Stock DynamicSystem binder and installation package exist; OEM-lock service and Developer Settings activity resolve. The device remains locked/AVB-green. Unlock availability is not established from a missing build property or a denied protected-service read.
-Only wireless ADB is currently observed; there is no verified USB/fastboot connection. Rebooting to the bootloader would lose this wireless session.
-Android DSU cannot use adopted SD media as backing storage. Current internal free space is6.1GiB. The default8GiB DSU data image plus this2.96GB system and transport requires substantially more space; reserve about14GiB for a conservative setup. The SD card was not reformatted. Its encrypted contents are not automatically shareable between independent OS data environments.
+USB ADB and normal screen unlock are now verified. The read-only bootloader preflight initially exposed driver Code28 for MediaTek USB0E8D:201C. An exact-ID-matching Microsoft-signed catalog package resolved it. Actual fastboot reports product t402v / locked / secure / slot_b / unlock_ability=0. Normal return to stock is verified; this is not a tested firmware restore. See [physical review](PHYSICAL_USB_REVIEW.md).
+Android DSU cannot use adopted SD media as backing storage. Current internal free space is about6.4GiB. The default8GiB DSU data image plus this2.96GB system and transport requires substantially more space; reserve about14GiB for a conservative setup. The SD card was not reformatted. Its encrypted contents are not automatically shareable between independent OS data environments.
 Official reference:https://source.android.com/docs/core/ota/dynamic-system-updates
 
 ## Actual stock-Android hardware preflight
 The exact stable APK SHA256e728a652d30a6b9cbd7ea376a0b610c81b54c9b5ee15d1d64a51ddb05a2c51dc was independently rehashed and installed successfully as dev.forgeos.ai.review. It is separate from the original app.
 Package code and private data resolve under adopted volume18f27593-ebdf-491b-a706-6ce6e031255e. The app process runs; one background snapshot was44,558KiB PSS /94,404KiB RSS. This is not an inference benchmark.
 The default HOME role remains com.android.launcher3. Stock kernel is6.6.102-android15; system security patch remains2026-04-05. No firmware was changed.
-The secure lock screen is still showing. Physical UI, local model generation, finger/multitouch and window testing await normal device unlock. A debug run-as probe cannot resolve this adopted app's data path; that is not proof the app lacks storage permission. SAF workspace/model placement and cross-environment SD access remain unverified.
+The normal screen was unlocked. Actual dashboard rendering, starter download/hash/handoff and ARM64 local generation are verified. Native split-screen task placement and divider resizing were observed; a blank Termux pane prevents full multitasking acceptance. Physical finger/multitouch remains untested. A debug run-as probe cannot resolve this adopted app's data path; that is not proof the app lacks storage permission. SAF workspace/model placement and cross-environment SD access remain unverified.
 
 ## Backup coverage
 A partial shared-files backup was created on GamingLaptop at C:\Users\Chris\ForgeOS-Backups\2026-11-05_10-13-57.
@@ -40,9 +40,9 @@ All47copied files,335,610,967bytes, match tablet SHA256 hashes. The initial3veri
 This covers selected readable shared media/documents/download folders for the current user0. App-private data, accounts, adopted-storage encryption keys, other users' private data and firmware recovery partitions are NOT backed up. It is not a full-device restore image.
 
 ## Remaining gates
-1. Unlock the normal tablet screen and connect a data-capable USB cable to GamingLaptop for safe on-device tests and read-only bootloader identification.
-2. Obtain/authenticate exact100135925/t402aa/TTA.31 stock recovery firmware and establish a tested stock restore route.
+1. USB, normal screen unlock, trusted bootloader driver, read-only identification and normal stock return are satisfied. Current OEM unlock policy reports unlock_ability=0. No unlock command was sent; changing policy is not a substitute for recovery/compatibility proof.
+2. Obtain/authenticate exact100135925/t402aa (bootloader t402v)/TTA.31 stock recovery firmware and establish a tested stock restore route.
 3. Validate VINTF/HAL/SELinux/input/graphics/network and AVB/rollback behaviour, including returning to stock, before accepting any dual-OS result.
 4. Resolve internal/portable storage allocation without silently formatting the adopted card or claiming its encryption keys are backed up.
 
-No bootloader reboot/unlock, data wipe, firmware flash, DSU preparation/boot, slot switching or SD reformat/migration has occurred. Existing authorization will be used once the technical gates are satisfied; no repeated permission request is needed for already-approved actions.
+A read-only bootloader reboot was attempted after restoring the temporary stay-awake setting. The matching signed Windows driver was installed; read-only fastboot queries succeeded and stock returned with boot_completed=1, the original fingerprint, slot_b and locked/green AVB. No unlock, data wipe, firmware flash, DSU preparation/boot, slot switching or SD reformat/migration has occurred. Existing authorization will be used once the technical gates are satisfied; no repeated permission request is needed for already-approved actions.

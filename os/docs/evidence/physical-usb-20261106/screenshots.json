@@ -1,0 +1,22 @@
+{
+  "home.png": {
+    "bytes": 259274,
+    "sha256": "50e5d73fde4bac24e2bf491a70b7b36d73b6b12f1895876d40685310cc743d28"
+  },
+  "model-download-progress.png": {
+    "bytes": 284391,
+    "sha256": "745f9416d1790e8eb74621d0fca1b6bc18e319c056f33b7216103916ace0a695"
+  },
+  "local-inference-result.png": {
+    "bytes": 236601,
+    "sha256": "cb488924ff4b19a2197c32b0ba4c71be6cf163ecbc2672d7d6cc59cf7e43f995"
+  },
+  "split-after-back.png": {
+    "bytes": 157297,
+    "sha256": "524bb2aaef99f4d8615dc8101643226a86ddc0cb24237638bf4e7bf6ec89347d"
+  },
+  "split-resized.png": {
+    "bytes": 189467,
+    "sha256": "113363e60b467819f5e9ef96af4afb64c6adc2a5bc5c8b8d63c92979dfbcfeee"
+  }
+}

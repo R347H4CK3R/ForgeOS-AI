@@ -1,11 +1,11 @@
 # ForgeOS verification matrix
-Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21a82. This is a development review, not OS acceptance.
+Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image source df21a82 / Android16 candidate source e077fbc. This is a development review, not OS acceptance.
 
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
-| Custom OS boot | Blocked | Locked AVB; exact recovery firmware and tested restoration unverified; no candidate boot authorized |
-| Touch input | Partially working | Emulator interactions pass; physical target interaction pending |
-| Native multi-window | Partially working | Resizable activities and adjacent launch requests; target behavior not verified |
+| Custom OS boot | Blocked | Locked AVB; exact recovery firmware and tested restoration unverified; candidate not boot-tested; existing approval recorded |
+| Touch input | Partially working | Actual UI responds to ADB-injected taps; finger/multitouch acceptance pending |
+| Native multi-window | Partially working | Actual target split placement and divider resize observed; Termux pane black in captures, full acceptance unresolved |
 | Floating-window controls/snapping | Not implemented | No verified privileged window manager/image |
 | Wi-Fi | Verified working | Wireless ADB and 3/3 Internet ping; throughput/roaming not measured |
 | Bluetooth | Partially working | Enabled and supported; pairing and input untested |
@@ -13,8 +13,8 @@ Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21
 | External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
 | Adopted SD mount | Verified working | Encrypted private f2fs mounted, 119G total / 118G free at audit |
 | ForgeOS SD access | Partially working | Installed APK and private data on adopted UUID; visible SAF workspace/model placement unverified; debug run-as does not resolve adopted path |
-| Local AI | Partially working | Actual pinned 135M GGUF generates in emulator; target performance/quality unverified |
-| Model downloads | Partially working | Actual DownloadManager transfer, SHA256 and recreation pass; target handoff/placement pending |
+| Local AI | Partially working | Actual pinned 135M GGUF generates on ARM64 tablet; useful coding quality, peak memory and throughput unverified |
+| Model downloads | Partially working | Actual tablet download, independent SHA256 and handoff pass; downloaded model on internal shared storage, SD model placement pending |
 | Remote AI | Partially working | Real 1.5B worker test passes; tablet HTTPS session unverified |
 | Tool-calling repair | Partially working | Real read/propose/approved apply; syntax repair and permission regressions; complex-project behavior unverified |
 | Agent project test/build execution | Not implemented | Python syntax parsing only; no arbitrary generated-code execution |
@@ -26,8 +26,8 @@ Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21
 | Tailscale | Partially working | Tablet-to-laptop tailnet ping 3/3; app HTTPS setup pending |
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
-| Recovery / rollback | Blocked | Partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
-| Genuine dual boot | Blocked | Separate DSU candidate built, but no target boot/stock-return or permanent boot selector verified. Virtual A/B is not dual boot |
+| Recovery / rollback | Blocked | Normal bootloader-to-stock return verified; partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
+| Genuine dual boot | Blocked | Separate DSU candidate built, but no alternate-OS boot-and-stock-return cycle or permanent boot selector verified. Virtual A/B is not dual boot |
 | Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
 | Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |
 | Repository OS updates | Partially working | Pinned RSA-signed metadata, bounded Wi-Fi download, verification/export and lifecycle tests; full native artifact transfer and target session unverified |
@@ -35,7 +35,7 @@ Evidence: 2026-11-05 UTC, native software candidate10e2d26; OS image source df21
 
 ## Current second-system and physical preflight
 [Android16 candidate42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982) passed36Linux tests plus actual developer AVB/hash-tree/signature/prefix/fsck/gzip verification. Patch2026-09-01 matches system/AVB descriptors. This is not OEM trust or target boot proof.
-The native review APK installed on the actual adopted code/private-data volume; process runs and stock HOME remains com.android.launcher3. UI/local-inference/window tests await normal screen unlock. Shared-file backup:47files/335,610,967bytes verified; app-private data and adopted keys excluded. See SECOND_SYSTEM_REVIEW.md.
+The native review APK installed on the actual adopted code/private-data volume; process runs and stock HOME remains com.android.launcher3. Actual native UI/download/handoff/local generation pass; native split placement/resize observed with black Termux pane. Initial Windows driver Code28 resolved with exact matching Microsoft-signed package; actual fastboot metadata/unlock_ability=0 read, then stock return verified. See [physical evidence](PHYSICAL_USB_REVIEW.md). Shared-file backup:47files/335,610,967bytes verified; app-private data and adopted keys excluded. See SECOND_SYSTEM_REVIEW.md.
 
 ## Earlier visual and integrated image evidence
 [Native workflow42054065879](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42054065879): all jobs passed;26 unit tests,10 emulator tests in72.067seconds, actual local135M and remote1.5B checks, lint0errors/65warnings. Dark/light/landscape, editor, model, remote and updater screenshots were inspected.
