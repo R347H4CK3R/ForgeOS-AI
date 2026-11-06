@@ -1,6 +1,7 @@
 name: Inspect official GSI compatibility baseline
 on:
   workflow_dispatch:
+  workflow_call:
   pull_request:
     paths: ['.github/workflows/gsi-compat.yml', 'os/image/candidates/google-compat.lock.json']
 permissions:

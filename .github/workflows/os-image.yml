@@ -10,7 +10,7 @@ on:
         required: true
         default: inspect
         type: choice
-        options: [inspect, inspect-android16, build, build-android16-candidate]
+        options: [inspect, inspect-android16, inspect-official, build, build-android16-candidate]
 permissions:
   contents: read
   actions: read
@@ -27,7 +27,7 @@ jobs:
         working-directory: os/image
         run: python -m unittest discover -s tests -v
   image:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -246,3 +246,8 @@ jobs:
             image-work/application/signing-evidence.json
           if-no-files-found: error
           retention-days: 7
+
+  official-compat:
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect-official'
+    needs: validate
+    uses: ./.github/workflows/gsi-compat.yml
