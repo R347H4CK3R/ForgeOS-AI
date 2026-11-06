@@ -28,7 +28,7 @@ The proposed later transport is a verified gzip on GamingLaptop streamed through
 
 ## Unlock route and trust boundary
 
-Android's supported response to get_unlock_ability=0 is enabling OEM unlocking in Developer options when the device permits it. The normal screen is now unlocked. Actual Developer options shows OEM unlocking with its control enabled and unchecked. Tapping it opens Android Settings Re-enter your PIN verification. The owner must enter that PIN on the device; permission enablement and subsequent get_unlock_ability have not yet been verified. No credential bypass, direct protected-service write, unlock exploit or flash command is used.
+Android's supported response to get_unlock_ability=0 is enabling OEM unlocking in Developer options when the device permits it. The normal screen is now unlocked. Actual Developer options shows OEM unlocking with its control enabled and unchecked. Tapping it opens Android Settings Re-enter your PIN verification. The owner subsequently completed that PIN confirmation. The checked switch and Android permission1 were observed; read-only fastboot now reports16777216, and stock returned locked/green. This exact vendor value is not normalized to1. See [OEM policy review](OEM_POLICY_REVIEW.md). No credential bypass, direct protected-service write, unlock exploit or flash command is used.
 
 Official reference: https://source.android.com/docs/core/architecture/bootloader/locking_unlocking
 
@@ -40,7 +40,7 @@ Do not use a local-file URI as a workaround for signature/revocation errors: And
 
 ## Still required
 
-On-device secondary PIN verification to change the now-observed OEM setting; authenticated exact100135925/TTA.31 recovery evidence; vendor/VINTF/AVB/rollback validation; actual source transport and allocation checks. Stock remains locked/AVBgreen on slot_b. No candidate installation/boot, unlock, wipe, slot switch or SD reformat occurred. The adopted card is excluded from this allocation calculation and is not treated as a portable DSU volume.
+Authenticated exact100135925/TTA.31 recovery evidence and validation of actual vendor unlock behaviour; vendor/VINTF/AVB/rollback validation; actual source transport and allocation checks. Stock remains locked/AVBgreen on slot_b. No candidate installation/boot, unlock, wipe, slot switch or SD reformat occurred. The adopted card is excluded from this allocation calculation and is not treated as a portable DSU volume.
 
 ## Verification
 

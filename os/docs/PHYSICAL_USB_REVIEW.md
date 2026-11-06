@@ -63,3 +63,7 @@ Bootloader partition-size values are hexadecimal: boot_b0x2000000 (32MiB), init_
 ## OEM settings follow-up
 
 Normal screen unlock is verified. Developer options exposes OEM unlocking with an enabled, currently unchecked switch. The supported setting was tapped; Android requests secondary PIN verification. The permission is not yet verified enabled and no unlock/wipe/flash was sent. Only the owner enters the PIN directly on the device. Sanitized observation: [OEM setting availability](evidence/physical-usb-20261106/oem-setting-availability.json).
+
+## Post-PIN policy verification
+
+The owner completed Android credential confirmation. OEM switch checked and sys.oem_unlock_allowed=1 were observed. Fastboot now reports exact unlock_ability16777216, not0 or literal1. A normal reboot returned stock locked/AVBgreen on slot_b with the permission retained. No actual unlock, wipe or flash was sent. [Full current policy review](OEM_POLICY_REVIEW.md). Earlier0/pending-PIN observations above are retained as history.
