@@ -57,12 +57,13 @@ jobs:
           Path('vm-work/verification.json').write_text(json.dumps(result, indent=2))
           print(json.dumps(result, indent=2))
           PY
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ForgeOS-VM-companion-verification
-          path: |
-            vm-work/*.json
-            vm-work/*.txt
-          retention-days: 7
-          if-no-files-found: error
+      - name: Publish verified result in workflow summary
+        run: |
+          {
+            echo '## Pinned VM companion verification'
+            echo 'The APK remains available from the publisher URL in os/vm/sidecar.lock.json.'
+            echo 'This report verifies identity/signature, not target boot.'
+            echo '```json'
+            cat vm-work/verification.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
