@@ -1,32 +1,23 @@
 # Deliverables and evidence
-Review branch: forgeos/native-workstation, [PR1](https://github.com/R347H4CK3R/ForgeOS-AI/pull/1).
-Earlier workstation candidate: [cf01a34](https://github.com/R347H4CK3R/ForgeOS-AI/commit/cf01a34edddb5466643e09229f33554f7662e8d4).
-[Workflow 41978243888](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/41978243888): all three jobs passed.
-The operating-system mission remains incomplete.
+
+Review branch: [forgeos/native-workstation / PR1](https://github.com/R347H4CK3R/ForgeOS-AI/pull/1). The operating-system mission remains incomplete: exact stock recovery firmware, alternate Android image boot and genuine dual boot are blocked. Native0.3 and the real Linux interim environment are verified on the tablet.
 
 | Requested deliverable | Current result | Evidence / next gate |
 |---|---|---|
-| Complete source repository | Native workstation, signed updater and offline GSI adapter delivered; hardware acceptance incomplete | PR1; native10e2d26; OS image df21a82; provenance hardening353560b |
-| Native Android launcher | HOME-capable review APK; physical acceptance pending | android/app; verified APK and native UI job |
-| Integrated workstation | Editor, workspace, downloader, local runtime, remote agent and Termux integration | Native/bridge tests; tablet setup pending |
-| Working multi-window | Partial: resizable activities and adjacent task requests | Target freeform/snapping/window controls unverified |
-| Connectivity | Stock Wi-Fi and tablet-to-laptop tailnet ping verified | hardware-audit.md; Bluetooth/USB/HTTPS app session pending |
-| Local AI runtime | Actual 135M GGUF generation verified in emulator | evidence/local-inference-cf01a34.txt; target latency/RAM pending |
-| Remote development bridge | Constrained authenticated bridge and actual remote-model planning/approved apply | evidence/live-agent-cf01a34.json; target HTTPS setup pending |
-| GitHub Actions | Android/native builds, lint, tests, real models, APK signature/hash, screenshots | Successful native workflow42054065879 and integrated OS workflow42056016871 |
-| Hardware report | Read-only target evidence documented | hardware-audit.md and verification-matrix.md |
-| Recovery/rollback docs | App rollback and firmware gates documented | recovery-and-installation-gates.md; exact firmware/restore blocked |
-| Buildable OS image | Experimental ARM64 Android15 GSI filesystem built offline | OS_REVIEW.md; trusted AVB, boot and recovery acceptance blocked |
-| Repository OS updates | Signed discovery/download/verification/export staging implemented | 26 unit + 10 emulator tests; seamless OTA application not implemented |
-| UI/verification review | Actual inspected PNGs, tests, limitations and proposed APK-only test | UI_REVIEW.md and ui-preview/ |
+| Complete source repository | Native workstation, constrained bridge, signed staging updater and GSI adapter delivered; full OS hardware acceptance incomplete | PR1; native artifact source4f50024; current branch contains image-input integration fixes |
+| Native Android launcher | HOME-capable native0.3 APK installed and physically exercised; stock HOME retained | [Native target review](NATIVE_03_REVIEW.md), exact deployment hash and screenshots |
+| Integrated workstation | Native SD editor/workspace/model management plus actual AVF Linux Python/Git; Termux and broader workflows remain partial | [Verification matrix](verification-matrix.md), [Linux acceptance](AVF_INTERIM_REVIEW.md) |
+| Working multi-window | Actual native/Podroid split pair, touch divider resizing and live Linux terminal verified | Physical screenshots/activity bounds; arbitrary freeform/snapping/window controls incomplete |
+| Connectivity | Stock Wi-Fi and tablet/laptop tailnet ping verified; QEMU guest package downloads work | Bluetooth/USB/HDMI and tablet HTTPS inference remain unverified; AVF guest Internet unavailable |
+| Local AI runtime | Actual135M GGUF generation directly from SD, persisted grant and granted-FD regression pass | Greeting fixture passes; another prompt was off-topic. General coding/model quality incomplete |
+| Remote development bridge | Constrained authenticated bridge and real1.5B worker planning/approved apply tests | [Bridge source](../../bridge/README.md); target HTTPS setup and arbitrary remote sessions incomplete |
+| GitHub Actions | Android/native builds, unit/lint, real local/remote models, UI tests and quota-independent draft bundles pass | [Native run42337427732](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42337427732): all five jobs passed |
+| Hardware report | Actual physical ADB, storage, native multitasking and AVF execution documented | [Hardware audit](hardware-audit.md), native/guest reviews; physical peripherals remain deferred |
+| Recovery/rollback docs | Current stock integrity and tested companion restart workaround documented | Exact firmware/full restoration still blocked; [firmware gates](recovery-and-installation-gates.md) |
+| Buildable OS image | Experimental ARM64 Android15 and Android16 system filesystems built and verified offline previously | [Android16 run42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982), artifact13433059297; not OEM trusted or boot verified. New native input is pinned for future builds |
+| Repository OS updates | Signed discovery/download/verification/export staging implemented | Seamless OTA and trusted device-specific application remain unimplemented |
+| UI/verification review | Actual target SD inference, native home, environment controls and live Linux split screenshots delivered | [Native0.3 review](NATIVE_03_REVIEW.md), [AVF review](AVF_INTERIM_REVIEW.md), earlier [light/dark/landscape review](STRATA_UI_REVIEW.md) |
 
-No new ForgeOS APK, image boot, unlock, wipe, partition change, SD reformat or migration performed.
-The native review APK is a stock-Android interim environment. Virtual A/B is not true dual boot.
+Native run42337427732 passed12 instrumented tests in83.051seconds. Lint reports0errors/69warnings. The stable-signed APK is byte-identical to the physically tested installation (ff412bbe95561b91a925c09f9d73c3f5bb7ca60ac5e66d34a3485f9351142600). Windows image-tool suite:51discovered,47passed,4Linux/platform skips; CI-script suite:20discovered,19passed,1Windows symlink skip. Separate Linux CI runs the platform cases.
 
-Current native test evidence: 26 unit tests, 10 emulator tests in57.837seconds, lint0errors/64warnings. Current Linux image tools:25/25 pass. See [OS image and update report](OS_REVIEW.md) for integrated signing/build artifacts and remaining gates.
-
-Current visual revision: [Strata-style preview](STRATA_UI_REVIEW.md). Current image: [workflow42056016871](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42056016871), image artifact13430415448, stable APK artifact13428468535. Native26unit/10instrumented tests pass; lint0errors/65warnings. Exact hashes and signature verification are in OS_REVIEW.md. No installation performed.
-
-## New Android16 candidate and target preflight
-[Candidate42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982) passed36Linux tests and actual developer-AVB image validation. Artifact13433059297; metadata/evidence13433154313. Security patch2026-09-01, actual API36/user release properties, native workstation integrated. Not OEM trusted, boot verified, permanent dual boot or API36 native update-feed acceptance.
-The stable native APK was subsequently installed on the tablet's adopted storage with stock home preserved. Shared backup47files/335,610,967bytes verified; private data/keys excluded. Current authorization, USB/screen/recovery gates and exact hashes: SECOND_SYSTEM_REVIEW.md.
+The owner approved design and authorized unlocking/flashing/conditional erasure. Technical firmware/recovery gates remain unmet. The earlier explicitly approved SD erase produced the current mixed public/private card layout; no new erase, bootloader unlock, internal wipe or firmware flash occurred during this VM/native repair. The Linux guest is not true dual boot. Approximately1.93GiB unexplained internal free-space difference remains separate from the verified100.6MiB model-copy cleanup.

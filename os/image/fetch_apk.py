@@ -4,7 +4,7 @@ from pathlib import Path
 from image_tools import verify_file,require_regular
 
 def gh_json(route):
- result=subprocess.run(["gh","api",route],capture_output=True,text=True,timeout=60)
+ result=subprocess.run(["gh","api",route],capture_output=True,text=True,encoding="utf-8",timeout=60)
  if result.returncode:raise RuntimeError("GitHub artifact metadata request failed")
  return json.loads(result.stdout)
 
@@ -39,7 +39,7 @@ def verify_apk_source(commit,cwd=None):
 
 def verify_draft_asset(release,pin):
  tag="forgeos-review-"+str(pin["run_id"])+"-"+str(pin["run_attempt"])+"-ForgeOS-native-review"
- if release.get("tag_name")!=tag or release.get("target_commitish")!=pin["source_commit"] or release.get("draft") is not True or release.get("prerelease") is not True:
+ if release.get("id")!=pin["release_id"] or release.get("tag_name")!=tag or release.get("target_commitish")!=pin["source_commit"] or release.get("draft") is not True or release.get("prerelease") is not True:
   raise ValueError("review release source, run or publication state mismatch")
  if type(pin["archive_bytes"]) is not int or not 0<pin["archive_bytes"]<=32*1024*1024:
   raise ValueError("review archive size is not bounded")
@@ -70,7 +70,7 @@ def fetch(lock,repository,output):
  if "release_asset_id" in apk:
   if run.get("run_attempt")!=apk["run_attempt"]:raise ValueError("review run attempt mismatch")
   tag="forgeos-review-"+str(apk["run_id"])+"-"+str(apk["run_attempt"])+"-ForgeOS-native-review"
-  release=gh_json("repos/"+repository+"/releases/tags/"+tag)
+  release=gh_json("repos/"+repository+"/releases/"+str(apk["release_id"]))
   asset=verify_draft_asset(release,apk)
   archive=output/"review.zip"
   route="repos/"+repository+"/releases/assets/"+str(asset["id"])

@@ -19,7 +19,7 @@ Outputs include a compressed raw ext4 image, hashes, input pins and inspection/b
 EXPERIMENTAL-DO-NOT-FLASH.
 Offline fsck/hash/metadata verification does not prove boot, HAL/VINTF/SELinux runtime, Wi-Fi, Bluetooth, graphics, audio, storage or window controls on onn100135925.
 The exact stock restore package, recovery path, snapshot merge state, AVB trust/rollback and physical compatibility must be established first. Virtual A/B is not true dual boot.
-Owner UI approval is recorded; bootloader unlocking, wiping, repartitioning, firmware flashing and image boot are not authorized by this build task.
+Existing owner design/unlock/flash/conditional-erasure approval is recorded. Exact firmware, tested recovery and image acceptance gates remain unmet. This offline workflow performs no device unlock, wipe or flash.
 
 ## Signed repository delivery
 The Settings / OS updates screen checks the latest successful explicit ForgeOS build. It verifies an exact-byte RSA3072/SHA256 catalog with the pinned public key, validates repository/API35/ARM64/sequence and signed byte/hash limits, then stages a candidate on validated unmetered Wi-Fi. Rotation, cancellation and foreground-service ownership are guarded. Export uses Android's document picker. There is no firmware install/apply command.
@@ -27,3 +27,9 @@ The private repository requires an Actions-read token entered for the session on
 The image's ordinary preinstalled APK is re-signed with the stable certificate SHA256 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a. This grants no platform/AVB trust. Replacing an incompatible debug-signed package is not a reason to uninstall user data.
 The image artifact contains only the XZ image. A separate signed catalog binds its artifact ID, actual GitHub ZIP digest/size, XZ digest/size and raw image digest/size. Evidence and the stable APK are separate artifacts. Artifacts expire after seven days; an expired latest build fails closed and requires a new verified build, rather than silently selecting an older candidate.
 Actual integrated results are recorded in ../docs/OS_REVIEW.md. Seamless OTA application is not implemented: a device-specific trusted payload, update-engine integration, recovery/rollback evidence and separate installation authorization are still required.
+
+## Quota-independent native APK inputs
+
+Current APK pins may use immutable draft release_id and release_asset_id plus run_id/run_attempt, archive size/digest and exact APK source/hash/size. Drafts are retrieved by ID: GitHub release-by-tag lookup does not return unpublished drafts. The actual checkout recorded in bounded signing evidence must equal the pinned successful workflow head. Only the fixed APK entry is extracted; legacy Actions artifact pins remain supported. This does not change system-image artifact delivery or establish boot acceptance.
+
+Dispatch operation=verify-apk for the lightweight authenticated Actions handoff check without downloading or adapting a GSI. Native source4f50024 / run42337427732 is pinned after all build/test jobs passed. The current installed stable APK matches its bytes. Production OTA remains unimplemented.

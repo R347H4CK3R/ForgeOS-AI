@@ -10,7 +10,7 @@ on:
         required: true
         default: inspect
         type: choice
-        options: [inspect, inspect-android16, inspect-official, inspect-vm, build, build-android16-candidate]
+        options: [inspect, inspect-android16, inspect-official, inspect-vm, verify-apk, build, build-android16-candidate]
 permissions:
   contents: read
   actions: read
@@ -29,7 +29,7 @@ jobs:
       - name: VM artifact safety tests
         run: python -m unittest discover -s os/vm/tests -v
   image:
-    if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official' && inputs.operation != 'inspect-vm'
+    if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official' && inputs.operation != 'inspect-vm' && inputs.operation != 'verify-apk'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -258,3 +258,20 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect-vm'
     needs: validate
     uses: ./.github/workflows/vm-compat.yml
+
+  apk-input:
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'verify-apk'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify actual pinned draft APK download and source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python os/image/fetch_apk.py --lock os/image/candidates/android16.lock.json --repository "$GITHUB_REPOSITORY" --output apk-input
+          echo 'Pinned draft APK ownership, source, archive digest and extracted APK bytes passed.' >> "$GITHUB_STEP_SUMMARY"

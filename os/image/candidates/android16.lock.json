@@ -21,10 +21,14 @@
   "acceptance": "OFFLINE ANDROID16 SECOND-SYSTEM CANDIDATE ONLY. No physical boot, recovery, OEM AVB trust or permanent dual boot acceptance.",
   "fingerprint": "google/crdroid_gsi/tdgsi_arm64_ab:16/BP4A.251205.006/eng.androi:user/release-keys",
   "apk": {
-    "source_commit": "10e2d267242d0407c3e88fa378d122817f034e7a",
-    "run_id": 42054065879,
-    "artifact_id": 13428631628,
-    "sha256": "cdd961dc7e079ac358255b627bbac4adf05a5ecec959659a73b7162a6f74b940",
-    "bytes": 6756328
+    "release_id": 437323699,
+    "source_commit": "4f50024e4158413fbde506fc6ee5e5b95eda1791",
+    "run_id": 42337427732,
+    "run_attempt": 1,
+    "release_asset_id": 719577884,
+    "archive_bytes": 5244854,
+    "archive_sha256": "f616be5d85c0b68a143c59fbb8bd9394ed5f39963a3b81214a08c1ef9b5ed666",
+    "sha256": "33bde9dc2cdc485cf132fd26706ae9f6960f68227b472f7a9791e1bad1b8176f",
+    "bytes": 6756964
   }
 }

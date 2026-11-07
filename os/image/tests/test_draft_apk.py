@@ -4,12 +4,12 @@ from fetch_apk import verify_draft_asset,extract_apk_archive,verify_bundle_prove
 
 class DraftApkTests(unittest.TestCase):
  def setUp(self):
-  self.pin={"run_id":123,"run_attempt":1,"source_commit":"a"*40,"release_asset_id":55,"archive_bytes":100,"archive_sha256":"b"*64}
-  self.release={"tag_name":"forgeos-review-123-1-ForgeOS-native-review","target_commitish":"a"*40,"draft":True,"prerelease":True,"assets":[{"id":55,"name":"ForgeOS-native-review.zip","size":100,"digest":"sha256:"+"b"*64}]}
+  self.pin={"release_id":77,"run_id":123,"run_attempt":1,"source_commit":"a"*40,"release_asset_id":55,"archive_bytes":100,"archive_sha256":"b"*64}
+  self.release={"id":77,"tag_name":"forgeos-review-123-1-ForgeOS-native-review","target_commitish":"a"*40,"draft":True,"prerelease":True,"assets":[{"id":55,"name":"ForgeOS-native-review.zip","size":100,"digest":"sha256:"+"b"*64}]}
  def test_exact_unpublished_same_source_asset(self):
   self.assertEqual(verify_draft_asset(self.release,self.pin)["id"],55)
  def test_wrong_source_run_identity_or_hash_rejected(self):
-  for key,value in (("target_commitish","c"*40),("tag_name","other"),("draft",False)):
+  for key,value in (("id",78),("target_commitish","c"*40),("tag_name","other"),("draft",False)):
    bad=copy.deepcopy(self.release);bad[key]=value
    with self.subTest(key=key),self.assertRaises(ValueError):verify_draft_asset(bad,self.pin)
   for key,value in (("size",101),("digest","sha256:"+"c"*64),("id",56),("name","other.zip")):

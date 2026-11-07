@@ -44,7 +44,7 @@ Files: android/app/src/main/java/dev/forgeos/ai/EnvironmentActivity.java; Enviro
 Consumes verified signer, exact companion package and actual Task 2 behavior.
 - [x] Write failing policy tests for absent companion, wrong signer and missing permissions.
 - [x] Implement clear native controls that launch the companion and explain actual setup limits.
-- [ ] Build/test in Actions, inspect UI preview, then verify on target after existing approval.
-- [ ] Update verification matrix and record remaining dual-boot/storage blockers.
+- [x] Build/test in Actions, inspect UI preview, then verify on target after existing approval.
+- [x] Update verification matrix and record remaining dual-boot/storage blockers.
 
 Review the final diff and evidence before reporting success. No task is completed by a proposed implementation or a compilation alone.

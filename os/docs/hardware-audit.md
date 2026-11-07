@@ -1,3 +1,7 @@
+## Current follow-up (2026-11-07 UTC)
+
+The historical snapshot below is retained as history. The approved mixed SD layout now provides a verified native FAT32 workspace plus a mounted adopted f2fs volume. Native0.3 direct SD inference and real split launch/touch resizing pass. A real Alpine guest boots under AVF/GenieZone, with Python/Git tests and restart persistence verified. See [current native evidence](NATIVE_03_REVIEW.md) and [AVF acceptance](AVF_INTERIM_REVIEW.md). Stock fingerprint/HOME, locked bootloader and green AVB were rechecked. No alternate Android system-image boot or full restoration is verified.
+
 # Hardware audit — live read-only ADB, November 4, 2026 (America/Chicago)
 Target: onn. 100135925, board t402aa. Hardware property mt8786; ro.board.platform reports mt6768. These are different properties, not proof of a replacement chipset.
 Fingerprint: onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys.
