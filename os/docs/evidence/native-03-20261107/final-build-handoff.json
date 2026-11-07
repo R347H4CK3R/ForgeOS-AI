@@ -1,0 +1,19 @@
+{
+  "classification": "Verified working",
+  "native_run_id": 42337427732,
+  "native_source": "4f50024e4158413fbde506fc6ee5e5b95eda1791",
+  "native_run_all_five_jobs_passed": true,
+  "instrumented_tests": 12,
+  "instrumented_seconds": 83.051,
+  "lint_errors": 0,
+  "lint_warnings": 69,
+  "handoff_run_id": 42339071655,
+  "handoff_source": "c176a3027136a8b35c162a1c2dbda7b584ccb006",
+  "handoff_verified": true,
+  "successful_get_only_draft_fetch_uses_scoped_push_capability": true,
+  "unpublished_apk_asset_id": 719616053,
+  "unpublished_apk_sha256": "ff412bbe95561b91a925c09f9d73c3f5bb7ca60ac5e66d34a3485f9351142600",
+  "unpublished_review_url": "https://github.com/R347H4CK3R/ForgeOS-AI/releases/tag/untagged-31f97478d31bc7193439",
+  "whole_os_boot_verified": false,
+  "genuine_dual_boot": false
+}

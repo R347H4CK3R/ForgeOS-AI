@@ -11,6 +11,10 @@
     "bytes": 822,
     "sha256": "a306f8e9d22694c09e2b89c5d09d6d6b207e06f42cc5c06232b82bfb05437e2c"
   },
+  "final-build-handoff.json": {
+    "bytes": 799,
+    "sha256": "1912590e982890cb68da7338fc073ca0d827020c8f9438429e63491c21e9a293"
+  },
   "native-companion-split-resized.png": {
     "bytes": 177411,
     "sha256": "e114a1f9efd662f925cd5b963b2fd0e1a251a3cf3c19bff26259085ebe8a5cc6"
