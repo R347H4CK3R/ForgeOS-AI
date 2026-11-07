@@ -30,10 +30,36 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
         run: python .github/scripts/app_scope.py
-  build:
+  delivery-check:
     permissions:
       contents: write
     needs: scope
+    if: needs.scope.outputs.needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Make isolated delivery probe
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          mkdir delivery-probe
+          printf 'Build delivery preflight only.\n' > delivery-probe/check.txt
+      - uses: ./.github/actions/publish-review
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          name: ForgeOS-delivery-check
+          paths: delivery-probe/
+      - name: Remove this run's temporary delivery probe
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release delete "forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-ForgeOS-delivery-check" --repo "$GITHUB_REPOSITORY" --yes
+  build:
+    permissions:
+      contents: write
+    needs: [scope, delivery-check]
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -94,7 +120,7 @@ jobs:
   native-ui:
     permissions:
       contents: write
-    needs: scope
+    needs: [scope, delivery-check]
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -155,7 +181,7 @@ jobs:
   live-agent:
     permissions:
       contents: write
-    needs: scope
+    needs: [scope, delivery-check]
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15

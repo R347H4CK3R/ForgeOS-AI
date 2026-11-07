@@ -24,8 +24,7 @@ adb pull /sdcard/Android/data/${APP_ID}/files/review ../preview/ || result=1
 adb pull /sdcard/Android/data/${APP_ID}/files/inference-result.txt ../preview/inference-result.txt || result=1
 adb logcat -d > ../preview/emulator-logcat.txt
 # am instrument itself can return zero on failed tests: assert the runner result.
-grep -Eq '^OK \(10 tests\)' ../preview/instrumentation.txt || result=1
-if grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed' ../preview/instrumentation.txt; then result=1; fi
+python ../.github/scripts/instrumentation_result.py ../preview/instrumentation.txt --minimum 12 || result=1
 test -s ../preview/review/home-portrait.png || result=1
 test -s ../preview/review/landscape.png || result=1
 exit "$result"

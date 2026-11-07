@@ -27,15 +27,17 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
+        REVIEW_TARGET: ${{ github.event.pull_request.head.sha || github.sha }}
         REVIEW_NAME: ${{ inputs.name }}
       run: |
+        [[ "$REVIEW_TARGET" =~ ^[0-9a-f]{40}$ ]] || exit 1
         TAG="forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$REVIEW_NAME"
         NOTES="$RUNNER_TEMP/$REVIEW_NAME-notes.md"
         {
-          echo "Development review from source $GITHUB_SHA."
+          echo "Development review from checked-out source $GITHUB_SHA; branch source $REVIEW_TARGET."
           echo "Workflow: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           echo "Native app/test evidence only. This is not approved firmware or proof of OS boot."
           echo "The ZIP includes per-file SHA256 in MANIFEST.json."
         } > "$NOTES"
-        gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
-        echo "Owner-only draft review: $TAG" >> "$GITHUB_STEP_SUMMARY"
+        gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$REVIEW_TARGET" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
+        echo "Unpublished draft review: $TAG" >> "$GITHUB_STEP_SUMMARY"
