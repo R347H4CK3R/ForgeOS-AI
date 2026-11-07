@@ -41,5 +41,12 @@ runs:
           echo "Native app/test evidence only. This is not approved firmware or proof of OS boot."
           echo "The ZIP includes per-file SHA256 in MANIFEST.json."
         } > "$NOTES"
-        gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$REVIEW_TARGET" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
+        META="$RUNNER_TEMP/$REVIEW_NAME-release.json"
+        if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json tagName,targetCommitish,isDraft,isPrerelease > "$META" 2> "$META.stderr"; then
+          python .github/scripts/review_release.py --metadata "$META" --tag "$TAG" --source "$CHECKED_OUT_SHA"
+          gh release upload "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY"
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file "$NOTES"
+        else
+          gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$REVIEW_TARGET" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
+        fi
         echo "Unpublished draft review: $TAG" >> "$GITHUB_STEP_SUMMARY"

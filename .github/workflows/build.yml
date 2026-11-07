@@ -58,6 +58,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release delete "forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-ForgeOS-delivery-check" --repo "$GITHUB_REPOSITORY" --yes
+      - name: Prepare source-bound pending review containers before heavy jobs
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source_sha=$(git rev-parse HEAD)
+          for review_name in ForgeOS-native-review ForgeOS-native-UI-review ForgeOS-live-agent-evidence; do
+            tag="forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$review_name"
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$source_sha" --draft --prerelease --title "$review_name - run $GITHUB_RUN_ID" --notes "Pending build outputs from $source_sha. No success or installation claim; inspect the workflow result before use."
+          done
   build:
     permissions:
       contents: write
@@ -150,6 +160,8 @@ jobs:
           path: ~/.cache/ccache
           key: forgeos-native-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
           restore-keys: forgeos-native-${{ runner.os }}-${{ github.job }}-
+      - name: Free tools unused by this isolated Android UI worker
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache/CodeQL
       - name: Enable bounded native compiler cache
         run: |
           sudo apt-get update -qq
@@ -171,8 +183,9 @@ jobs:
           sdkmanager "system-images;android-35;default;x86_64"
           mkdir -p preview
           df -h . > preview/worker-storage.txt
+          rm -rf android/app/.cxx
           available_kib=$(df -Pk . | awk 'NR==2 {print $4}')
-          test "$available_kib" -ge 3145728 || { echo 'Need 3 GiB free for the bounded 2 GiB emulator disk'; exit 1; }
+          test "$available_kib" -ge 9437184 || { echo 'Need 9 GiB free for the system image userdata floor and test reserve'; exit 1; }
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -184,7 +197,6 @@ jobs:
           arch: x86_64
           profile: pixel_c
           ram-size: 3072M
-          disk-size: 2048M
           emulator-boot-timeout: 180
           disable-animations: true
           script: bash .github/scripts/ui-review.sh
