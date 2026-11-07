@@ -4,8 +4,8 @@
     "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
   },
   "deployment.json": {
-    "bytes": 480,
-    "sha256": "faba662101388c95f2a25520be474412455f4fefad3d68bdd41653cb99076255"
+    "bytes": 470,
+    "sha256": "ac79ec7b1a10911076136bee4a199bb37552f1410949b4a117d132f52ae6d1bf"
   },
   "native-companion-split-resized.png": {
     "bytes": 177411,
@@ -16,8 +16,8 @@
     "sha256": "1c1fc1a0a910cc8bbcad06143980f978e615717e462ad54d9ad6c15ff948bf55"
   },
   "native-environment-controls.json": {
-    "bytes": 1998,
-    "sha256": "886ca939591612ac941f808e9963fef08caa1cc881d644c3a35e1d789cb94cd8"
+    "bytes": 1963,
+    "sha256": "203452ee63436ae86b07c49830605c2fe48414ba7906dc4929cdb4232f9703cc"
   },
   "native-environments.png": {
     "bytes": 265003,
@@ -32,12 +32,12 @@
     "sha256": "b5d8b275934394f54993d8e24247598dc213775a64f15ed2a523228264dd3e55"
   },
   "physical-session-final.json": {
-    "bytes": 438,
-    "sha256": "0a9d44f72d33fcb5f95814441614d831f4856220f70176cf69f7e3c549f2faab"
+    "bytes": 431,
+    "sha256": "40a4632265605bddb59e43eef388ab8675202720bb973f28250821d35cb7864a"
   },
   "sd-model-inference.json": {
-    "bytes": 1588,
-    "sha256": "1cb3a4638d651e716663fec32ff87ef5f971c6345bc766f693cb165842e41944"
+    "bytes": 1568,
+    "sha256": "11b2d66bcfb9dbf373bba004190738bd64b5978f324e27dcff0c7e5ffd456280"
   },
   "sd-model-inference.png": {
     "bytes": 232660,
