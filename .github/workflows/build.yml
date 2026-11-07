@@ -160,6 +160,13 @@ jobs:
         run: |
           curl --fail --location --retry 2 --max-time 180 -o test-model.gguf https://huggingface.co/bartowski/SmolLM2-135M-Instruct-GGUF/resolve/09816acd5d99df7be770d85ea30822623dab342c/SmolLM2-135M-Instruct-Q4_K_M.gguf
           echo "2e8040ceae7815abe0dcb3540b9995eaa1fa0d2ca9e797d0a635ae4433c68c2d  test-model.gguf" | sha256sum -c -
+      - name: Verify bounded emulator storage headroom
+        run: |
+          sdkmanager "system-images;android-35;default;x86_64"
+          mkdir -p preview
+          df -h . > preview/worker-storage.txt
+          available_kib=$(df -Pk . | awk 'NR==2 {print $4}')
+          test "$available_kib" -ge 3145728 || { echo 'Need 3 GiB free for the bounded 2 GiB emulator disk'; exit 1; }
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -171,6 +178,8 @@ jobs:
           arch: x86_64
           profile: pixel_c
           ram-size: 3072M
+          disk-size: 2048M
+          emulator-boot-timeout: 180
           disable-animations: true
           script: bash .github/scripts/ui-review.sh
       - uses: ./.github/actions/publish-review
