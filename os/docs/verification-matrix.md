@@ -11,7 +11,7 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 | Bluetooth | Partially working | Enabled and supported; pairing and input untested |
 | USB peripherals | Blocked | Host feature present; actual peripheral acceptance not performed |
 | External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
-| Adopted SD mount | Verified working | Encrypted private f2fs mounted, 119G total / 118G free at audit |
+| Adopted SD mount | Verified working | Approved card erase created new public FAT32 and private f2fs volumes; both mounted. Prior119G observation is historical; see SD_CONVERSION_REVIEW.md. |
 | ForgeOS SD access | Partially working | Installed APK and private data on adopted UUID; visible SAF workspace/model placement unverified; debug run-as does not resolve adopted path |
 | Local AI | Partially working | Actual pinned 135M GGUF generates on ARM64 tablet; useful coding quality, peak memory and throughput unverified |
 | Model downloads | Partially working | Actual tablet download, independent SHA256 and handoff pass; downloaded model on internal shared storage, SD model placement pending |
@@ -27,7 +27,7 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
 | Recovery / rollback | Blocked | Normal bootloader-to-stock return verified; partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
-| Temporary official DSU test | Failed | Native allocation triggered responsiveness kills on initial and cached-app-cleaned retry; stock reboot recovered normal DSU state and space. No guest boot. See [actual attempts](DSU_TARGET_ATTEMPT.md). |
+| Temporary official DSU test | Failed | Internal allocation had responsiveness kills; SD route selected correctly but native gsid was denied block-device stat access. No guest boot. See [SD test](SD_CONVERSION_REVIEW.md). |
 | Genuine dual boot | Blocked | Separate DSU candidate built, but no alternate-OS boot-and-stock-return cycle or permanent boot selector verified. Virtual A/B is not dual boot |
 | Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
 | Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |

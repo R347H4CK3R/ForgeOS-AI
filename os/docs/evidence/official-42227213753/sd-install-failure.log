@@ -1,0 +1,29 @@
+--------- beginning of system
+11-06 18:29:12.021  1185  1198 I DynamicSystemService: isInstalled(): false
+11-06 18:38:48.510  1185  2270 I DynamicSystemService: /storage/2916-1A0F: 122008 MB
+11-06 18:38:48.510  1185  2270 I DynamicSystemService: startInstallation -> /mnt/media_rw/2916-1A0F/forgeos_sd
+11-06 18:38:48.676  7463  7464 E gsid    : fs type: 19780
+11-06 18:38:48.677  7463  7464 I gsid    : [libfstab] Using Android DT directory /proc/device-tree/firmware/android/
+11-06 18:38:48.681  7463  7464 W gsid    : [libfstab] Warning: unknown flag: resize
+11-06 18:38:48.706  7463  7464 E gsid    : Failed to get stat for block device: /dev/block/mmcblk1p1: Permission denied
+11-06 18:38:48.706  7463  7464 E gsid    : Failed to get block dev path for file: /mnt/media_rw/2916-1A0F/forgeos_sd/userdata_gsi.img
+11-06 18:38:48.707  7463  7464 E gsid    : Could not determine maximum file size for /mnt/media_rw/2916-1A0F/forgeos_sd/userdata_gsi.img
+11-06 18:38:48.707  7463  7464 E gsid    : Could not create userdata image
+11-06 18:38:48.707  1185  2271 I DynamicSystemService: Failed to create partition: userdata
+--------- beginning of main
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: java.io.IOException: Failed to start installation with requested size: 2147483648
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: java.io.IOException: Failed to start installation with requested size: 2147483648
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at com.android.dynsystem.InstallationAsyncTask.installWritablePartition(InstallationAsyncTask.java:512)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at com.android.dynsystem.InstallationAsyncTask.installUserdata(InstallationAsyncTask.java:534)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at com.android.dynsystem.InstallationAsyncTask.doInBackground(InstallationAsyncTask.java:254)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at com.android.dynsystem.InstallationAsyncTask.doInBackground(InstallationAsyncTask.java:57)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at android.os.AsyncTask$3.call(AsyncTask.java:394)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at java.util.concurrent.FutureTask.run(FutureTask.java:328)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:305)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1100)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+11-06 18:38:48.787  7496  7523 E InstallationAsyncTask: 	at java.lang.Thread.run(Thread.java:1571)
+11-06 18:38:48.787  7463  7464 E gsid    : [liblp] std::unique_ptr<LpMetadata> android::fs_mgr::ReadFromImageFile(const std::string &) open failed: /metadata/gsi/dsu/forgeos_sd/lp_metadata: No such file or directory
+11-06 18:38:48.787  7463  7464 E gsid    : Could not read metadata file /metadata/gsi/dsu/forgeos_sd/lp_metadata
+11-06 18:38:48.787  7463  7464 E gsid    : Installation failed, clean up: userdata_gsi
+11-06 18:38:48.788  7463  7464 E gsid    : Installation failed: install_dir=/mnt/media_rw/2916-1A0F/forgeos_sd/, dsu_slot=forgeos_sd, partition_name=userdata

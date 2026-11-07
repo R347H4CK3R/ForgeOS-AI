@@ -1,0 +1,25 @@
+{
+  "authorization": "Owner explicitly approved deleting everything on the card in this session",
+  "target_disk": "disk:179,0",
+  "verified_disk_bytes": 127934660608,
+  "verified_label": "SanDisk",
+  "operation": "sm partition disk:179,0 mixed 25",
+  "volumes": "emulated:179,3;0 unmounted null\nprivate mounted null\npublic:179,1 mounted 2916-1A0F\nprivate:179,3 mounted ab41b09e-2da7-4d9b-8e69-a4185b74edc3\nemulated;0 mounted null",
+  "public_capacity_kib": "Filesystem     1K-blocks Used Available Use% Mounted on\n/dev/fuse       31225376 1216  31224160   1% /storage/2916-1A0F",
+  "private_capacity_kib": "Filesystem       1K-blocks   Used Available Use% Mounted on\n/dev/block/dm-22  93683692 893020  92790672   1% /mnt/expand/ab41b09e-2da7-4d9b-8e69-a4185b74edc3",
+  "workspace_directories": [
+    "artifacts",
+    "backups",
+    "datasets",
+    "downloads",
+    "logs",
+    "models",
+    "projects",
+    "source"
+  ],
+  "review_apk_internal": true,
+  "roblox_internal": true,
+  "stock_fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+  "locked": "1",
+  "AVB": "green"
+}

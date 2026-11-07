@@ -12,3 +12,7 @@ Next candidate: a separate portable FAT32 medium. A spare microSD can be conside
 Before another installation: verify actual mounted filesystem/type/disk size/free space; observe DynamicSystemService's selected installation path; retain stock image and named one-shot guest with automatic reboot disabled; monitor allocation without UIAutomator load; stop on renewed responsiveness kills. Test discard and reclaimed storage before any guest boot acceptance. This changes the backing store rather than repeating a RAM-only cleanup.
 
 Status: candidate route identified, BLOCKED on separate physical media. It is not a verified fix, OS boot or permanent dual boot. The previous native allocation failures remain recorded in DSU_TARGET_ATTEMPT.md. Exact stock recovery firmware is still required before destructive bootloader/firmware modification. No existing-card erase or format is authorized by this proposal.
+
+## Superseding target test
+
+The owner later approved erasing the existing card. A mixed25 layout produced verified public/vfat storage, and stock DSU selected its path. Actual install then failed on gsid block-device stat permission, not catalog or capacity. See SD_CONVERSION_REVIEW.md. The spare-media gate above is historical; the new permission failure is current.
