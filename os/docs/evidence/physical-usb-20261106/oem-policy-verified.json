@@ -1,0 +1,61 @@
+{
+  "preflight": {
+    "ro.build.fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+    "ro.boot.flash.locked": "1",
+    "sys.oem_unlock_allowed": "1"
+  },
+  "commands": [
+    {
+      "command": "adb reboot bootloader",
+      "code": 0,
+      "output": ""
+    },
+    {
+      "command": "fastboot getvar product",
+      "code": 0,
+      "output": "product: t402v\nFinished. Total time: 0.000s"
+    },
+    {
+      "command": "fastboot getvar unlocked",
+      "code": 0,
+      "output": "unlocked: no\nFinished. Total time: 0.000s"
+    },
+    {
+      "command": "fastboot getvar secure",
+      "code": 0,
+      "output": "secure: yes\nFinished. Total time: 0.000s"
+    },
+    {
+      "command": "fastboot getvar current-slot",
+      "code": 0,
+      "output": "current-slot: b\nFinished. Total time: 0.000s"
+    },
+    {
+      "command": "fastboot flashing get_unlock_ability",
+      "code": 0,
+      "output": "(bootloader) unlock_ability = 16777216\nOKAY [  0.005s]\nFinished. Total time: 0.006s"
+    },
+    {
+      "command": "fastboot reboot",
+      "code": 0,
+      "output": "Rebooting                                          OKAY [  0.000s]\nFinished. Total time: 0.000s"
+    }
+  ],
+  "stock_return": {
+    "sys.boot_completed": "1",
+    "ro.build.fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+    "ro.boot.flash.locked": "1",
+    "ro.boot.verifiedbootstate": "green",
+    "ro.boot.slot_suffix": "_b",
+    "sys.oem_unlock_allowed": "1",
+    "home_holder": "com.android.launcher3"
+  },
+  "interpretation": {
+    "oem_permission_enabled": true,
+    "settings_switch_checked_observed": true,
+    "reported_unlock_ability_decimal": 16777216,
+    "normalized_to_standard_one": false,
+    "unlock_command_tested": false,
+    "note": "Exact vendor value changed from0. No endian explanation or actual unlock success is assumed."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "observation": "2026-11-06 UTC",
+  "device": "onn.100135925 / Android15 TTA.31",
+  "normal_screen_unlocked_observed": true,
+  "oem_unlocking_row_visible": true,
+  "control_enabled": true,
+  "control_checked_before_tap": false,
+  "action": "Tapped the supported OEM unlocking setting",
+  "result": "Android Settings requests Re-enter your PIN / Enter your PIN to continue",
+  "permission_enabled_verified": false,
+  "bootloader_unlock_command_sent": false,
+  "wipe_or_flash_command_sent": false,
+  "credentials_recorded": false
+}

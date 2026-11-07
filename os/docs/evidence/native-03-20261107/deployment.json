@@ -1,0 +1,14 @@
+{
+  "apk_sha256": "ff412bbe95561b91a925c09f9d73c3f5bb7ca60ac5e66d34a3485f9351142600",
+  "certificate_sha256": "4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a",
+  "source": "92e5a03285d0e673d6cacb2fc33e28a70544d237",
+  "version": "0.3.0-review",
+  "update_install_result": "Performing Streamed Install\r\nSuccess",
+  "existing_app_data_preserved_by_update": true,
+  "target_inference_verified": true,
+  "inference_evidence": "sd-model-inference.json",
+  "identical_verified_ci_source": "4f50024e4158413fbde506fc6ee5e5b95eda1791",
+  "identical_verified_ci_run": 42337427732,
+  "installed_base_apk_sha256": "ff412bbe95561b91a925c09f9d73c3f5bb7ca60ac5e66d34a3485f9351142600",
+  "new_install_unnecessary_reason": "Latest CI stable-signed APK bytes exactly match the independently hashed installed base.apk"
+}

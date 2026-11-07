@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "original_apk": {
+    "sha256": "cdd961dc7e079ac358255b627bbac4adf05a5ecec959659a73b7162a6f74b940",
+    "bytes": 6756328,
+    "source": "10e2d267242d0407c3e88fa378d122817f034e7a"
+  },
+  "signed_apk": {
+    "sha256": "e728a652d30a6b9cbd7ea376a0b610c81b54c9b5ee15d1d64a51ddb05a2c51dc",
+    "bytes": 6767509,
+    "certificate_sha256": "4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a"
+  },
+  "scope": {
+    "platform_signing": false,
+    "avb_trust": false,
+    "native_execution_tested": false
+  }
+}

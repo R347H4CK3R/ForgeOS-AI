@@ -1,0 +1,43 @@
+{
+  "archive_sha256": "b0797c0c93b7fbfbae4cec0e7440fd6f0527abbbc891cc57ac186445d5ef5871",
+  "publisher_checksum_supplied": false,
+  "matches_pinned_sha": true,
+  "upstream": {
+    "schema": 1,
+    "upstream": "Doze-off/crdroid_gsi_treble",
+    "tag": "2026-09-22",
+    "asset_id": 581368392,
+    "filename": "crDroid-12.12-GSI_treble_arm64-ab-VANILLA-20260922.img.xz",
+    "url": "https://github.com/Doze-off/crdroid_gsi_treble/releases/download/2026-09-22/crDroid-12.12-GSI_treble_arm64-ab-VANILLA-20260922.img.xz",
+    "compressed_bytes": 974151100,
+    "sha256": "b0797c0c93b7fbfbae4cec0e7440fd6f0527abbbc891cc57ac186445d5ef5871",
+    "checksum_origin": "GitHub release asset digest; not an independent detached signature",
+    "android_api": 36,
+    "source_release": "Community Android16 QPR2 / crDroid12.12, release2026-09-22",
+    "max_raw_bytes": 8589934592,
+    "raw_sha256": null,
+    "security_patch": null,
+    "minimum_security_patch": "2026-04-05",
+    "known_upstream_issues": [
+      "Publisher reports DSU compatibility issues and a manual init replacement for affected older devices",
+      "Publisher reports hardware-dependent network/storage workarounds"
+    ],
+    "acceptance": "INSPECTION ONLY. No default-image promotion, native update publication or device boot authorization inferred."
+  },
+  "raw_file": "base.img",
+  "raw_bytes": 2934730752,
+  "raw_sha256": "5595851f2f6a1f341000d085276bbe28ca584f25ab04236270ece828c27005d0",
+  "system_root": "/system",
+  "api": "36",
+  "security_patch": "2026-09-01",
+  "fingerprint": "google/crdroid_gsi/tdgsi_arm64_ab:16/BP4A.251205.006/eng.androi:user/release-keys",
+  "avb_footer": {
+    "major": 1,
+    "minor": 0,
+    "original_bytes": 2888343552,
+    "vbmeta_offset": 2934116352,
+    "vbmeta_bytes": 1664
+  },
+  "fsck_exit_policy": "read-only inspection; findings retained, not repaired",
+  "acceptance": "OFFLINE INSPECTION ONLY. Not target boot verification; no flashing permitted."
+}

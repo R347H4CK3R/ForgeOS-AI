@@ -1,0 +1,52 @@
+name: Publish bounded draft review
+description: Preserve build outputs in an unpublished draft release without Actions artifact quota.
+inputs:
+  name:
+    description: Unique ASCII review name
+    required: true
+  paths:
+    description: Workspace-relative output paths, one per line
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Package selected outputs
+      shell: bash
+      env:
+        REVIEW_PATHS: ${{ inputs.paths }}
+        REVIEW_NAME: ${{ inputs.name }}
+      run: |
+        python - <<'PY'
+        import os,re
+        name=os.environ['REVIEW_NAME']
+        assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}',name)
+        PY
+        python .github/scripts/review_archive.py --output "$RUNNER_TEMP/$REVIEW_NAME.zip"
+        sha256sum "$RUNNER_TEMP/$REVIEW_NAME.zip" > "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256"
+    - name: Store unpublished review assets
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REVIEW_TARGET: ${{ github.event.pull_request.head.sha || github.sha }}
+        REVIEW_NAME: ${{ inputs.name }}
+      run: |
+        [[ "$REVIEW_TARGET" =~ ^[0-9a-f]{40}$ ]] || exit 1
+        CHECKED_OUT_SHA=$(git rev-parse HEAD)
+        test "$CHECKED_OUT_SHA" = "$REVIEW_TARGET" || { echo "Review checkout differs from the canonical source"; exit 1; }
+        TAG="forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$REVIEW_NAME"
+        NOTES="$RUNNER_TEMP/$REVIEW_NAME-notes.md"
+        {
+          echo "Development review from checked-out source $CHECKED_OUT_SHA."
+          echo "Workflow: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          echo "Native app/test evidence only. This is not approved firmware or proof of OS boot."
+          echo "The ZIP includes per-file SHA256 in MANIFEST.json."
+        } > "$NOTES"
+        META="$RUNNER_TEMP/$REVIEW_NAME-release.json"
+        if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json tagName,targetCommitish,isDraft,isPrerelease > "$META" 2> "$META.stderr"; then
+          python .github/scripts/review_release.py --metadata "$META" --tag "$TAG" --source "$CHECKED_OUT_SHA"
+          gh release upload "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY"
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file "$NOTES"
+        else
+          gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$REVIEW_TARGET" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
+        fi
+        echo "Unpublished draft review: $TAG" >> "$GITHUB_STEP_SUMMARY"

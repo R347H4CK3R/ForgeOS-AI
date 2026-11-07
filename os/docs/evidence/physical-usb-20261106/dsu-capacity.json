@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "available_bytes": 6856081408,
+  "system_bytes": 2955452416,
+  "transport_bytes": 1436550186,
+  "userdata_bytes": 2147483648,
+  "reserve_bytes": 1073741824,
+  "allocation_allowance_bytes": 134217728,
+  "streaming": {
+    "required_bytes": 6310895616,
+    "free_after_allocation_bytes": 1618927616,
+    "fits": true
+  },
+  "staged": {
+    "required_bytes": 7747445802,
+    "free_after_allocation_bytes": 182377430,
+    "fits": false
+  },
+  "boot_ready": false,
+  "limitations": [
+    "Capacity estimate only; vendor allocation and guest first boot are untested.",
+    "Streaming requires an actually reachable source; no stream server is provisioned by this tool.",
+    "OEM key trust, unlock policy, VINTF compatibility and recovery remain separate gates.",
+    "A 2 GiB guest is for a small evaluation, not a complete development workspace.",
+    "Adopted SD storage is neither counted nor reformatted."
+  ],
+  "measurement": "Actual USB ADB df -k /data; Available multiplied by1024",
+  "image_raw_sha256": "d20bf46729bb99447cda51b3c4e5ea5680e68ac6e4c60c7148f535e65f11b164",
+  "transport_sha256": "d7312eacbf461a50e2b331134c09bb41949854c1eada0a23f5006ecf035b27e4",
+  "source": "https://android.googlesource.com/platform/frameworks/base/+/android-15.0.0_r1/packages/DynamicSystemInstallationService/src/com/android/dynsystem/DynamicSystemInstallationService.java",
+  "reference_source_sha256": "34f48e1bb81c5861ebcc8f94b78b16e4b1d30f60d04920fbb91dbe347057bf97",
+  "reference_source_is_not_installed_oem_binary": true
+}

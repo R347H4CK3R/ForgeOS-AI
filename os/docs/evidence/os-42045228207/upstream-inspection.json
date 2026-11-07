@@ -1,0 +1,48 @@
+{
+  "archive_sha256": "11ad0520611e5844fb035072e369b660ecf7bee6888e430abb10d19989668fdb",
+  "publisher_checksum_supplied": false,
+  "matches_pinned_sha": true,
+  "upstream": {
+    "schema": 1,
+    "upstream": "TrebleDroid/treble_experimentations",
+    "tag": "ci-20250415",
+    "asset_id": 246510004,
+    "filename": "system-td-arm64-ab-vanilla.img.xz",
+    "url": "https://github.com/TrebleDroid/treble_experimentations/releases/download/ci-20250415/system-td-arm64-ab-vanilla.img.xz",
+    "compressed_bytes": 753229200,
+    "sha256": "11ad0520611e5844fb035072e369b660ecf7bee6888e430abb10d19989668fdb",
+    "android_api": 35,
+    "source_release": "android-15.0.0_r26",
+    "max_raw_bytes": 8589934592,
+    "checksum_origin": "Computed on isolated GitHub worker in run42032559043; reproducibility pin, not publisher-supplied checksum",
+    "known_upstream_issues": [
+      "No Internet connection on some devices",
+      "No working FOD/UDFPS"
+    ],
+    "apk": {
+      "source_commit": "5d52b065ecf56a63be494617ba8036ff35c7a22d",
+      "run_id": 42043033635,
+      "artifact_id": 13424067393,
+      "sha256": "6953d2e1303de689d6258809c5f1401b70940b05ee03cb0b183ca003102a9985",
+      "bytes": 6756328
+    },
+    "acceptance": "EXPERIMENTAL OFFLINE ONLY: no target boot/AVB/vendor/recovery acceptance",
+    "raw_sha256": "ac1553fc6ea01ba62d61672d43de5cea8952557ea693e50c15f2e2a312f8ae04",
+    "security_patch": "2025-03-05"
+  },
+  "raw_bytes": 2147311616,
+  "raw_sha256": "ac1553fc6ea01ba62d61672d43de5cea8952557ea693e50c15f2e2a312f8ae04",
+  "system_root": "/system",
+  "api": "35",
+  "security_patch": "2025-03-05",
+  "fingerprint": "google/treble_arm64_bvS/tdgsi_arm64_ab:15/BP1A.250405.007/250414:userdebug/test-keys",
+  "avb_footer": {
+    "major": 1,
+    "minor": 0,
+    "original_bytes": 2113343488,
+    "vbmeta_offset": 2146832384,
+    "vbmeta_bytes": 1728
+  },
+  "fsck_exit_policy": "read-only inspection; findings retained, not repaired",
+  "acceptance": "OFFLINE INSPECTION ONLY. Not target boot verification; no flashing permitted."
+}

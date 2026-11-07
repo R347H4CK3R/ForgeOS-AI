@@ -1,0 +1,69 @@
+name: Verify interim VM companion
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: VM dependency safety tests
+        run: python -m unittest discover -s os/vm/tests -v
+      - name: Download exact publisher artifact
+        run: |
+          mkdir vm-work
+          python - <<'PY'
+          import json, sys, urllib.request
+          from pathlib import Path
+          sys.path.insert(0, 'os/vm')
+          from verify_sidecar import validate_pin, verify_apk
+          pin = validate_pin(json.loads(Path('os/vm/sidecar.lock.json').read_text()))
+          path = Path('vm-work/Podroid.apk')
+          with urllib.request.urlopen(pin['url'], timeout=60) as src, path.open('xb') as out:
+              received = 0
+              while block := src.read(1024**2):
+                  received += len(block)
+                  if received > pin['bytes']:
+                      raise ValueError('Publisher download exceeds pinned size')
+                  out.write(block)
+          Path('vm-work/hash-verification.json').write_text(json.dumps(verify_apk(path, pin), indent=2))
+          PY
+      - name: Inspect Android signer and package
+        run: |
+          if [ ! -x "$ANDROID_HOME/build-tools/35.0.0/apksigner" ]; then
+            sdkmanager "build-tools;35.0.0" >/dev/null
+          fi
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs vm-work/Podroid.apk > vm-work/apk-signature.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging vm-work/Podroid.apk > vm-work/apk-badging.txt
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          pin = json.loads(Path('os/vm/sidecar.lock.json').read_text())
+          badging = Path('vm-work/apk-badging.txt').read_text()
+          package = re.search(r"^package: name='([^']+)' .*versionName='([^']+)'", badging, re.M)
+          minimum = re.search(r"^sdkVersion:'([0-9]+)'", badging, re.M)
+          cert = re.search(r"Signer #1 certificate SHA-256 digest: ([0-9a-f]+)", Path('vm-work/apk-signature.txt').read_text())
+          assert package and package.groups() == (pin['package'], pin['version'])
+          assert minimum and int(minimum[1]) <= 35
+          assert cert and len(cert[1]) == 64
+          result = json.loads(Path('vm-work/hash-verification.json').read_text())
+          result.update(apk_signature_verified=True, package_verified=True,
+                        signer_sha256=cert[1], min_sdk=int(minimum[1]))
+          Path('vm-work/verification.json').write_text(json.dumps(result, indent=2))
+          print(json.dumps(result, indent=2))
+          PY
+      - name: Publish verified result in workflow summary
+        run: |
+          {
+            echo '## Pinned VM companion verification'
+            echo 'The APK remains available from the publisher URL in os/vm/sidecar.lock.json.'
+            echo 'This report verifies identity/signature, not target boot.'
+            echo '```json'
+            cat vm-work/verification.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

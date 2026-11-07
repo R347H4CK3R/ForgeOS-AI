@@ -1,0 +1,46 @@
+{
+  "classification": "Partially working",
+  "genuine_dual_boot": false,
+  "companion": {
+    "package": "com.excp.podroid",
+    "version": "1.2.9",
+    "source_commit": "ce0121896b2895637ab1f656cbb0d75fa2874489",
+    "apk_sha256": "3945c8c887f1df239501de6320fe5c8315bf9805029f530373d3244fee0d2a5f",
+    "signer_sha256": "6ce250ce670f5548e436b75660f3c0a02daa574e1d69f6d9f38c6a2ddaf0fedf"
+  },
+  "guest": {
+    "kernel": "7.1.5",
+    "architecture": "aarch64",
+    "alpine": "3.24.2",
+    "memory_mib_configured": 512,
+    "vcpus": 1,
+    "disk_capacity_gib_sparse": 2,
+    "python": "3.14.10",
+    "git": "2.54.0",
+    "ssh_client": "OpenSSH_10.3p1",
+    "python_unit_test": true,
+    "git_init_add_commit_and_clean_tracked_tree": true,
+    "checkpoint_survived_avf_qemu_avf": true
+  },
+  "network": {
+    "avf_guest_interface": "absent except loopback and dummy0",
+    "avf_guest_internet": false,
+    "qemu_package_download_and_install": true,
+    "ssh_enabled": false,
+    "port_forwards": [],
+    "downloads_sharing_enabled": false
+  },
+  "observed_host_after_avf_restart": {
+    "mem_available_kib": 1120412,
+    "data_available_kib": 3253340
+  },
+  "limits": [
+    "Third-party companion, not ForgeOS Android firmware",
+    "First cold companion launch ANR recovered with app-only restart",
+    "AVF guest networking unavailable on this stock build",
+    "SSH binary verified; remote SSH session not verified",
+    "Linux disk remains internal; native Android SD workspace is separate",
+    "Exact stock recovery firmware and genuine dual boot remain blocked"
+  ],
+  "observation_method": "Actual physical console screenshots plus supported companion ADB state API; no guest output inferred from compilation"
+}

@@ -1,0 +1,82 @@
+{
+  "acceptance": "EXPERIMENTAL-DO-NOT-FLASH",
+  "trusted_avb": false,
+  "boot_tested": false,
+  "base_sha256": "5595851f2f6a1f341000d085276bbe28ca584f25ab04236270ece828c27005d0",
+  "apk_sha256": "e728a652d30a6b9cbd7ea376a0b610c81b54c9b5ee15d1d64a51ddb05a2c51dc",
+  "output_sha256": "245b2a94903587016fd1b210e2f49988c5faef9440708030b9f515836b5b7cf2",
+  "output_bytes": 2888343552,
+  "system_root": "/system",
+  "payloads": [
+    {
+      "path": "/system/app/ForgeOS/ForgeOS.apk",
+      "sha256": "e728a652d30a6b9cbd7ea376a0b610c81b54c9b5ee15d1d64a51ddb05a2c51dc",
+      "metadata": {
+        "mode": "0644",
+        "uid": 0,
+        "gid": 0,
+        "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+      }
+    },
+    {
+      "path": "/system/etc/permissions/android.software.freeform_window_management.xml",
+      "sha256": "bb93ed5c9cfda160fd8b46f07c063d40716f1b2871419eab065b4e3baa87b214",
+      "metadata": {
+        "mode": "0644",
+        "uid": 0,
+        "gid": 0,
+        "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+      }
+    },
+    {
+      "path": "/system/etc/forgeos/build.json",
+      "sha256": "9bc66fc0041821ca07b744362b3ae753ae91c3bcc7677b048b2bfa6d83a01386",
+      "metadata": {
+        "mode": "0644",
+        "uid": 0,
+        "gid": 0,
+        "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+      }
+    }
+  ],
+  "feature": "feature declaration added; platform support still requires runtime acceptance",
+  "new_directories": [
+    {
+      "path": "/system/app/ForgeOS",
+      "metadata": {
+        "mode": "0755",
+        "uid": 0,
+        "gid": 0,
+        "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+      }
+    },
+    {
+      "path": "/system/etc/forgeos",
+      "metadata": {
+        "mode": "0755",
+        "uid": 0,
+        "gid": 0,
+        "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+      }
+    }
+  ],
+  "security_patch": "2026-09-01",
+  "fsck_clean": true,
+  "fsck_output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\n/: 8131/8448 files (2.1% non-contiguous), 698587/705162 blocks\ne2fsck 1.47.0 (5-Feb-2023)\n",
+  "upstream_sentinels": {
+    "/system/build.prop": {
+      "mode": "0600",
+      "uid": 0,
+      "gid": 0,
+      "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+    },
+    "/system/framework/framework-res.apk": {
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "xattrs": "Extended attributes:\n  security.selinux (26) = \"u:object_r:system_file:s0\\000\"\ndebugfs 1.47.0 (5-Feb-2023)\n"
+    }
+  },
+  "avb_note": "Only ext4 filesystem bytes copied. Original AVB footer/hash tree/vbmeta omitted; no trusted signing claim.",
+  "partition_note": "No partition expansion. No boot/vendor/super/userdata images or flash commands generated."
+}

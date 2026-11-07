@@ -1,0 +1,17 @@
+{
+  "archive_sha256": "4a869a6959a50fee15ff871ce378853ced4485f2aa456eb64dbdbf7a2c0408aa",
+  "archive_bytes": 1166864309,
+  "raw_sha256": "e5db44e3365f9e542ee3f6d4caf88ece554a460e2987086b8bf21f6c440a25ec",
+  "raw_bytes": 2072014848,
+  "api": "37",
+  "security_patch": "2026-09-05",
+  "build_id": "CP3A.260905.010",
+  "fingerprint": "Android/generic_system/generic:17/CP3A.260905.010/16176746:user/release-keys",
+  "system_root": "/system",
+  "signature_verified": true,
+  "image_unchanged": true,
+  "boot_tested": false,
+  "OEM_trust_verified": false,
+  "purpose": "Unmodified official GSI for native ForgeOS APK compatibility testing; not a redistributable ForgeOS system image",
+  "image_uploaded": false
+}

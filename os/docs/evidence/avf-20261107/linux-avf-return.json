@@ -1,0 +1,10 @@
+[
+  {
+    "seconds": 5,
+    "state": "Result: Bundle[{result=ok vm=starting backend=avf selection=AVF stage=Configuring_containers... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 10,
+    "state": "Result: Bundle[{result=ok vm=running backend=avf selection=AVF stage=Ready forwards=none vc=33}]"
+  }
+]

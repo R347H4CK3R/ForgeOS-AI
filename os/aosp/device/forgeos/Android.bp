@@ -1,0 +1,6 @@
+android_app_import {
+    name: "ForgeOSLauncher",
+    apk: "prebuilt/ForgeOSLauncher.apk",
+    presigned: true,
+    dex_preopt: { enabled: false },
+}

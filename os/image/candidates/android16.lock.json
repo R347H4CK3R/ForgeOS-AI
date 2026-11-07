@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "upstream": "Doze-off/crdroid_gsi_treble",
+  "tag": "2026-09-22",
+  "asset_id": 581368392,
+  "filename": "crDroid-12.12-GSI_treble_arm64-ab-VANILLA-20260922.img.xz",
+  "url": "https://github.com/Doze-off/crdroid_gsi_treble/releases/download/2026-09-22/crDroid-12.12-GSI_treble_arm64-ab-VANILLA-20260922.img.xz",
+  "compressed_bytes": 974151100,
+  "sha256": "b0797c0c93b7fbfbae4cec0e7440fd6f0527abbbc891cc57ac186445d5ef5871",
+  "checksum_origin": "GitHub release asset digest; not an independent detached signature",
+  "android_api": 36,
+  "source_release": "Community Android16 QPR2 / crDroid12.12, release2026-09-22",
+  "max_raw_bytes": 8589934592,
+  "raw_sha256": "5595851f2f6a1f341000d085276bbe28ca584f25ab04236270ece828c27005d0",
+  "security_patch": "2026-09-01",
+  "minimum_security_patch": "2026-04-05",
+  "known_upstream_issues": [
+    "Publisher reports DSU compatibility issues and a manual init replacement for affected older devices",
+    "Publisher reports hardware-dependent network/storage workarounds"
+  ],
+  "acceptance": "OFFLINE ANDROID16 SECOND-SYSTEM CANDIDATE ONLY. No physical boot, recovery, OEM AVB trust or permanent dual boot acceptance.",
+  "fingerprint": "google/crdroid_gsi/tdgsi_arm64_ab:16/BP4A.251205.006/eng.androi:user/release-keys",
+  "apk": {
+    "release_id": 437323699,
+    "source_commit": "4f50024e4158413fbde506fc6ee5e5b95eda1791",
+    "run_id": 42337427732,
+    "run_attempt": 1,
+    "release_asset_id": 719577884,
+    "archive_bytes": 5244854,
+    "archive_sha256": "f616be5d85c0b68a143c59fbb8bd9394ed5f39963a3b81214a08c1ef9b5ed666",
+    "sha256": "33bde9dc2cdc485cf132fd26706ae9f6960f68227b472f7a9791e1bad1b8176f",
+    "bytes": 6756964
+  }
+}

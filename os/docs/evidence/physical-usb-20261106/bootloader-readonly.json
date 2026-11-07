@@ -1,0 +1,72 @@
+[
+  {
+    "command": "fastboot getvar product",
+    "code": 0,
+    "output": "product: t402v\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar version-bootloader",
+    "code": 0,
+    "output": "version-bootloader: t402v-c492161-20250419153113-20260411163423\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar unlocked",
+    "code": 0,
+    "output": "unlocked: no\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar secure",
+    "code": 0,
+    "output": "secure: yes\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar current-slot",
+    "code": 0,
+    "output": "current-slot: b\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar is-userspace",
+    "code": 0,
+    "output": "is-userspace: no\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar snapshot-update-status",
+    "code": 0,
+    "output": "getvar:snapshot-update-status                      FAILED (remote: 'GetVar Variable Not found')\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar max-fetch-size",
+    "code": 0,
+    "output": "getvar:max-fetch-size                              FAILED (remote: 'GetVar Variable Not found')\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar partition-size:boot_b",
+    "code": 0,
+    "output": "partition-size:boot_b: 2000000\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar partition-size:init_boot_b",
+    "code": 0,
+    "output": "partition-size:init_boot_b: 800000\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar partition-size:vendor_boot_b",
+    "code": 0,
+    "output": "partition-size:vendor_boot_b: 4000000\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot getvar partition-size:super",
+    "code": 0,
+    "output": "partition-size:super: 194000000\nFinished. Total time: 0.000s"
+  },
+  {
+    "command": "fastboot flashing get_unlock_ability",
+    "code": 0,
+    "output": "(bootloader) unlock_ability = 0\nOKAY [  0.005s]\nFinished. Total time: 0.005s"
+  },
+  {
+    "command": "fastboot reboot",
+    "code": 0,
+    "output": "Rebooting                                          OKAY [  0.000s]\nFinished. Total time: 0.000s"
+  }
+]

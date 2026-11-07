@@ -1,1 +1,12 @@
 *.png
+
+__pycache__/
+android/app/src/main/cpp/llama.cpp/
+preview/
+
+.tools/
+.forge-models/
+agent-evidence.json
+ollama.log
+ollama.tar.zst
+/.superpowers/

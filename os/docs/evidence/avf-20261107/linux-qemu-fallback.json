@@ -1,0 +1,46 @@
+[
+  {
+    "seconds": 10,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Booting_kernel... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 20,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Mounting_storage... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 30,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Mounting_storage... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 40,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Mounting_storage... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 50,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Mounting_storage... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 60,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Loading_kernel_modules... forwards=none vc=33}]"
+  },
+  {
+    "seconds": 70,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Network_found forwards=none vc=33}]"
+  },
+  {
+    "seconds": 80,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Network_found forwards=none vc=33}]"
+  },
+  {
+    "seconds": 90,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Network_found forwards=none vc=33}]"
+  },
+  {
+    "seconds": 100,
+    "state": "Result: Bundle[{result=ok vm=starting backend=qemu selection=QEMU stage=Network_found forwards=none vc=33}]"
+  },
+  {
+    "seconds": 110,
+    "state": "Result: Bundle[{result=ok vm=running backend=qemu selection=QEMU stage=Ready forwards=none vc=33}]"
+  }
+]

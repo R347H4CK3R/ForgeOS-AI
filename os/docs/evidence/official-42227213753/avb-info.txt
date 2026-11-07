@@ -1,0 +1,35 @@
+Footer version:           1.0
+Image size:               2072014848 bytes
+Original image size:      2039234560 bytes
+VBMeta offset:            2071552000
+VBMeta size:              2432 bytes
+--
+Minimum libavb version:   1.0
+Header Block:             256 bytes
+Authentication Block:     576 bytes
+Auxiliary Block:          1600 bytes
+Public key (sha1):        1ffb1af796b18ebf40d18faed213f686720f73f2
+Algorithm:                SHA256_RSA4096
+Rollback Index:           1788566400
+Flags:                    0
+Rollback Index Location:  0
+Release String:           'avbtool 1.4.0'
+Descriptors:
+    Hashtree descriptor:
+      Version of dm-verity:  1
+      Image Size:            2039234560 bytes
+      Tree Offset:           2039234560
+      Tree Size:             16064512 bytes
+      Data Block Size:       4096 bytes
+      Hash Block Size:       4096 bytes
+      FEC num roots:         2
+      FEC offset:            2055299072
+      FEC size:              16252928 bytes
+      Hash Algorithm:        sha256
+      Partition Name:        system
+      Salt:                  d12a7049c000e6c8d5456fb2ff984d9bcc2603b499b49eb25bf9f18a46db61f0
+      Root Digest:           09680a1aca350e11b7f61a6c35d3062ad071604523a7f9514da5158c41c5c18e
+      Flags:                 0
+    Prop: com.android.build.system.os_version -> '17'
+    Prop: com.android.build.system.fingerprint -> 'Android/generic_system/generic:17/CP3A.260905.010/16176746:user/release-keys'
+    Prop: com.android.build.system.security_patch -> '2026-09-05'

@@ -1,0 +1,108 @@
+name: Inspect official GSI compatibility baseline
+on:
+  workflow_dispatch:
+  workflow_call:
+  pull_request:
+    paths: ['.github/workflows/gsi-compat.yml', 'os/image/candidates/google-compat.lock.json']
+permissions:
+  contents: read
+concurrency:
+  group: forgeos-google-compat-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Existing image safety tests
+        working-directory: os/image
+        run: python -m unittest discover -s tests -v
+      - name: Validate pinned official download
+        run: |
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          from urllib.parse import urlparse
+          p=json.loads(Path('os/image/candidates/google-compat.lock.json').read_text())
+          assert urlparse(p['url']).scheme=='https' and urlparse(p['url']).hostname=='dl.google.com'
+          assert re.fullmatch('[0-9a-f]{64}',p['archive_sha256'])
+          assert 0<p['archive_bytes']<2**31 and 0<p['system_bytes']<2**33
+          assert p['redistribute_image'] is False and p['modify_image'] is False
+          PY
+  inspect:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install read-only inspection tools
+        run: sudo apt-get update -qq && sudo apt-get install -y e2fsprogs
+      - name: Verify unmodified official image
+        run: |
+          mkdir compatibility-work
+          python - <<'PY'
+          import sys,json,zipfile,hashlib,subprocess
+          from pathlib import Path
+          from urllib.request import urlopen
+          sys.path.insert(0,'os/image')
+          from image_tools import verify_file,image_kind,debugfs,extract,validate_security_patch,sha256_file
+          lock=json.loads(Path('os/image/candidates/google-compat.lock.json').read_text())
+          work=Path('compatibility-work');report=work/'report';report.mkdir()
+          archive=work/'official.zip'
+          with urlopen(lock['url'],timeout=60) as source,archive.open('xb') as target:
+              count=0
+              for chunk in iter(lambda:source.read(2*1024*1024),b''):
+                  count+=len(chunk)
+                  if count>lock['archive_bytes']:raise ValueError('Download exceeds pinned size')
+                  target.write(chunk)
+          verify_file(archive,lock['archive_sha256'],lock['archive_bytes'])
+          system=work/'system.img'
+          with zipfile.ZipFile(archive) as z:
+              names=z.namelist()
+              if len(names)!=len(set(names)) or set(names)!={'system.img','vbmeta.img','build.prop'}:raise ValueError('Unexpected archive members')
+              entry=z.getinfo('system.img')
+              if entry.flag_bits&1 or entry.file_size!=lock['system_bytes']:raise ValueError('Unexpected system member')
+              with z.open(entry) as source,system.open('xb') as target:
+                  count=0
+                  for chunk in iter(lambda:source.read(2*1024*1024),b''):
+                      count+=len(chunk)
+                      if count>lock['system_bytes']:raise ValueError('System exceeds pinned size')
+                      target.write(chunk)
+          if system.stat().st_size!=lock['system_bytes'] or image_kind(system)!='ext4':raise ValueError('Unexpected raw filesystem')
+          before=sha256_file(system)
+          fsck=subprocess.run(['e2fsck','-f','-n',str(system)],capture_output=True,text=True,timeout=300)
+          (report/'readonly-fsck.txt').write_text(fsck.stdout+fsck.stderr)
+          if fsck.returncode:raise ValueError('Read-only fsck is not clean')
+          tool=Path('os/image/vendor/avbtool.py')
+          if sha256_file(tool)!='e5a664a38db623da00f080219bc0ee60a640a9dc4a872803616fae4938ac749b':raise ValueError('AVB tool pin mismatch')
+          for command,filename in [('info_image','avb-info.txt'),('verify_image','avb-verification.txt')]:
+              result=subprocess.run([sys.executable,str(tool),command,'--image',str(system)],capture_output=True,text=True,timeout=300)
+              (report/filename).write_text(result.stdout+result.stderr)
+              if result.returncode:raise ValueError('Official AVB '+command+' failed')
+          root='/system' if 'Inode:' in debugfs(system,'stat /system/build.prop') else ''
+          prop=extract(system,root+'/build.prop',work/'build.prop').read_text(errors='replace')
+          props=dict(line.split('=',1) for line in prop.splitlines() if '=' in line and not line.lstrip().startswith('#'))
+          api=props.get('ro.system.build.version.sdk',props.get('ro.build.version.sdk'))
+          patch=props.get('ro.system.build.version.security_patch',props.get('ro.build.version.security_patch'))
+          build=props.get('ro.system.build.id',props.get('ro.build.id'))
+          if api!=str(lock['android_api']) or build!=lock['build_id']:raise ValueError('Actual API/build differs from published pin')
+          validate_security_patch(patch,lock['minimum_security_patch'])
+          if not patch.startswith(lock['published_patch_month']+'-'):raise ValueError('Actual patch month differs')
+          avb=(report/'avb-info.txt').read_text()
+          if "Prop: com.android.build.system.security_patch -> '"+patch+"'" not in avb:raise ValueError('AVB patch differs from actual system patch')
+          if before!=sha256_file(system):raise ValueError('Inspection changed image')
+          evidence={'archive_sha256':lock['archive_sha256'],'archive_bytes':lock['archive_bytes'],'raw_sha256':before,'raw_bytes':system.stat().st_size,'api':api,'security_patch':patch,'build_id':build,'fingerprint':props.get('ro.system.build.fingerprint',props.get('ro.build.fingerprint')),'system_root':root,'signature_verified':True,'image_unchanged':True,'boot_tested':False,'OEM_trust_verified':False,'purpose':lock['purpose'],'image_uploaded':False}
+          (report/'official-evidence.json').write_text(json.dumps(evidence,indent=2))
+          print(json.dumps(evidence,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-GSI-inspection-evidence-only
+          path: compatibility-work/report/
+          if-no-files-found: warn
+          retention-days: 14

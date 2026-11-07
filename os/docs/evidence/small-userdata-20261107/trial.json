@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-11-07T01:07:19.093563+00:00",
+  "requested_userdata_bytes": 1073741824,
+  "actual_native_allocation_size_verified": false,
+  "selected_install_path": "/data/gsi/dsu/forgeos_small",
+  "guest_automatically_enabled": false,
+  "guest_booted": false,
+  "before_available_kib": 6151444,
+  "monitor_available_kib": 1696944,
+  "responsiveness_kills_observed": true,
+  "result": "Failed",
+  "gsi_wipe_response": "Live image install successfully removed.",
+  "free_space_return_to_baseline_verified": false,
+  "reference": "https://android.googlesource.com/platform/system/gsid/+/refs/heads/android15-release/gsi_service.cpp"
+}

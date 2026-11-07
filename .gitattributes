@@ -1,0 +1,2 @@
+android/app/src/androidTest/assets/updates/*.sig binary
+android/app/src/androidTest/assets/updates/*.json -text

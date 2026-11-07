@@ -1,0 +1,54 @@
+{
+  ".gitattributes": {
+    "bytes": 8,
+    "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+  },
+  "ci-instrumentation.txt": {
+    "bytes": 7743,
+    "sha256": "2de4b2bbe8e0a7e0e1b0da4b46070ca27f6ec424096881bb8306e40f1e23f76e"
+  },
+  "deployment.json": {
+    "bytes": 822,
+    "sha256": "a306f8e9d22694c09e2b89c5d09d6d6b207e06f42cc5c06232b82bfb05437e2c"
+  },
+  "final-build-handoff.json": {
+    "bytes": 799,
+    "sha256": "1912590e982890cb68da7338fc073ca0d827020c8f9438429e63491c21e9a293"
+  },
+  "native-companion-split-resized.png": {
+    "bytes": 177411,
+    "sha256": "e114a1f9efd662f925cd5b963b2fd0e1a251a3cf3c19bff26259085ebe8a5cc6"
+  },
+  "native-companion-split.png": {
+    "bytes": 200620,
+    "sha256": "1c1fc1a0a910cc8bbcad06143980f978e615717e462ad54d9ad6c15ff948bf55"
+  },
+  "native-environment-controls.json": {
+    "bytes": 1963,
+    "sha256": "203452ee63436ae86b07c49830605c2fe48414ba7906dc4929cdb4232f9703cc"
+  },
+  "native-environments.png": {
+    "bytes": 265003,
+    "sha256": "007a1598d856cd40ccf59b4d5efef19c6d4bb7fd271ef61c24b1a19ab6f26fb0"
+  },
+  "native-home-03.png": {
+    "bytes": 257815,
+    "sha256": "095afca89108d6ef42df35e2b8315ed45d5c6802107acb175025b7524132c2f4"
+  },
+  "native-linux-live-split.png": {
+    "bytes": 218133,
+    "sha256": "b5d8b275934394f54993d8e24247598dc213775a64f15ed2a523228264dd3e55"
+  },
+  "physical-session-final.json": {
+    "bytes": 431,
+    "sha256": "40a4632265605bddb59e43eef388ab8675202720bb973f28250821d35cb7864a"
+  },
+  "sd-model-inference.json": {
+    "bytes": 1568,
+    "sha256": "11b2d66bcfb9dbf373bba004190738bd64b5978f324e27dcff0c7e5ffd456280"
+  },
+  "sd-model-inference.png": {
+    "bytes": 232660,
+    "sha256": "9891c264fe123af979480636dd7a1576a0f444c088aa8566d278b4aef7a75cca"
+  }
+}

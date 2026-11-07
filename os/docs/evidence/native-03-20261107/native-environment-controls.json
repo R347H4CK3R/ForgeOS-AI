@@ -1,0 +1,36 @@
+{
+  "trusted_controls_enabled": true,
+  "real_companion_opened": true,
+  "visible_packages": [
+    "com.excp.podroid"
+  ],
+  "simultaneous_native_and_companion_nodes": false,
+  "actual_split_resize_verified": true,
+  "guest_running_not_inferred": true,
+  "actual_native_split_verified": true,
+  "before_resize": {
+    "tasks": [
+      "* Task{457fa79 #15 type=standard A=10112:com.excp.podroid U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=1}",
+      "* Task{5255319 #14 type=standard A=10171:dev.forgeos.ai.review U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=2}",
+      "* Task{457fa79 #15 type=standard A=10112:com.excp.podroid U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=1}",
+      "* Task{5255319 #14 type=standard A=10171:dev.forgeos.ai.review U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=2}"
+    ],
+    "rectangles": [
+      "0, 0 - 800, 635",
+      "0, 645 - 800, 1280"
+    ]
+  },
+  "after_resize": {
+    "tasks": [
+      "* Task{457fa79 #15 type=standard A=10112:com.excp.podroid U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=1}",
+      "* Task{5255319 #14 type=standard A=10171:dev.forgeos.ai.review U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=2}",
+      "* Task{457fa79 #15 type=standard A=10112:com.excp.podroid U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=1}",
+      "* Task{5255319 #14 type=standard A=10171:dev.forgeos.ai.review U=0 rootTaskId=2 visible=true visibleRequested=true mode=multi-window translucent=false sz=2}"
+    ],
+    "rectangles": [
+      "0, 0 - 800, 447",
+      "0, 457 - 800, 1280"
+    ]
+  },
+  "accessibility_tree_scope": "Default dump exposes only active window; not used as proof of absent other pane"
+}

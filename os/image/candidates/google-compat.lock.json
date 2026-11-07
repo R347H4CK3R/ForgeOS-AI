@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "purpose": "Unmodified official GSI for native ForgeOS APK compatibility testing; not a redistributable ForgeOS system image",
+  "url": "https://dl.google.com/developers/android/cinnamonbun/images/gsi/aosp_arm64-exp-CP3A.260905.010-16176746-4a869a69.zip",
+  "archive_bytes": 1166864309,
+  "archive_sha256": "4a869a6959a50fee15ff871ce378853ced4485f2aa456eb64dbdbf7a2c0408aa",
+  "system_bytes": 2072014848,
+  "android_api": 37,
+  "build_id": "CP3A.260905.010",
+  "published_patch_month": "2026-09",
+  "minimum_security_patch": "2026-04-05",
+  "source": "https://developer.android.com/topic/generic-system-image/releases",
+  "terms": "https://dl.google.com/developers/android/gsi/gsi-17-tos.txt",
+  "redistribute_image": false,
+  "modify_image": false,
+  "boot_tested": false,
+  "OEM_trust_verified": false
+}

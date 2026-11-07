@@ -1,0 +1,13 @@
+{
+  "sys.boot_completed": "1",
+  "ro.build.fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+  "ro.product.board": "t402aa",
+  "ro.boot.hardware": "mt8786",
+  "ro.boot.flash.locked": "1",
+  "ro.boot.verifiedbootstate": "green",
+  "ro.boot.slot_suffix": "_b",
+  "ro.crypto.state": "encrypted",
+  "stay_awake": "0",
+  "home_holder": "com.android.launcher3",
+  "data_space": "Filesystem       Size Used Avail Use% Mounted on\n/dev/block/dm-61  21G  14G  6.4G  70% /data/user/0"
+}
