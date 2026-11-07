@@ -1,0 +1,12 @@
+{
+  "boot_id_changed": true,
+  "uptime": "43.27 152.79",
+  "fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+  "locked": "1",
+  "avb": "green",
+  "slot": "_b",
+  "gsi": "normal",
+  "volumes": "emulated:179,3;0 unmounted null\r\nprivate mounted null\r\npublic:179,1 mounted 2916-1A0F\r\nprivate:179,3 mounted ab41b09e-2da7-4d9b-8e69-a4185b74edc3\r\nemulated;0 mounted null\r\n",
+  "data_disk": "Filesystem       1K-blocks     Used Available Use% Mounted on\r\n/dev/block/dm-61  22044832 17766612   4130764  82% /data/user/0\r\n",
+  "space_fully_reclaimed": false
+}

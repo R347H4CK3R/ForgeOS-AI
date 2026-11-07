@@ -1,5 +1,5 @@
 # ForgeOS verification matrix
-Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image source df21a82 / Android16 candidate source e077fbc. This is a development review, not OS acceptance.
+Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image source df21a82 / Android16 candidate source e077fbc. This is a development review, not OS acceptance. Latest target storage/trial follow-up: 2026-11-07 UTC.
 
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
@@ -12,13 +12,13 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 | USB peripherals | Blocked | Host feature present; actual peripheral acceptance not performed |
 | External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
 | Adopted SD mount | Verified working | Approved card erase created new public FAT32 and private f2fs volumes; both mounted. Prior119G observation is historical; see SD_CONVERSION_REVIEW.md. |
-| ForgeOS SD access | Partially working | Installed APK and private data on adopted UUID; visible SAF workspace/model placement unverified; debug run-as does not resolve adopted path |
+| ForgeOS SD access | Verified working | Current portable SD workspace: all eight directories listed, actual app read/edit/save independently read back, persistent grant survives process restart. Review APK is internal after approved card erase. SD model inference and reboot persistence remain unverified; see SD_APP_ACCESS_REVIEW.md. |
 | Local AI | Partially working | Actual pinned 135M GGUF generates on ARM64 tablet; useful coding quality, peak memory and throughput unverified |
 | Model downloads | Partially working | Actual tablet download, independent SHA256 and handoff pass; downloaded model on internal shared storage, SD model placement pending |
 | Remote AI | Partially working | Real 1.5B worker test passes; tablet HTTPS session unverified |
 | Tool-calling repair | Partially working | Real read/propose/approved apply; syntax repair and permission regressions; complex-project behavior unverified |
 | Agent project test/build execution | Not implemented | Python syntax parsing only; no arbitrary generated-code execution |
-| Code editor | Partially working | Native edit/recreation and real-file race tests pass; target untested |
+| Code editor | Partially working | Actual target SD-file load/edit/save and independent readback pass; native edit/recreation and file-race tests also pass. Broader editing acceptance remains incomplete. |
 | Terminal | Partially working | Supported Termux request/confirmation/result implementation; actual configuration pending |
 | Python execution | Blocked | Host syntax checks verified; tablet Python package/execution unverified |
 | Git operations | Partially working | Host Git used, bounded status endpoint implemented; tablet Git unverified |
@@ -27,7 +27,7 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
 | File/project management | Partially working | SAF browsing, folder creation and editor import/export; broader move/delete operations incomplete |
 | Recovery / rollback | Blocked | Normal bootloader-to-stock return verified; partial shared-files backup verified; app-private data/keys and authenticated exact firmware/tested restoration absent |
-| Temporary official DSU test | Failed | Internal allocation had responsiveness kills; SD route selected correctly but native gsid was denied block-device stat access. No guest boot. See [SD test](SD_CONVERSION_REVIEW.md). |
+| Temporary official DSU test | Failed | Internal allocation had responsiveness kills; SD route selected correctly but native gsid was denied block-device stat access. No guest boot. Smaller internal request also failed; approximately 1.93 GiB free-space difference remains unresolved. See [latest trial](DSU_SMALL_USERDATA_REVIEW.md). |
 | Genuine dual boot | Blocked | Separate DSU candidate built, but no alternate-OS boot-and-stock-return cycle or permanent boot selector verified. Virtual A/B is not dual boot |
 | Experimental GSI system image | Partially working | Actual offline ARM64 filesystem built and fsck/metadata checked; target boot/AVB/vendor acceptance blocked |
 | Full-source AOSP image | Not implemented | Product source only; large build worker and vendor acceptance unresolved |
@@ -36,7 +36,7 @@ Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image sour
 
 ## Current second-system and physical preflight
 [Android16 candidate42066524982](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42066524982) passed36Linux tests plus actual developer AVB/hash-tree/signature/prefix/fsck/gzip verification. Patch2026-09-01 matches system/AVB descriptors. This is not OEM trust or target boot proof.
-The native review APK installed on the actual adopted code/private-data volume; process runs and stock HOME remains com.android.launcher3. Actual native UI/download/handoff/local generation pass; native split placement/resize observed with black Termux pane. Initial Windows driver Code28 resolved with exact matching Microsoft-signed package; actual fastboot metadata read, then stock return verified. After OEM setting PIN confirmation, permission1 and exact vendor unlock_ability16777216 were observed; bootloader remains locked. See [post-PIN evidence](OEM_POLICY_REVIEW.md). See [physical evidence](PHYSICAL_USB_REVIEW.md). Shared-file backup:47files/335,610,967bytes verified; app-private data and adopted keys excluded. See SECOND_SYSTEM_REVIEW.md.
+Historically the native review APK installed on the adopted code/private-data volume; after the approved card erase it was reinstalled internally. Current SD app I/O is verified separately in SD_APP_ACCESS_REVIEW.md. The app runs and stock HOME remains com.android.launcher3. Actual native UI/download/handoff/local generation pass; native split placement/resize observed with black Termux pane. Initial Windows driver Code28 resolved with exact matching Microsoft-signed package; actual fastboot metadata read, then stock return verified. After OEM setting PIN confirmation, permission1 and exact vendor unlock_ability16777216 were observed; bootloader remains locked. See [post-PIN evidence](OEM_POLICY_REVIEW.md). See [physical evidence](PHYSICAL_USB_REVIEW.md). Shared-file backup:47files/335,610,967bytes verified; app-private data and adopted keys excluded. See SECOND_SYSTEM_REVIEW.md.
 
 ## Earlier visual and integrated image evidence
 [Native workflow42054065879](https://github.com/R347H4CK3R/ForgeOS-AI/actions/runs/42054065879): all jobs passed;26 unit tests,10 emulator tests in72.067seconds, actual local135M and remote1.5B checks, lint0errors/65warnings. Dark/light/landscape, editor, model, remote and updater screenshots were inspected.
@@ -53,4 +53,4 @@ Windows suite: 29 discovered / 28 passed / 1 live skip. Linux suite: 29 discover
 Actual screenshots, test output and synthetic model evidence are linked in [UI review](UI_REVIEW.md).
 
 ## Scope
-A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. Native review APK installed on stock Android after design approval; no OS boot, unlock, wipe, partition change, SD reformat or migration performed.
+A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. Native review APK runs on stock Android after design approval. The later explicitly approved SD erase created the current mixed layout; internal storage was not wiped/repartitioned. No guest OS boot, unlock or firmware flash occurred. Latest trial leaves an unresolved internal free-space difference; see DSU_SMALL_USERDATA_REVIEW.md.

@@ -19,3 +19,7 @@ Allocation again triggered device-not-responding lowmemorykiller activity, inclu
 The retry was aborted with a normal stock reboot. A fresh-boot check (uptime under600seconds) independently verified originalTTA.31, boot_completed1, locked1, AVBgreen, slot_b, gsi_tool statusnormal and more than6GiB free internal space. See evidence/official-42227213753/retry-stock-return.json. An initial check raced the asynchronous reboot and returned incomplete status; it was rejected, not counted as successful recovery.
 
 Actual DSU allocation remains FAILED after two attempts with different resource preconditions. No guest boot, unlock, factory reset or firmware flash occurred. Do not retry this stock allocation path unchanged or disable LMK to force it through. The stock installation and adopted storage are preserved; the native workstation on stock remains a separate deliverable. Permanent dual boot and recovery firmware remain unresolved.
+
+## Smaller userdata follow-up
+
+A separately labeled 1 GiB request also produced responsiveness kills; normal stock boot and both SD mounts were verified afterward. Full free-space recovery was not verified (about1.93 GiB difference). See DSU_SMALL_USERDATA_REVIEW.md. The approved card conversion supersedes earlier adopted-layout preservation statements.

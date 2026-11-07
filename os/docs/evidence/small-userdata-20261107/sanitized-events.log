@@ -1,0 +1,4 @@
+         1794012822.161  1185  2270 I DynamicSystemService: startInstallation -> /data/gsi/dsu/forgeos_small
+         1794012849.260   386   386 I lowmemorykiller: Kill '<stock-launcher>' (1686), uid 10140, oom_score_adj 100 to free 77828kB rss, 46976kB swap; reason: device is not responding
+         1794012862.256   386   386 I lowmemorykiller: Kill '<stock-launcher>' (8634), uid 10140, oom_score_adj 0 to free 61872kB rss, 29724kB swap; reason: device is not responding
+         1794012871.154   386   386 I lowmemorykiller: Kill '<stock-launcher>' (8693), uid 10140, oom_score_adj 0 to free 69356kB rss, 29636kB swap; reason: device is not responding

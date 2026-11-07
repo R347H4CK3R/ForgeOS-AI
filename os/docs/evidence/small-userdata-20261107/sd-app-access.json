@@ -1,0 +1,9 @@
+{
+  "workspace_uri": "content://com.android.externalstorage.documents/tree/2916-1A0F%3AForgeOS",
+  "eight_directories_listed": true,
+  "app_read_verified": true,
+  "app_edit_and_save_verified": true,
+  "independent_adb_read": "forgeos-sd-app-read-verified",
+  "grant_survives_process_restart": true,
+  "stock_os_preview": true
+}
