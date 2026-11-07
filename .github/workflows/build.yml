@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - name: Check source-scope regression tests
         run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
@@ -40,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Make isolated delivery probe
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
@@ -65,6 +67,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/checkout@v4
         with:
           repository: ggml-org/llama.cpp
@@ -108,7 +112,7 @@ jobs:
         env:
           FORGEOS_APK_SIGNING_KEY: ${{ secrets.FORGEOS_APK_SIGNING_KEY }}
         run: |
-          python os/image/sign_apk.py --input android/app/build/outputs/apk/debug/app-debug.apk --output android/app/build/outputs/apk/debug/ForgeOS-signed.apk --certificate os/image/forgeos-apk-signing-cert.pem --expected-cert-sha256 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --evidence android/app/build/outputs/apk/debug/signing-evidence.json --source "$GITHUB_SHA"
+          python os/image/sign_apk.py --input android/app/build/outputs/apk/debug/app-debug.apk --output android/app/build/outputs/apk/debug/ForgeOS-signed.apk --certificate os/image/forgeos-apk-signing-cert.pem --expected-cert-sha256 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --evidence android/app/build/outputs/apk/debug/signing-evidence.json --source "$(git rev-parse HEAD)"
       - uses: ./.github/actions/publish-review
         if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         with:
@@ -126,6 +130,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/checkout@v4
         with:
           repository: ggml-org/llama.cpp
@@ -209,6 +215,8 @@ jobs:
       FORGEOS_EVIDENCE_FILE: agent-evidence.json
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install pinned model backend on isolated worker
         run: |
           curl --fail --location --retry 2 --max-time 300 -o ollama.tar.zst https://github.com/ollama/ollama/releases/download/v0.40.14/ollama-linux-amd64.tar.zst

@@ -10,11 +10,11 @@ class ProvenanceTest(unittest.TestCase):
    def git(*args):
     return subprocess.check_output(["git","-C",str(root),*args],stderr=subprocess.STDOUT,text=True).strip()
    git("init","-q")
-   for name in ("android/app/build.gradle",".github/workflows/build.yml",".github/scripts/ui-review.sh",".gitattributes","os/docs/review.md"):
+   for name in ("android/app/build.gradle",".github/workflows/build.yml",".github/scripts/ui-review.sh",".gitattributes",".github/actions/publish-review/action.yml","os/image/sign_apk.py","os/image/image_tools.py","os/image/forgeos-apk-signing-cert.pem","os/docs/review.md"):
     p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text("initial\n")
    git("add",".");git("-c","user.name=Test","-c","user.email=test@example.invalid","commit","-qm","baseline")
    baseline=git("rev-parse","HEAD")
-   for name in ("android/app/build.gradle",".github/workflows/build.yml",".github/scripts/ui-review.sh",".gitattributes"):
+   for name in ("android/app/build.gradle",".github/workflows/build.yml",".github/scripts/ui-review.sh",".gitattributes",".github/actions/publish-review/action.yml","os/image/sign_apk.py","os/image/image_tools.py","os/image/forgeos-apk-signing-cert.pem"):
     with self.subTest(path=name):
      (root/name).write_text("changed\n")
      git("add",name);git("-c","user.name=Test","-c","user.email=test@example.invalid","commit","-qm","change build input")

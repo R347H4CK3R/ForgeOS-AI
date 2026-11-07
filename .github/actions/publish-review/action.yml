@@ -31,10 +31,12 @@ runs:
         REVIEW_NAME: ${{ inputs.name }}
       run: |
         [[ "$REVIEW_TARGET" =~ ^[0-9a-f]{40}$ ]] || exit 1
+        CHECKED_OUT_SHA=$(git rev-parse HEAD)
+        test "$CHECKED_OUT_SHA" = "$REVIEW_TARGET" || { echo "Review checkout differs from the canonical source"; exit 1; }
         TAG="forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$REVIEW_NAME"
         NOTES="$RUNNER_TEMP/$REVIEW_NAME-notes.md"
         {
-          echo "Development review from checked-out source $GITHUB_SHA; branch source $REVIEW_TARGET."
+          echo "Development review from checked-out source $CHECKED_OUT_SHA."
           echo "Workflow: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           echo "Native app/test evidence only. This is not approved firmware or proof of OS boot."
           echo "The ZIP includes per-file SHA256 in MANIFEST.json."
