@@ -1,0 +1,11 @@
+--- a/vendor_file_contexts
++++ b/vendor_file_contexts
+@@ -1148,7 +1148,7 @@
+ /dev/nebula-ipc-dev0   u:object_r:tee_device:s0
+ /dev/trusty-ipc-dev0   u:object_r:tee_device:s0
+ /dev/trusty-ipc-dev1   u:object_r:tee_device:s0
+-/dev/block/mmcblk1p1                                                                                        u:object_r:mmcblk1p1_block_device:s0
++/dev/block/mmcblk1p1                                                                                        u:object_r:sdcard_block_device:s0
+ /dev/ccci_wifi_proxy  u:object_r:ccci_wifi_proxy_device:s0
+ /vendor/bin/chipinfo u:object_r:chipinfo_exec:s0
+ /vendor/bin/dmc_core u:object_r:dmc_core_exec:s0
