@@ -34,6 +34,9 @@ class ScopeTests(unittest.TestCase):
  def test_signing_certificate_requires_app_validation(self):
   self.commit("os/image/forgeos-apk-signing-cert.pem","changed certificate")
   self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
+ def test_signer_shared_helpers_require_app_validation(self):
+  self.commit("os/image/image_tools.py","changed signing helper")
+  self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
  def test_unknown_baseline_cannot_silently_skip(self):
   with self.assertRaises(subprocess.CalledProcessError):has_app_changes("does-not-exist","HEAD",self.root)
 
