@@ -29,6 +29,10 @@ jobs:
       - name: VM artifact safety tests
         run: python -m unittest discover -s os/vm/tests -v
   image:
+    # Unpublished drafts require push-capable access; fetch code performs GET only.
+    permissions:
+      contents: write
+      actions: read
     if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official' && inputs.operation != 'inspect-vm' && inputs.operation != 'verify-apk'
     needs: validate
     runs-on: ubuntu-latest
@@ -260,6 +264,10 @@ jobs:
     uses: ./.github/workflows/vm-compat.yml
 
   apk-input:
+    # Unpublished drafts require push-capable access; fetch code performs GET only.
+    permissions:
+      contents: write
+      actions: read
     if: github.event_name == 'workflow_dispatch' && inputs.operation == 'verify-apk'
     needs: validate
     runs-on: ubuntu-latest
