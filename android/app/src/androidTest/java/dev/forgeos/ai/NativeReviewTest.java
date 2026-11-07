@@ -73,6 +73,28 @@ public class NativeReviewTest {
    File report=new File(file.getParentFile(),"inference-result.txt");try(FileOutputStream out=new FileOutputStream(report)){out.write(output);}
   }
  }
+ @Test(timeout=180000) public void grantedDescriptorGeneratesWithoutReopeningPath()throws Exception {
+  android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
+  File source=new File(context.getExternalFilesDir(null),"test-model.gguf");
+  assertTrue("Pinned model fixture missing",source.isFile());
+  File privateModel=new File(context.getCacheDir(),"descriptor-regression.gguf");
+  try {
+   try(FileInputStream in=new FileInputStream(source);FileOutputStream out=new FileOutputStream(privateModel)){
+    byte[] buffer=new byte[65536];int n;while((n=in.read(buffer))!=-1)out.write(buffer,0,n);
+   }
+   try(android.os.ParcelFileDescriptor fd=android.os.ParcelFileDescriptor.open(privateModel,android.os.ParcelFileDescriptor.MODE_READ_ONLY)){
+    android.system.Os.chmod(privateModel.getAbsolutePath(),0);
+    try(FileInputStream ignored=new FileInputStream("/proc/self/fd/"+fd.getFd())){fail("Reopen was not denied; fixture did not reproduce granted-only access");}
+    catch(FileNotFoundException expected){/* Existing readable descriptor remains valid. */}
+    LocalEngine.prepare();
+    byte[] result=LocalEngine.generate(fd.getFd(),"Reply with hello.".getBytes("UTF-8"));
+    assertNotNull(result);assertTrue("No text from granted descriptor",result.length>0);
+   }
+  } finally {
+   if(privateModel.exists()){android.system.Os.chmod(privateModel.getAbsolutePath(),0600);assertTrue(privateModel.delete());}
+   LocalEngine.prepare();
+  }
+ }
  @Test public void modelManagerIsNativeAndUnverifiedModelCannotBeSelected()throws Exception{
   try(ActivityScenario<ModelManagerActivity> scenario=ActivityScenario.launch(ModelManagerActivity.class)){
    scenario.onActivity(a->{assertFalse(hasWebView(a.getWindow().getDecorView()));View use=find(a.getWindow().getDecorView(),"Use verified model");assertNotNull(use);assertFalse(use.isEnabled());});

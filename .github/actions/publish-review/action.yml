@@ -1,0 +1,41 @@
+name: Publish bounded draft review
+description: Preserve build outputs in an owner-only draft release without Actions artifact quota.
+inputs:
+  name:
+    description: Unique ASCII review name
+    required: true
+  paths:
+    description: Workspace-relative output paths, one per line
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Package selected outputs
+      shell: bash
+      env:
+        REVIEW_PATHS: ${{ inputs.paths }}
+        REVIEW_NAME: ${{ inputs.name }}
+      run: |
+        python - <<'PY'
+        import os,re
+        name=os.environ['REVIEW_NAME']
+        assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}',name)
+        PY
+        python .github/scripts/review_archive.py --output "$RUNNER_TEMP/$REVIEW_NAME.zip"
+        sha256sum "$RUNNER_TEMP/$REVIEW_NAME.zip" > "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256"
+    - name: Store owner-only review assets
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REVIEW_NAME: ${{ inputs.name }}
+      run: |
+        TAG="forgeos-review-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$REVIEW_NAME"
+        NOTES="$RUNNER_TEMP/$REVIEW_NAME-notes.md"
+        {
+          echo "Development review from source $GITHUB_SHA."
+          echo "Workflow: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          echo "Native app/test evidence only. This is not approved firmware or proof of OS boot."
+          echo "The ZIP includes per-file SHA256 in MANIFEST.json."
+        } > "$NOTES"
+        gh release create "$TAG" "$RUNNER_TEMP/$REVIEW_NAME.zip" "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft --prerelease --title "$REVIEW_NAME · run $GITHUB_RUN_ID" --notes-file "$NOTES"
+        echo "Owner-only draft review: $TAG" >> "$GITHUB_STEP_SUMMARY"

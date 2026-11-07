@@ -2,9 +2,9 @@ name: Build ForgeOS AI Android APK
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**']
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**']
   pull_request:
-    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**']
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check source-scope regression tests
-        run: python -m unittest discover -s .github/scripts -p test_app_scope.py -v
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - name: Compare against last successful branch source
         id: scope
         env:
@@ -31,6 +31,8 @@ jobs:
           HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
         run: python .github/scripts/app_scope.py
   build:
+    permissions:
+      contents: write
     needs: scope
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
@@ -75,16 +77,23 @@ jobs:
           APK=android/app/build/outputs/apk/debug/app-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify "$APK"
           sha256sum "$APK" > "$APK.sha256"
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - name: Sign review APK with stable owner identity
+        if: success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        env:
+          FORGEOS_APK_SIGNING_KEY: ${{ secrets.FORGEOS_APK_SIGNING_KEY }}
+        run: |
+          python os/image/sign_apk.py --input android/app/build/outputs/apk/debug/app-debug.apk --output android/app/build/outputs/apk/debug/ForgeOS-signed.apk --certificate os/image/forgeos-apk-signing-cert.pem --expected-cert-sha256 4e17359b376fc57b4d39c4479c23e8c786d93b621ac33d7eaed3114287914c9a --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --evidence android/app/build/outputs/apk/debug/signing-evidence.json --source "$GITHUB_SHA"
+      - uses: ./.github/actions/publish-review
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         with:
           name: ForgeOS-native-review
-          path: |
+          paths: |
             android/app/build/outputs/apk/debug/
             android/app/build/reports/
-          if-no-files-found: error
 
   native-ui:
+    permissions:
+      contents: write
     needs: scope
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
@@ -134,17 +143,18 @@ jobs:
           ram-size: 3072M
           disable-animations: true
           script: bash .github/scripts/ui-review.sh
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: ./.github/actions/publish-review
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         with:
           name: ForgeOS-native-UI-review
-          path: |
+          paths: |
             preview/
             android/app/build/reports/androidTests/
             android/app/build/outputs/androidTest-results/
-          if-no-files-found: error
 
   live-agent:
+    permissions:
+      contents: write
     needs: scope
     if: needs.scope.outputs.needed == 'true'
     runs-on: ubuntu-latest
@@ -185,11 +195,10 @@ jobs:
         run: ollama pull "$FORGEOS_LIVE_MODEL"
       - name: Verify real tool-calling and approval boundaries
         run: python -m unittest discover -s bridge -p test_agent_live.py -v
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: ./.github/actions/publish-review
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         with:
           name: ForgeOS-live-agent-evidence
-          path: |
+          paths: |
             agent-evidence.json
             ollama.log
-          if-no-files-found: error

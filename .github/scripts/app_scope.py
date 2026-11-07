@@ -5,7 +5,7 @@ from pathlib import Path
 def has_app_changes(base,head,repo="."):
  result=subprocess.run(["git","diff","--name-only","-z",base,head,"--"],cwd=repo,capture_output=True,check=True)
  paths=[value.decode("utf-8",errors="surrogateescape") for value in result.stdout.split(b"\0") if value]
- return any(path.startswith(("android/","bridge/",".github/scripts/")) or path in (".github/workflows/build.yml",".gitattributes") for path in paths)
+ return any(path.startswith(("android/","bridge/",".github/scripts/",".github/actions/")) or path in (".github/workflows/build.yml",".gitattributes") for path in paths)
 
 def main():
  needed=True

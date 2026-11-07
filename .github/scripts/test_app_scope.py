@@ -25,6 +25,9 @@ class ScopeTests(unittest.TestCase):
  def test_checkout_attributes_can_affect_signed_test_assets(self):
   self.commit(".gitattributes","*.sig binary")
   self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
+ def test_review_publisher_change_requires_validation(self):
+  self.commit(".github/actions/publish-review/action.yml","changed publisher")
+  self.assertTrue(has_app_changes(self.base,"HEAD",self.root))
  def test_unknown_baseline_cannot_silently_skip(self):
   with self.assertRaises(subprocess.CalledProcessError):has_app_changes("does-not-exist","HEAD",self.root)
 
