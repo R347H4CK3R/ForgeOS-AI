@@ -9,3 +9,13 @@ Free internal space dropped to2776052KiB during partial allocation. The native d
 Result: target DSU installation FAILED; partial allocation recovered after normal stock reboot. No bootloader unlock, firmware flash, factory reset or guest boot occurred. Earlier reports describing a pending credential prompt are superseded by this actual attempt.
 
 Next attempt must change the resource conditions, starting from the clean stock boot and measuring available memory/pressure before allocation. Do not repeatedly retry unchanged or weaken global memory safeguards. The previously verified official image remains unchanged; OEM key acceptance, cross-image vendor compatibility and guest-to-stock boot testing remain unverified.
+
+## Changed-resource retry and recovery
+
+The owner removed screen-lock security; actual keyguard secure=false/showing=false was observed. After10.5hours of uptime, MemAvailable was1,417,268KiB. Android am kill-all closed cached background processes; measured available RAM rose to1,623,456KiB before a single changed retry. No global low-memory safeguards, system partitions or adopted-card formatting were changed.
+
+Allocation again triggered device-not-responding lowmemorykiller activity, including foreground processes. The installer process disappeared; memory measured2,013,048KiB afterward. This is not proof of simple RAM exhaustion or a specifically identified kernel defect. /proc/pressure and /proc/diskstats reads are denied, so detailed I/O-pressure attribution remains blocked. The monitoring helper also hit a UIAutomator timeout; UI inspection was stopped rather than treated as an install result.
+
+The retry was aborted with a normal stock reboot. A fresh-boot check (uptime under600seconds) independently verified originalTTA.31, boot_completed1, locked1, AVBgreen, slot_b, gsi_tool statusnormal and more than6GiB free internal space. See evidence/official-42227213753/retry-stock-return.json. An initial check raced the asynchronous reboot and returned incomplete status; it was rejected, not counted as successful recovery.
+
+Actual DSU allocation remains FAILED after two attempts with different resource preconditions. No guest boot, unlock, factory reset or firmware flash occurred. Do not retry this stock allocation path unchanged or disable LMK to force it through. The stock installation and adopted storage are preserved; the native workstation on stock remains a separate deliverable. Permanent dual boot and recovery firmware remain unresolved.

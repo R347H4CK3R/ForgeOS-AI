@@ -1,0 +1,10 @@
+{
+  "sys.boot_completed": "1",
+  "ro.build.fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+  "ro.boot.flash.locked": "1",
+  "ro.boot.verifiedbootstate": "green",
+  "ro.boot.slot_suffix": "_b",
+  "dsu_status": "normal",
+  "df_k": "Filesystem       1K-blocks     Used Available Use% Mounted on\n/dev/block/dm-61  22044832 15264476   6632900  70% /data/user/0",
+  "uptime": "45.50 150.80"
+}

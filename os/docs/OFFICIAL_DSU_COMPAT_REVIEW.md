@@ -40,3 +40,7 @@ Authenticated exact stock firmware remains a prerequisite for destructive bootlo
 ## Pipeline repair
 
 A new workflow could not be manually dispatched by filename because it was absent from the default branch (actual HTTP404). It was made reusable and connected to the existing registered os-image workflow's inspect-official operation; the corrected run succeeded. No unchanged failing run was repeatedly retried.
+
+## Superseding actual target result
+
+Credential confirmation completed. Actual allocation FAILED, including a changed-resource retry; stock restart recovered space and normal DSU state. No guest was booted. Earlier pending-authentication descriptions are historical. See [actual target attempts](DSU_TARGET_ATTEMPT.md).
