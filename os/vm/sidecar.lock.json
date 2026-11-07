@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "package": "com.excp.podroid",
+  "version": "1.2.9",
+  "url": "https://github.com/ExTV/Podroid/releases/download/v1.2.9/Podroid-v1.2.9-release.apk",
+  "bytes": 311732014,
+  "sha256": "3945c8c887f1df239501de6320fe5c8315bf9805029f530373d3244fee0d2a5f",
+  "source_commit": "ce0121896b2895637ab1f656cbb0d75fa2874489",
+  "license": "GPL-2.0",
+  "role": "Independent interim Linux VM companion; not ForgeOS firmware or dual boot"
+}

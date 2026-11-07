@@ -2,7 +2,7 @@ name: ForgeOS offline system image
 run-name: ForgeOS ${{ inputs.operation || 'validation' }}
 on:
   pull_request:
-    paths: ['os/image/**', 'os/aosp/**', '.github/workflows/os-image.yml']
+    paths: ['os/image/**', 'os/aosp/**', 'os/vm/**', '.github/workflows/os-image.yml']
   workflow_dispatch:
     inputs:
       operation:
@@ -10,7 +10,7 @@ on:
         required: true
         default: inspect
         type: choice
-        options: [inspect, inspect-android16, inspect-official, build, build-android16-candidate]
+        options: [inspect, inspect-android16, inspect-official, inspect-vm, build, build-android16-candidate]
 permissions:
   contents: read
   actions: read
@@ -26,8 +26,10 @@ jobs:
       - name: Image tool tests
         working-directory: os/image
         run: python -m unittest discover -s tests -v
+      - name: VM artifact safety tests
+        run: python -m unittest discover -s os/vm/tests -v
   image:
-    if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official'
+    if: github.event_name == 'workflow_dispatch' && inputs.operation != 'inspect-official' && inputs.operation != 'inspect-vm'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -251,3 +253,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect-official'
     needs: validate
     uses: ./.github/workflows/gsi-compat.yml
+
+  vm-compat:
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect-vm'
+    needs: validate
+    uses: ./.github/workflows/vm-compat.yml

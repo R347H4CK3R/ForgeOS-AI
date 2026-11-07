@@ -9,3 +9,4 @@ preview/
 agent-evidence.json
 ollama.log
 ollama.tar.zst
+/.superpowers/
