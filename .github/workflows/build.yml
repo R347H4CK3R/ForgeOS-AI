@@ -2,9 +2,9 @@ name: Build ForgeOS AI Android APK
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**']
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**', 'os/image/sign_apk.py', 'os/image/forgeos-apk-signing-cert.pem']
   pull_request:
-    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**']
+    paths: ['android/**', 'bridge/**', '.github/workflows/build.yml', '.github/scripts/**', '.github/actions/**', 'os/image/sign_apk.py', 'os/image/forgeos-apk-signing-cert.pem']
   workflow_dispatch:
 permissions:
   contents: read
