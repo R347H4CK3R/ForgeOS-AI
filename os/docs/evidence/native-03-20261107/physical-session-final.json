@@ -1,0 +1,8 @@
+{
+  "companion_final_state": "Result: Bundle[{result=ok vm=stopped backend=avf selection=AVF stage=Ready forwards=none vc=33}]",
+  "avf_kept_as_preference": true,
+  "guest_stopped_to_release_ram": true,
+  "no_user_or_guest_data_cleared": true,
+  "disk_lock_recovery": "One START_FAILED disk-lock error recovered with companion-only force-stop/reopen; no locking bypass or storage clearing",
+  "actual_live_split_guest_test": true
+}

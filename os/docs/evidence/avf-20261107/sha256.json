@@ -1,0 +1,30 @@
+{
+  "acceptance.json": {
+    "bytes": 1763,
+    "sha256": "7fe12bb7bbaf4eebfca551b66df260dcf7e7b813e36e9d9b2fc98a6502ecb076"
+  },
+  "linux-avf-return.json": {
+    "bytes": 311,
+    "sha256": "e0614b4b0c195b9530c4e5e5f7fc095d8f5006d5ec7815c6e3bcfe72e79c7658"
+  },
+  "linux-avf-tools-verified.png": {
+    "bytes": 81850,
+    "sha256": "62fec7f9dcbb8a7ccb1207c5a4abad4bcbcff80304dba9edc4e37ebf5016ddea"
+  },
+  "linux-qemu-acceptance-final.png": {
+    "bytes": 78366,
+    "sha256": "cb76437a51b7aebdbb0e953ff2fb2e7159dc2931a65aae16ffd248b8627f10b8"
+  },
+  "linux-qemu-fallback.json": {
+    "bytes": 1741,
+    "sha256": "f38537679eae43661fa3be15d79a2289ba6c0177153a052495fd3e3325041db3"
+  },
+  "linux-vm-start.json": {
+    "bytes": 183,
+    "sha256": "33600eedea9a4726ae0d0760b1f9bfafe1b4fc6f74beddfdd8bdb4c0a2d6ee12"
+  },
+  "stock-integrity.json": {
+    "bytes": 905,
+    "sha256": "9a218f02bd8c0bb94d38ac2ed81da5288fcd9b524a0d4cc52dff05bb70ff91d7"
+  }
+}

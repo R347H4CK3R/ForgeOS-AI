@@ -1,0 +1,21 @@
+{
+  "source": "/storage/emulated/0/Android/data/dev.forgeos.ai.review/files/Download/starter-models/starter-a6caa1bf-b1b5-4ab3-aa1d-6c85771c27b2.gguf",
+  "target": "/storage/2916-1A0F/ForgeOS/models/SmolLM2-135M-Instruct-Q4_K_M.gguf",
+  "sha256": "2e8040ceae7815abe0dcb3540b9995eaa1fa0d2ca9e797d0a635ae4433c68c2d",
+  "bytes": 105454432,
+  "original_deleted": true,
+  "sd_inference_verified": true,
+  "laptop_backup_sha256": "2e8040ceae7815abe0dcb3540b9995eaa1fa0d2ca9e797d0a635ae4433c68c2d",
+  "original_removal_reason": "Android install reserve blocks APK update; exact model retained on SD and hash-verified laptop backup",
+  "internal_available_before_bytes": 3331317760,
+  "internal_available_after_bytes": 3436777472,
+  "output": "Hello, hello, hello.",
+  "prompt": "Say hello in one short sentence.",
+  "greeting_prompt_followed": true,
+  "earlier_prompt_quality_failure": {
+    "prompt": "Reply with hello.",
+    "output": "I'm glad you're enjoying the new series. I hope you find it engaging and informative. I'd be happy to help you with any questions or topics you might have. If you have any specific areas of interest or concerns, feel free to ask.\n\nI'm also happy to share some resources and tips on how to improve your writing skills. I've got a few articles and books that might be helpful for you.\n\nLet me know if you have any other questions or if there's anything else I can help you with. I'm here to support you every step of the way.\n\nBest regards,\nAlex",
+    "inference_generated_text": true,
+    "requested_greeting_followed": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "ro.build.fingerprint": "onn/100135925/100135925:15/AP3A.240905.015.A2/TTA.31:user/release-keys",
+    "ro.boot.flash.locked": "1",
+    "ro.boot.verifiedbootstate": "green",
+    "ro.boot.slot_suffix": "_b"
+  },
+  "stock_home": "priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true\r\ncom.android.launcher3/.uioverrides.QuickstepLauncher",
+  "companion_state": "Result: Bundle[{result=ok vm=stopped backend=avf selection=AVF stage=Ready forwards=none vc=33}]",
+  "sd_volumes": "emulated:179,3;0 unmounted null\r\nprivate mounted null\r\npublic:179,1 mounted 2916-1A0F\r\nprivate:179,3 mounted ab41b09e-2da7-4d9b-8e69-a4185b74edc3\r\nemulated;0 mounted null",
+  "host_kernel": "6.6.102-android15-8-g06bc416365ef-ab14559830-4k",
+  "no_firmware_writes_performed": true,
+  "scope": "Current read-only post-guest checks; not a full restoration test"
+}

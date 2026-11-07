@@ -16,4 +16,8 @@ This is the portable FAT32 part of the card; it is not encrypted adoptable stora
 
 [Machine-readable result](evidence/small-userdata-20261107/sd-app-access.json) and [evidence SHA256 manifest](evidence/small-userdata-20261107/sha256.json).
 
-The app remains a native workstation preview on stock Android. Genuine second-system boot is separately blocked; see [the latest failed trial and cleanup limits](DSU_SMALL_USERDATA_REVIEW.md).
+The app remains a native workstation preview on stock Android. Genuine Android dual boot is separately blocked; see [the latest failed trial and cleanup limits](DSU_SMALL_USERDATA_REVIEW.md).
+
+## Later model acceptance
+
+The native0.3 update subsequently verified direct SD GGUF loading and generation through the persisted document grant. The redundant internal model download was removed only after exact SD and laptop-backup hashes matched. The greeting fixture passed; another prompt produced an off-topic answer. See [native0.3 evidence](NATIVE_03_REVIEW.md). This does not establish full-reboot grant persistence or Linux-to-SD access.

@@ -1,27 +1,27 @@
 # ForgeOS verification matrix
-Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image source df21a82 / Android16 candidate source e077fbc. This is a development review, not OS acceptance. Latest target storage/trial follow-up: 2026-11-07 UTC.
+Evidence: 2026-11-06 UTC, native software candidate10e2d26; legacy OS image source df21a82 / Android16 candidate source e077fbc. This is a development review, not OS acceptance. Latest target follow-up: native0.3, direct SD inference and AVF/Linux multitasking, 2026-11-07 UTC; see NATIVE_03_REVIEW.md.
 
 | Feature | Classification | Evidence / missing proof |
 |---|---|---|
 | Custom OS boot | Blocked | Locked AVB; exact recovery firmware and tested restoration unverified; candidate not boot-tested; existing approval recorded |
 | Touch input | Partially working | Actual UI responds to ADB-injected taps; finger/multitouch acceptance pending |
-| Native multi-window | Partially working | Actual target split placement and divider resize observed; Termux pane black in captures, full acceptance unresolved |
+| Native multi-window | Partially working | Actual ForgeOS/Podroid split launch, touch divider resize and live AVF Python/Git terminal verified. Freeform windows and desktop control buttons remain unverified; see NATIVE_03_REVIEW.md. |
 | Floating-window controls/snapping | Not implemented | No verified privileged window manager/image |
 | Wi-Fi | Verified working | Wireless ADB and 3/3 Internet ping; throughput/roaming not measured |
 | Bluetooth | Partially working | Enabled and supported; pairing and input untested |
 | USB peripherals | Blocked | Host feature present; actual peripheral acceptance not performed |
 | External display | Blocked | No physical HDMI evidence; virtual display is not DP Alt Mode proof |
 | Adopted SD mount | Verified working | Approved card erase created new public FAT32 and private f2fs volumes; both mounted. Prior119G observation is historical; see SD_CONVERSION_REVIEW.md. |
-| ForgeOS SD access | Verified working | Current portable SD workspace: all eight directories listed, actual app read/edit/save independently read back, persistent grant survives process restart. Review APK is internal after approved card erase. SD model inference and reboot persistence remain unverified; see SD_APP_ACCESS_REVIEW.md. |
-| Local AI | Partially working | Actual pinned 135M GGUF generates on ARM64 tablet; useful coding quality, peak memory and throughput unverified |
-| Model downloads | Partially working | Actual tablet download, independent SHA256 and handoff pass; downloaded model on internal shared storage, SD model placement pending |
+| ForgeOS SD access | Verified working | All eight workspace folders, app read/edit/save and persistent grant across process restart/update verified. Direct SD GGUF inference also passes. Full tablet reboot persistence remains unverified. |
+| Local AI inference | Partially working | Actual135M GGUF loads/generates directly from SD with granted-FD fix. Greeting fixture passed; another short prompt produced an off-topic reply. No larger-model or general coding-quality claim. |
+| Model downloads | Partially working | Actual tablet download/hash/handoff pass; verified model copied to SD and used directly. Direct-to-SD downloads remain unimplemented. |
 | Remote AI | Partially working | Real 1.5B worker test passes; tablet HTTPS session unverified |
 | Tool-calling repair | Partially working | Real read/propose/approved apply; syntax repair and permission regressions; complex-project behavior unverified |
 | Agent project test/build execution | Not implemented | Python syntax parsing only; no arbitrary generated-code execution |
 | Code editor | Partially working | Actual target SD-file load/edit/save and independent readback pass; native edit/recreation and file-race tests also pass. Broader editing acceptance remains incomplete. |
-| Terminal | Partially working | Supported Termux request/confirmation/result implementation; actual configuration pending |
-| Python execution | Blocked | Host syntax checks verified; tablet Python package/execution unverified |
-| Git operations | Partially working | Host Git used, bounded status endpoint implemented; tablet Git unverified |
+| Terminal | Partially working | Real Linux guest console/Python/Git verified through the environment integration; native Termux request/confirmation implementation exists but its configuration is unverified. |
+| Python execution | Verified working | Real module + unittest passed inside Alpine guest in both QEMU maintenance and hardware AVF; not a Termux result. See AVF_INTERIM_REVIEW.md. |
+| Git operations | Partially working | Actual guest init/add/commit and clean tracked-tree checks passed after AVF restart; clone/push and remote authentication remain unverified. |
 | SSH / remote terminal builds | Not implemented | No integrated arbitrary host command/session endpoint; Termux setup unverified |
 | Tailscale | Partially working | Tablet-to-laptop tailnet ping 3/3; app HTTPS setup pending |
 | Desktop Commander | Partially working | Authorized laptop integration used; app bridge is separate, no Android agent invented |
@@ -53,4 +53,8 @@ Windows suite: 29 discovered / 28 passed / 1 live skip. Linux suite: 29 discover
 Actual screenshots, test output and synthetic model evidence are linked in [UI review](UI_REVIEW.md).
 
 ## Scope
-A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. Native review APK runs on stock Android after design approval. The later explicitly approved SD erase created the current mixed layout; internal storage was not wiped/repartitioned. No guest OS boot, unlock or firmware flash occurred. Latest trial leaves an unresolved internal free-space difference; see DSU_SMALL_USERDATA_REVIEW.md.
+A successful build is not target verification. The remote model fixture establishes one small edit, not universal repair. Native review APK runs on stock Android after design approval. The later explicitly approved SD erase created the current mixed layout; internal storage was not wiped/repartitioned. AVF Linux guest boot is now verified; no alternate Android system-image boot, unlock or firmware flash occurred. Latest trial leaves an unresolved internal free-space difference; see DSU_SMALL_USERDATA_REVIEW.md.
+
+## Verified interim environment
+
+See [hardware AVF/Linux acceptance](AVF_INTERIM_REVIEW.md) and [native0.3 SD inference and split-screen evidence](NATIVE_03_REVIEW.md). These improve the workstation without changing the blocked genuine-dual-boot and exact-firmware recovery classifications.
