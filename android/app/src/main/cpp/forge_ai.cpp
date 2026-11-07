@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <cstdio>
+#include <fcntl.h>
+#include <unistd.h>
 static std::mutex lock;
 static std::atomic<bool> cancelled{false};
 static bool abort_run(void *) { return cancelled.load(); }
@@ -20,8 +23,15 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_dev_forgeos_ai_LocalEngine_generate
   static std::once_flag initialized;std::call_once(initialized,[]{llama_backend_init();});
   if(cancelled)throw std::runtime_error("Cancelled before model load");
   auto mp=llama_model_default_params();mp.n_gpu_layers=0;mp.progress_callback=[](float,void *){return !cancelled.load();};
-  std::string path="/proc/self/fd/"+std::to_string(fd);
-  std::unique_ptr<llama_model,decltype(&llama_model_free)> model(llama_model_load_from_file(path.c_str(),mp),llama_model_free);
+  // A SAF grant permits reading this open descriptor, not reopening its pathname.
+  int owned_fd=fcntl(fd,F_DUPFD_CLOEXEC,0);
+  if(owned_fd<0)throw std::runtime_error("Model provider descriptor is unavailable");
+  FILE *raw=fdopen(owned_fd,"rb");
+  if(!raw){close(owned_fd);throw std::runtime_error("Model provider descriptor is not readable");}
+  std::unique_ptr<FILE,decltype(&fclose)> stream(raw,fclose);
+  if(fseek(stream.get(),0,SEEK_SET)!=0)throw std::runtime_error("Select a seekable GGUF model file");
+  // Pinned llama.cpp does not own a supplied FILE*. Destroy model before stream.
+  std::unique_ptr<llama_model,decltype(&llama_model_free)> model(llama_model_load_from_file_ptr(stream.get(),mp),llama_model_free);
   if(!model)throw std::runtime_error("Model could not load; select a supported small GGUF");
   if(llama_model_n_params(model.get())>600000000ULL)throw std::runtime_error("Model exceeds 600M parameter safety limit");
   auto cp=llama_context_default_params();cp.n_ctx=512;cp.n_batch=512;cp.n_threads=2;cp.n_threads_batch=2;cp.abort_callback=abort_run;

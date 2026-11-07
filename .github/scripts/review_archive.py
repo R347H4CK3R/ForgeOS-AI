@@ -45,16 +45,26 @@ def build_archive(workspace, patterns, destination):
         raise ValueError("no build outputs matched")
     if sum(p.stat().st_size for p in files.values()) > MAX_TOTAL:
         raise ValueError("review outputs exceed 512 MiB")
-    manifest = {"schema": 1, "files": [
-        {"path": n, "bytes": p.stat().st_size, "sha256": sha256(p)}
-        for n, p in sorted(files.items())]}
+    manifest = {"schema": 1, "files": []}
     created = False
     try:
         with destination.open("xb") as stream:
             created = True
             with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                copied = 0
                 for name, path in sorted(files.items()):
-                    archive.write(path, name)
+                    digest = hashlib.sha256()
+                    size = 0
+                    with path.open("rb") as source, archive.open(name, "w") as entry:
+                        for block in iter(lambda: source.read(1024**2), b""):
+                            copied += len(block)
+                            if copied > MAX_TOTAL:
+                                raise ValueError("review outputs grew beyond 512 MiB")
+                            entry.write(block)
+                            digest.update(block)
+                            size += len(block)
+                    manifest["files"].append({"path": name, "bytes": size,
+                                              "sha256": digest.hexdigest()})
                 archive.writestr("MANIFEST.json", json.dumps(manifest, indent=2))
     except BaseException:
         if created:

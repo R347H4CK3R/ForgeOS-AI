@@ -1,5 +1,5 @@
 name: Publish bounded draft review
-description: Preserve build outputs in an owner-only draft release without Actions artifact quota.
+description: Preserve build outputs in an unpublished draft release without Actions artifact quota.
 inputs:
   name:
     description: Unique ASCII review name
@@ -23,7 +23,7 @@ runs:
         PY
         python .github/scripts/review_archive.py --output "$RUNNER_TEMP/$REVIEW_NAME.zip"
         sha256sum "$RUNNER_TEMP/$REVIEW_NAME.zip" > "$RUNNER_TEMP/$REVIEW_NAME.zip.sha256"
-    - name: Store owner-only review assets
+    - name: Store unpublished review assets
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}

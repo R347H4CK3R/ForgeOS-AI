@@ -1,4 +1,4 @@
-import json,os,tempfile,unittest,zipfile
+import hashlib,json,os,tempfile,unittest,zipfile
 from pathlib import Path
 try:
  from review_archive import build_archive
@@ -21,6 +21,8 @@ class ReviewArchiveTests(unittest.TestCase):
    self.assertEqual(z.read("reports/result.txt"),b"verified")
    manifest=json.loads(z.read("MANIFEST.json"))
    self.assertEqual(manifest["files"][0]["path"],"reports/result.txt")
+   self.assertEqual(manifest["files"][0]["bytes"],8)
+   self.assertEqual(manifest["files"][0]["sha256"],hashlib.sha256(b"verified").hexdigest())
   self.assertEqual(result["files"],1)
  def test_parent_path_cannot_escape_workspace(self):
   self.require();(self.base/"private.key").write_bytes(b"secret")

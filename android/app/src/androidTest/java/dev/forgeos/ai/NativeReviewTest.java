@@ -32,6 +32,17 @@ public class NativeReviewTest {
   Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
   try(FileOutputStream out=new FileOutputStream(new File(dir,name+".png"))){assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,out));}bitmap.recycle();
  }
+ @Test public void environmentControlsRemainBlockedWithoutCompanion()throws Exception {
+  android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
+  try{context.getPackageManager().getPackageInfo("com.excp.podroid",0);fail("Emulator fixture unexpectedly has companion");}
+  catch(android.content.pm.PackageManager.NameNotFoundException expected){}
+  try(ActivityScenario<EnvironmentActivity> scenario=ActivityScenario.launch(EnvironmentActivity.class)){
+   scenario.onActivity(activity->{View root=activity.getWindow().getDecorView();assertFalse(hasWebView(root));
+    View open=find(root,"Open Linux controls");assertNotNull(open);assertFalse(open.isEnabled());
+    assertNotNull(find(root,"Refresh environment checks"));});
+   shot("os-environments");
+  }
+ }
  @Test public void repositoryUpdaterShowsStagingGateWithoutInstallControls()throws Exception {
   try(ActivityScenario<OsUpdateActivity> scenario=ActivityScenario.launch(OsUpdateActivity.class)){
    scenario.onActivity(activity->{View root=activity.getWindow().getDecorView();assertFalse(hasWebView(root));assertNotNull(find(root,"Check latest repository build"));assertNotNull(find(root,"Export verified image"));assertNull(find(root,"Install update"));});
